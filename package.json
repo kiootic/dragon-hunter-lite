@@ -1,0 +1,35 @@
+{
+  "name": "dragon-hunter-lite",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@tweenjs/tween.js": "^17.2.0",
+    "lodash": "^4.17.5",
+    "pixi.js": "^4.7.1",
+    "rxjs": "^5.5.7",
+    "stats.js": "^0.17.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.105",
+    "@types/pixi.js": "^4.7.2",
+    "@types/stats.js": "^0.17.0",
+    "@types/tween.js": "^16.9.0",
+    "@types/webpack-env": "^1.13.5",
+    "clean-webpack-plugin": "^0.1.19",
+    "eslint": "^4.19.0",
+    "file-loader": "^1.1.11",
+    "glob": "^7.1.2",
+    "script-loader": "^0.7.2",
+    "spritesheet-js": "^1.2.6",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.2",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.4"
+  },
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server"
+  }
+}
