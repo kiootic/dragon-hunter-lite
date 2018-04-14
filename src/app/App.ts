@@ -40,4 +40,10 @@ export class App extends Application {
       this.state.resume();
     }
   }
+  public topState(next: GameState) {
+    this.popState();
+    this.pushState(next);
+  }
+
+  public resources: Record<string, any> = {};
 }
