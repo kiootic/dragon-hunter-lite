@@ -10,3 +10,12 @@ export function fadeOut(obj: DisplayObject) {
     .start()
   )();
 }
+
+export function fadeIn(obj: DisplayObject) {
+  return bindCallback(callback => new Tween(obj)
+    .to({ alpha: 1 }, 250)
+    .easing(Easing.Quadratic.In)
+    .onComplete(callback)
+    .start()
+  )();
+}
