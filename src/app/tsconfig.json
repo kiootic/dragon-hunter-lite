@@ -3,9 +3,7 @@
     "sourceMap": true,
     "target": "es2015",
     "module": "commonjs",
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
+    "strict": true,
     "baseUrl": "../..",
     "paths": {
       "app": [

@@ -2,9 +2,8 @@ import { Application } from 'pixi.js';
 import Stats = require('stats.js');
 import { update as tweenUpdate } from '@tweenjs/tween.js';
 
-export function bootstrap<App extends Application>(App: { new(): App }) {
-  const app = new App();
-  document.querySelector('body').appendChild(app.view);
+export function bootstrap<App extends Application>(app: App) {
+  document.body.appendChild(app.view);
 
   function resize() {
     const width = window.innerWidth;
