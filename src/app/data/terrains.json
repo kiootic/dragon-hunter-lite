@@ -1,0 +1,19 @@
+[
+  null,
+  {
+    "id": 1,
+    "name": "water",
+    "texture": "sprites/terrains/water"
+  },
+  {
+    "id": 2,
+    "name": "lava",
+    "texture": "sprites/terrains/lava",
+    "passable": false
+  },
+  {
+    "id": 3,
+    "name": "grass",
+    "texture": "sprites/terrains/grass"
+  }
+]

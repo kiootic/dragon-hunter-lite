@@ -7,6 +7,7 @@
   "dependencies": {
     "@tweenjs/tween.js": "^17.2.0",
     "fontfaceobserver": "^2.0.13",
+    "gl-matrix": "^2.4.1",
     "lodash": "^4.17.5",
     "pixi.js": "^4.7.1",
     "rxjs": "^5.5.7",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "@types/fontfaceobserver": "^0.0.6",
+    "@types/gl-matrix": "^2.4.0",
     "@types/lodash": "^4.14.105",
     "@types/pixi.js": "^4.7.2",
     "@types/stats.js": "^0.17.0",

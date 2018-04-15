@@ -1,5 +1,6 @@
 import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
 import { GameState } from 'app/states';
+import { DataLibrary } from 'app/data';
 
 export const ScaleFactor = 4;
 
@@ -47,5 +48,6 @@ export class App extends Application {
     this.pushState(next);
   }
 
-  public resources: Record<string, any> = {};
+  public readonly resources: Record<string, any> = {};
+  public readonly library = new DataLibrary();
 }

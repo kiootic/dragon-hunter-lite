@@ -1,4 +1,4 @@
-import { Container, Sprite, Texture, mesh, Point } from "pixi.js";
+import { Container, Sprite, Texture, mesh, Point } from 'pixi.js';
 import { times } from 'lodash';
 import { ScaleFactor } from 'app';
 

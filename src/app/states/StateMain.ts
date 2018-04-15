@@ -16,6 +16,7 @@ export class StateMain extends GameState {
   }
 
   enter() {
+    this.game.init();
     this.root.alpha = 0;
     fadeIn(this.root).subscribe();
   }

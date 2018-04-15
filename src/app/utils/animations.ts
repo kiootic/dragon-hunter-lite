@@ -1,5 +1,5 @@
-import { DisplayObject } from "pixi.js";
-import { Tween, Easing } from "@tweenjs/tween.js";
+import { DisplayObject } from 'pixi.js';
+import { Tween, Easing } from '@tweenjs/tween.js';
 import { bindCallback } from 'rxjs/observable/bindCallback';
 
 export function fadeOut(obj: DisplayObject) {
