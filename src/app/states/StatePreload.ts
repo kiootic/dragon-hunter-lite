@@ -1,8 +1,8 @@
-import { GameState } from 'app/states/GameState';
 import { Container, Text, loaders } from 'pixi.js';
-import { App } from 'app/App';
+import * as FontFaceObserver from 'fontfaceobserver';
+import { App } from 'app';
+import { GameState, StateTitle } from 'app/states';
 import { fadeOut } from 'app/utils/animations';
-import { StateTitle } from 'app/states/StateTitle';
 
 export class StatePreload extends GameState {
   public get name() { return 'preload'; }
@@ -56,6 +56,8 @@ export class StatePreload extends GameState {
       next();
     });
 
+    const fontLoad = new FontFaceObserver('Unibody8Pro').load();
+
     loader.load((_: any, resources: Record<string, loaders.Resource>) => {
       loader.onProgress.detach(progressHandler);
 
@@ -67,7 +69,7 @@ export class StatePreload extends GameState {
         }
       }
 
-      fadeOut(this.root).subscribe(() => App.instance.topState(new StateTitle()));
+      fontLoad.then(() => fadeOut(this.root).subscribe(() => App.instance.topState(new StateTitle())));
     });
   }
 }

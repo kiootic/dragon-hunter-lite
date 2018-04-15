@@ -1,5 +1,7 @@
 import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
-import { GameState } from 'app/states/GameState';
+import { GameState } from 'app/states';
+
+export const ScaleFactor = 4;
 
 export class App extends Application {
   private constructor() {
