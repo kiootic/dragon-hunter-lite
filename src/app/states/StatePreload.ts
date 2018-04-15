@@ -19,13 +19,13 @@ export class StatePreload extends GameState {
     this.root.addChild(this.loadingText);
   }
 
+  enter() {
+    this.run();
+  }
+
   update() {
     this.loadingText.x = (App.instance.screen.width - this.loadingText.width) / 2;
     this.loadingText.y = (App.instance.screen.height - this.loadingText.height) / 2;
-  }
-
-  enter() {
-    this.run();
   }
 
   private run() {

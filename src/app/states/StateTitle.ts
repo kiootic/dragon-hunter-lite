@@ -19,7 +19,9 @@ export class StateTitle extends GameState {
     this.root.addChild(this.playButton);
     this.playButton.content.addChild(this.playText);
     this.playButton.on(Button.Clicked, this.start.bind(this));
+  }
 
+  enter() {
     this.root.alpha = 0;
     fadeIn(this.root).subscribe();
   }

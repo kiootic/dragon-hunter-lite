@@ -13,12 +13,18 @@ export class StateMain extends GameState {
     super();
     this.game = new Game();
     this.root.addChild(this.game.view);
+  }
 
+  enter() {
     this.root.alpha = 0;
     fadeIn(this.root).subscribe();
   }
 
   update(dt: number) {
     this.game.update(dt);
+  }
+
+  leave() {
+    this.game.dispose();
   }
 }
