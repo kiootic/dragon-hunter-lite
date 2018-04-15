@@ -1,6 +1,7 @@
 import { Container, loaders, Sprite, Texture } from 'pixi.js';
 import { App } from 'app';
 import { GameState } from 'app/states/GameState';
+import { StateMain } from 'app/states/StateMain';
 import { fadeOut, fadeIn } from 'app/utils/animations';
 import { Button, Text } from 'app/components';
 
@@ -17,6 +18,7 @@ export class StateTitle extends GameState {
     this.root.addChild(this.logo);
     this.root.addChild(this.playButton);
     this.playButton.content.addChild(this.playText);
+    this.playButton.on(Button.Clicked, this.start.bind(this));
 
     this.root.alpha = 0;
     fadeIn(this.root).subscribe();
@@ -34,5 +36,9 @@ export class StateTitle extends GameState {
     this.playText.x = 0;
     this.playText.y = 0;
     this.playText.layout(this.playButton.contentWidth, this.playButton.contentHeight);
+  }
+
+  start() {
+    fadeOut(this.root).subscribe(() => App.instance.topState(new StateMain()));
   }
 }

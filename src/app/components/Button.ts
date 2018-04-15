@@ -3,6 +3,8 @@ import { times } from 'lodash';
 import { ScaleFactor } from 'app';
 
 export class Button extends Container {
+  public static readonly Clicked = 'button.clicked';
+
   public readonly content = new Container();
   private texNormal = Texture.fromFrame('sprites/ui/button-normal');
   private texPressed = Texture.fromFrame('sprites/ui/button-pressed');
@@ -28,8 +30,11 @@ export class Button extends Container {
     this.buttonMode = true;
 
     this.on('pointerdown', () => this.updateState(true));
-    this.on('pointerup', () => this.updateState(false));
     this.on('pointerupoutside', () => this.updateState(false));
+    this.on('pointerup', () => {
+      this.updateState(false);
+      this.emit(Button.Clicked);
+    });
   }
 
   public layout(width: number, height: number) {

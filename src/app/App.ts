@@ -13,7 +13,7 @@ export class App extends Application {
     this.view.oncontextmenu = event => event.preventDefault();
 
     settings.SCALE_MODE = SCALE_MODES.NEAREST;
-    this.ticker.add(dt => this.state && this.state.update());
+    this.ticker.add(dt => this.state && this.state.update(dt));
   }
 
   private static _instance: App;

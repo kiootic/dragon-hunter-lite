@@ -10,5 +10,5 @@ export abstract class GameState {
   public resume()  { }
   public leave()  { }
 
-  public update() { }
+  public update(dt: number) { }
 }
