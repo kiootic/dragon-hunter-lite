@@ -4,6 +4,7 @@ import { GameState } from 'app/states/GameState';
 import { StateMain } from 'app/states/StateMain';
 import { fadeOut, fadeIn } from 'app/utils/animations';
 import { Button, Text } from 'app/components';
+import { Generator } from 'app/game/map/Generator';
 
 export class StateTitle extends GameState {
   public get name() { return 'title'; }
@@ -41,6 +42,7 @@ export class StateTitle extends GameState {
   }
 
   start() {
+    new Generator(1024, 1024).generate();
     fadeOut(this.root).subscribe(() => App.instance.topState(new StateMain()));
   }
 }
