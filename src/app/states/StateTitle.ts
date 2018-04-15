@@ -42,7 +42,7 @@ export class StateTitle extends GameState {
   }
 
   start() {
-    new Generator(1024, 1024).generate();
+    new Generator(2048, 2048).generate();
     fadeOut(this.root).subscribe(() => App.instance.topState(new StateMain()));
   }
 }

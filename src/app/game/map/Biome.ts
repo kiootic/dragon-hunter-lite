@@ -9,8 +9,8 @@ export interface Biome {
 export namespace Biome {
   export enum Type {
     None,
-    Desert,
     Barren,
+    Desert,
     Swamp,
     Forest,
     Plain,
