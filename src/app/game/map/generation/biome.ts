@@ -7,9 +7,11 @@ import { Biome } from "app/game/map/Biome";
 import { TileMap } from "app/game/map/TileMap";
 
 const BiomeSize = 32;
-const EdgeSizeRoughness = 8;
-const EdgeJitter = 4;
+const EdgeRoughness = 32;
+const EdgeJitter = 8;
 const WaterRarity = 16;
+const RiverSegments = 16;
+const RiverRoughness = 24;
 
 export interface BiomeMap {
   diagram: VoronoiDiagram<[number, number]>;
@@ -39,9 +41,9 @@ const biomeProps: [Biome.Type, Humidity, Temperature, number][] = [
   [Biome.Type.Taiga, 0.7, 0.25, 1],
   [Biome.Type.Forest, 0.7, 0.75, 1],
 
-  [Biome.Type.FrozenLake, 0.85, 0, 2],
+  [Biome.Type.FrozenLake, 0.8, 0.25, 1],
   [Biome.Type.Lake, 1, 0.5, 1],
-  [Biome.Type.Swamp, 0.85, 1, 2],
+  [Biome.Type.Swamp, 0.8, 0.75, 1],
 ];
 function computeType(humidity: Humidity, temperature: Temperature) {
   let min = 10, type = Biome.Type.None;
@@ -103,7 +105,8 @@ export function generateBiomes(rand: RandomSeed, width: number, height: number):
       const humidity = computeHumidity(x, y);
       const temperature = computeTemp(x, y);
       const biome: Biome = {
-        type: computeType(x / width, y / height),
+        type: computeType(humidity, temperature),
+        //type: computeType(x / width, y / height),
         x, y,
         humidity, temperature
       };
@@ -143,12 +146,21 @@ export function rasterize(biomeMap: BiomeMap, map: TileMap, rand: RandomSeed) {
     for (let x = 0; x < map.width; x++) {
       const roughnessX = noiseX.noise2D(x, y) * 2 - 1;
       const roughnessY = noiseY.noise2D(x, y) * 2 - 1;
-      const px = x + roughnessX * EdgeSizeRoughness + rand.intBetween(-EdgeJitter, EdgeJitter);
-      const py = y + roughnessY * EdgeSizeRoughness + rand.intBetween(-EdgeJitter, EdgeJitter);
+      let px = x + roughnessX * EdgeRoughness;
+      let py = y + roughnessY * EdgeRoughness;
+      const realBiome = biomeMap.biomes[biomeMap.diagram.find(px, py)!.index];
+      px += rand.floatBetween(-EdgeJitter, EdgeJitter);
+      py += rand.floatBetween(-EdgeJitter, EdgeJitter);
+      const renderBiome = biomeMap.biomes[biomeMap.diagram.find(px, py)!.index];
 
-      const site = biomeMap.diagram.find(px, py)!;
+      let biome = renderBiome;
+      if (realBiome.type === Biome.Type.Lake || realBiome.type === Biome.Type.FrozenLake)
+        biome = realBiome;
+      if (renderBiome.type === Biome.Type.Lake || renderBiome.type === Biome.Type.FrozenLake)
+        biome = realBiome;
+
       let type = 0;
-      switch (biomeMap.biomes[site.index].type) {
+      switch (biome.type) {
         case Biome.Type.FrozenBarren: type = 6; break;
         case Biome.Type.Barren: type = 5; break;
         case Biome.Type.Desert: type = 10; break;
@@ -165,14 +177,21 @@ export function rasterize(biomeMap: BiomeMap, map: TileMap, rand: RandomSeed) {
     }
 
   for (const { from, to, level } of biomeMap.rivers) {
-    line(from[0], from[1], to[0], to[1], (x, y) => {
-      x += Math.floor((noiseX.noise2D(x, y) * 2 - 1) * EdgeSizeRoughness);
-      y += Math.floor((noiseY.noise2D(x, y) * 2 - 1) * EdgeSizeRoughness);
-
-      const size = Math.round(level * 4);
-      for (let dy = 0; dy < size; dy++)
-      for (let dx = 0; dx < size; dx++)
-        map.setTile(x + dx, y + dy, 1, 0);
-    });
+    function riverPoint(i: number) {
+      let x = from[0] + (to[0] - from[0]) * (i / RiverSegments);
+      let y = from[1] + (to[1] - from[1]) * (i / RiverSegments);
+      x += Math.floor((noiseX.noise2D(x, y) * 2 - 1) * RiverRoughness);
+      y += Math.floor((noiseY.noise2D(x, y) * 2 - 1) * RiverRoughness);
+      return [x, y];
+    }
+    for (let i = 0; i < RiverSegments; i++) {
+      const from = riverPoint(i), to = riverPoint(i + 1);
+      line(from[0], from[1], to[0], to[1], (x, y) => {
+        const size = Math.round(level * 4);
+        for (let dy = 0; dy < size; dy++)
+          for (let dx = 0; dx < size; dx++)
+            map.setTile(x + dx, y + dy, 1, 0);
+      });
+    }
   }
 }

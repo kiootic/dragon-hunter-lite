@@ -18,6 +18,7 @@ export class Generator {
     rasterize(biomes, this.map, rand);
 
     this.visualize();
+    return this.map;
   }
 
   private visualize() {

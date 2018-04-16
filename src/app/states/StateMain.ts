@@ -3,20 +3,20 @@ import { App } from 'app';
 import { GameState } from 'app/states/GameState';
 import { fadeOut, fadeIn } from 'app/utils/animations';
 import { Game } from 'app/game/Game';
+import { TileMap } from 'app/game/map';
 
 export class StateMain extends GameState {
   public get name() { return 'main'; }
 
-  private readonly game: Game;
+  private readonly game = new Game();
 
-  constructor() {
+  constructor(private readonly map: TileMap)  {
     super();
-    this.game = new Game();
     this.root.addChild(this.game.view);
   }
 
   enter() {
-    this.game.init();
+    this.game.init(this.map);
     this.root.alpha = 0;
     fadeIn(this.root).subscribe();
   }
