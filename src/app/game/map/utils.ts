@@ -52,8 +52,8 @@ export class Noise {
   private readonly noise: OpenSimplexNoise;
   constructor(
     rand: RandomSeed,
-    private readonly freq = 1 / 512,
-    private readonly octaves = 2,
+    private readonly freq = 1 / 256,
+    private readonly octaves = 4,
     private readonly persistence = 0.5
   ) {
     this.noise = new OpenSimplexNoise(rand.random() * 0xffffffff);

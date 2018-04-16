@@ -9,14 +9,16 @@ export interface Biome {
 export namespace Biome {
   export enum Type {
     None,
+    FrozenBarren,
     Barren,
     Desert,
-    Swamp,
-    Forest,
-    Plain,
     SnowPlain,
-    SnowForest,
-    Lake,
+    Savanna,
+    Plain,
+    Taiga,
+    Forest,
     FrozenLake,
+    Lake,
+    Swamp,
   }
 }

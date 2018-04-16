@@ -3,7 +3,7 @@ import { poissonDisk, Noise } from "app/game/map/utils";
 import { generateBiomes, rasterize } from "app/game/map/generation/biome";
 import { App } from "app";
 import OpenSimplexNoise from 'open-simplex-noise';
-import { create } from "random-seed";
+import { create as createRand } from "random-seed";
 
 export class Generator {
   public readonly map: TileMap;
@@ -13,8 +13,9 @@ export class Generator {
   }
 
   public generate() {
-    const { diagram, biomes } = generateBiomes(this.seed, this.map.width, this.map.height);
-    rasterize(diagram, biomes, this.map);
+    const rand = createRand(this.seed);
+    const biomes = generateBiomes(rand, this.map.width, this.map.height);
+    rasterize(biomes, this.map, rand);
 
     this.visualize();
   }
@@ -26,18 +27,19 @@ export class Generator {
     const ctx = canvas.getContext('2d')!;
     const data = ctx.getImageData(0, 0, this.map.width, this.map.height);
 
-    const noise = new Noise(create(''));
+    const noise = new Noise(createRand(''));
     for (let y = 0; y < this.map.height; y++)
       for (let x = 0; x < this.map.width; x++) {
         let color: [number, number, number] = [0, 0, 0];
 
         switch (App.instance.library.terrains[this.map.getTerrain(x, y)].name) {
           case "water": color = [0, 0, 255]; break;
-          case "grass": color = [0, 127, 0]; break;
+          case "deepgrass": color = [0, 127, 0]; break;
           case "lava": color = [255, 0, 0]; break;
           case "stone": color = [127, 127, 127]; break;
           case "ice": color = [200, 200, 255]; break;
-          case "lightgrass": color = [0, 255, 0]; break;
+          case "grass": color = [0, 255, 0]; break;
+          case "lightgrass": color = [100, 200, 110]; break;
           case "mud": color = [110, 40, 0]; break;
           case "snow": color = [220, 220, 220]; break;
           case "sand": color = [200, 180, 100]; break;

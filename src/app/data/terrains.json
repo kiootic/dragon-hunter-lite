@@ -12,37 +12,42 @@
   },
   {
     "id": 3,
+    "name": "deepgrass",
+    "texture": "sprites/terrains/deepgrass"
+  },
+  {
+    "id": 4,
     "name": "lava",
     "texture": "sprites/terrains/lava",
     "passable": false
   },
   {
-    "id": 4,
+    "id": 5,
     "name": "stone",
     "texture": "sprites/terrains/stone"
   },
   {
-    "id": 5,
+    "id": 6,
     "name": "ice",
     "texture": "sprites/terrains/ice"
   },
   {
-    "id": 6,
+    "id": 7,
     "name": "lightgrass",
     "texture": "sprites/terrains/lightgrass"
   },
   {
-    "id": 7,
+    "id": 8,
     "name": "mud",
     "texture": "sprites/terrains/mud"
   },
   {
-    "id": 8,
+    "id": 9,
     "name": "snow",
     "texture": "sprites/terrains/snow"
   },
   {
-    "id": 9,
+    "id": 10,
     "name": "sand",
     "texture": "sprites/terrains/sand"
   }
