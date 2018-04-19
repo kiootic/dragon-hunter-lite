@@ -1,15 +1,14 @@
-import { MapGenerator } from 'worker/mapgen/MapGenerator';
+import { generate } from 'worker/mapgen';
 
 onmessage = ev => {
   console.log('message', ev.data);
   switch (ev.data.action) {
     case 'generate': {
-      const { width, height, seed } = ev.data;
-      const generator = new MapGenerator(width, height, seed);
-      const { map, library } = generator.generate((message, progress) => {
+      const { width, height, seed, library } = ev.data;
+      const map = generate(width, height, seed, library, (message, progress) => {
         postMessage({ action: 'progress', message, progress });
       });
-      postMessage({ action: 'completed', map: map.serialize(), library });
+      postMessage({ action: 'completed', map });
     } break;
 
     default:

@@ -50,5 +50,8 @@ export class App extends Application {
   }
 
   public readonly resources: Record<string, any> = {};
-  public library = DataLibrary.Empty;
+  public library: DataLibrary = {
+    terrains: require('../data/terrains.json'),
+    objects: require('../data/objects.json')
+  };
 }

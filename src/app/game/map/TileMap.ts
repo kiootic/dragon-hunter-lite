@@ -1,3 +1,5 @@
+import { SerializedMap } from "app/game/map/SerializedMap";
+
 export class TileMap {
   private readonly data: Uint16Array;
   private readonly version: Uint8Array;
@@ -7,19 +9,27 @@ export class TileMap {
     this.version = new Uint8Array(width * height);
   }
 
-  public serialize() {
+  public serialize(): SerializedMap {
+    const terrains = new Uint16Array(this.width * this.height);
+    const objects = new Uint16Array(this.width * this.height);
+    for (let i = 0; i < terrains.length; i++) {
+      terrains[i] = this.data[i * 2];
+      objects[i] = this.data[i * 2 + 1];
+    }
     return {
       width: this.width,
       height: this.height,
-      data: this.data,
-      version: this.version
+      terrains, objects
     };
   }
 
-  public static deserialize(data: ReturnType<TileMap['serialize']>) {
+  public static deserialize(data: SerializedMap) {
     const map = new TileMap(data.width, data.height);
-    map.data.set(data.data);
-    map.version.set(data.version);
+    const len = data.width * data.height;
+    for (let i = 0; i < len; i++) {
+      map.data[i * 2] = data.terrains[i];
+      map.data[i * 2 + 1] = data.objects[i];
+    }
     return map;
   }
 

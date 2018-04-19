@@ -1,9 +1,10 @@
+import { vec2 } from "gl-matrix";
+
 export interface Biome {
   type: Biome.Type;
   temperature: number;
   humidity: number;
-  x: number;
-  y: number;
+  position: vec2;
 }
 
 export namespace Biome {

@@ -1,5 +1,6 @@
-import { TileMap } from "app/game/map/TileMap";
-import { DataLibrary } from "app/data";
+import { TileMap } from 'app/game/map/TileMap';
+import { DataLibrary } from 'app/data';
+import { App } from 'app';
 
 export interface ProgressReporter {
   (message: string | null, progress: number): void;
@@ -16,23 +17,24 @@ export class Generator {
 
   }
 
-  public async generate(reporter: ProgressReporter = () => { }) {
-    const [map, library] = await new Promise<[TileMap, DataLibrary]>(resolve => {
+  public async generate(report: ProgressReporter = () => { }) {
+    const map = await new Promise<TileMap>(resolve => {
       this.worker.onmessage = ev => {
         if (ev.data.action === 'completed')
-          resolve([TileMap.deserialize(ev.data.map), ev.data.library]);
+          resolve(TileMap.deserialize(ev.data.map));
         else if (ev.data.action === 'progress')
-          reporter(ev.data.message, ev.data.progress);
+          report(ev.data.message, ev.data.progress);
       };
 
       this.worker.postMessage({
         action: 'generate',
         width: this.width,
         height: this.height,
-        seed: this.seed
+        seed: this.seed,
+        library: App.instance.library
       });
     });
     this.worker.terminate();
-    return { map, library };
+    return map;
   }
 }

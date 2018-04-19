@@ -1,7 +1,7 @@
-import { Task } from "app/game/Task";
-import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES } from "pixi.js";
-import { App, UIScaleFactor } from "app";
-import { vec2 } from "gl-matrix";
+import { Task } from 'app/game/Task';
+import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES } from 'pixi.js';
+import { App, UIScaleFactor } from 'app';
+import { vec2 } from 'gl-matrix';
 
 export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();

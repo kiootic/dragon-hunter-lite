@@ -1,14 +1,7 @@
-import { Terrain } from 'app/data/Terrain';
-import { TileObject } from 'app/data/TileObject';
+import { Terrain } from './Terrain';
+import { TileObject } from './TileObject';
 
 export interface DataLibrary {
   readonly terrains: Terrain[];
   readonly objects: TileObject[];
-}
-
-export namespace DataLibrary {
-  export const Empty: DataLibrary = {
-    terrains: [],
-    objects: [],
-  };
 }
