@@ -71,6 +71,14 @@ export class MapData {
       return this.objects[index];
   }
 
+  public getBiomeIndex(x: number, y: number) {
+    const index = this.toIndex(x, y);
+    if (index < 0)
+      return 0;
+    else
+      return this.tileBiomes[index];
+  }
+
   public setTerrain(x: number, y: number, terrainName: string | null) {
     const index = this.toIndex(x, y);
     if (index < 0)
@@ -85,5 +93,13 @@ export class MapData {
       return;
 
     this.terrains[index] = objectName ? this.objectLookup[objectName] : 0;
+  }
+
+  public setBiomeIndex(x: number, y: number, biomeIndex: number) {
+    const index = this.toIndex(x, y);
+    if (index < 0)
+      return;
+
+    this.tileBiomes[index] = biomeIndex;
   }
 }

@@ -17,7 +17,8 @@ function generateBiomePolygons(map: MapData) {
   const diagram = voronoi()(biomeCenters);
 
   map.voronoi = diagram;
-  map.biomes = biomeCenters.map<Biome>(([x, y]) => ({
+  map.biomes = biomeCenters.map<Biome>(([x, y], i) => ({
+    index: i,
     type: Biome.Type.None,
     position: vec2.fromValues(x, y),
     humidity: 0, temperature: 0
@@ -132,6 +133,7 @@ function rasterizeBiomes(map: MapData, report: ProgressReporter) {
         case Biome.Type.Swamp: terrain = 'mud'; break;
       }
       map.setTerrain(x, y, terrain);
+      map.setBiomeIndex(x, y, realBiome.index);
     }
     report(null, y / map.height);
   }
