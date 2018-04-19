@@ -1,5 +1,4 @@
-import { Container, Sprite, Texture, mesh, Point } from 'pixi.js';
-import { times } from 'lodash';
+import { Container, Texture, mesh, Point } from 'pixi.js';
 import { UIScaleFactor } from 'app';
 
 export class Button extends Container {

@@ -1,12 +1,17 @@
 import { SerializedMap } from "app/game/map/SerializedMap";
+import { Subject } from "rxjs/Subject";
+
+export interface MapChange {
+  x: number;
+  y: number
+}
 
 export class TileMap {
   private readonly data: Uint16Array;
-  private readonly version: Uint8Array;
+  public readonly changes$ = new Subject<MapChange>();
 
   constructor(public readonly width: number, public readonly height: number) {
     this.data = new Uint16Array(width * height * 2);
-    this.version = new Uint8Array(width * height);
   }
 
   public serialize(): SerializedMap {
@@ -54,14 +59,6 @@ export class TileMap {
       return this.data[index * 2 + 1];
   }
 
-  public getVersion(x: number, y: number) {
-    const index = this.toIndex(x, y);
-    if (index < 0)
-      return 0;
-    else
-      return this.version[index];
-  }
-
   public setTile(x: number, y: number, terrain: number, object: number) {
     const index = this.toIndex(x, y);
     if (index < 0)
@@ -69,6 +66,6 @@ export class TileMap {
 
     this.data[index * 2] = terrain;
     this.data[index * 2 + 1] = object;
-    this.version[index]++;
+    this.changes$.next({ x, y });
   }
 }

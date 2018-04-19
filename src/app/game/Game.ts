@@ -4,6 +4,7 @@ import { Keyboard } from 'app/utils/Keyboard';
 import { Task } from 'app/game/Task';
 import { TileMap } from 'app/game/map/TileMap';
 import { TerrainDisplayTask, ObjectDisplayTask } from 'app/game/tasks';
+import { MiniMapTask } from 'app/game/tasks/MiniMapTask';
 
 export class Game {
   public readonly view = new GameView(this);
@@ -15,6 +16,7 @@ export class Game {
 
     this.addTask(TerrainDisplayTask);
     this.addTask(ObjectDisplayTask);
+    this.addTask(MiniMapTask);
   }
 
   public update(dt: number) {
