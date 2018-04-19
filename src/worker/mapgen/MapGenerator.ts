@@ -24,7 +24,8 @@ export class MapGenerator {
 
     return {
       map: this.map, library: {
-        terrains: require('../../data/terrains.json')
+        terrains: require('../../data/terrains.json'),
+        objects: require('../../data/objects.json')
       }
     };
   }

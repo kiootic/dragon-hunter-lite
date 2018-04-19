@@ -3,7 +3,7 @@ import { App } from 'app';
 import { Keyboard } from 'app/utils/Keyboard';
 import { Task } from 'app/game/Task';
 import { TileMap } from 'app/game/map/TileMap';
-import { TerrainDisplayTask } from 'app/game/tasks';
+import { TerrainDisplayTask, ObjectDisplayTask } from 'app/game/tasks';
 
 export class Game {
   public readonly view = new GameView(this);
@@ -14,6 +14,7 @@ export class Game {
     this.map = map;
 
     this.addTask(TerrainDisplayTask);
+    this.addTask(ObjectDisplayTask);
   }
 
   public update(dt: number) {
