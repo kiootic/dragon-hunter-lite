@@ -12,6 +12,7 @@ export class Button extends Container {
   private plane = new mesh.NineSlicePlane(this.texNormal, 6, 6, 6, 6);
   private isPressed = false;
   private updateState(pressed: boolean) {
+    if (!this._isEnabled) pressed = false;
     this.isPressed = pressed;
     this.plane.texture = pressed ? this.texPressed : this.texNormal;
   }
@@ -20,6 +21,18 @@ export class Button extends Container {
   private _contentHeight = 0;
   public get contentWidth() { return this._contentWidth; }
   public get contentHeight() { return this._contentHeight; }
+
+  private _isEnabled = true;
+  public get isEnabled() { return this._isEnabled; }
+  public set isEnabled(value: boolean) {
+    this._isEnabled = value;
+    this.updateState(false);
+    if (!value) {
+      this.alpha = 0.5;
+    } else {
+      this.alpha = 1;
+    }
+  }
 
   constructor() {
     super();
@@ -33,7 +46,8 @@ export class Button extends Container {
     this.on('pointerupoutside', () => this.updateState(false));
     this.on('pointerup', () => {
       this.updateState(false);
-      this.emit(Button.Clicked);
+      if (this._isEnabled)
+        this.emit(Button.Clicked);
     });
   }
 

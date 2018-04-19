@@ -55,11 +55,13 @@ export class StateTitle extends GameState {
   }
 
   async start() {
+    this.playButton.isEnabled = false;
     const { map, library } = await new Generator(2048, 2048, '1').generate((message, progress) => {
       if (message)
         this.loadMessage.text = message;
       this.loadBar.width = (App.instance.screen.width / 2) * progress;
     });
+
     App.instance.library = library;
     fadeOut(this.root).subscribe(() => App.instance.topState(new StateMain(map)));
   }
