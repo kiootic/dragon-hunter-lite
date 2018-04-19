@@ -1,5 +1,5 @@
 import { Container, Text as PixiText, TextStyleOptions, Point } from 'pixi.js';
-import { ScaleFactor } from 'app';
+import { UIScaleFactor } from 'app';
 
 export class Text extends Container {
   private _text: PixiText;
@@ -7,7 +7,7 @@ export class Text extends Container {
   public set text(value: string) { this._text.text = value; }
   public get style() { return this._text.style; }
 
-  constructor(text?: string, style?: TextStyleOptions) {
+  constructor(text?: string, style?: TextStyleOptions & { scale?: number }) {
     super();
     this._text = new PixiText(text, {
       fontFamily: 'Unibody8Pro',
@@ -15,9 +15,11 @@ export class Text extends Container {
       fill: 'white',
       align: 'center',
       ...style
-    });
-    this._text.scale = new Point(ScaleFactor, ScaleFactor);
+    } as TextStyleOptions);
     this.addChild(this._text);
+
+    const scale = style && style.scale || UIScaleFactor;
+    this._text.scale = new Point(scale, scale);
   }
 
   public layout(width: number, height: number) {

@@ -1,10 +1,11 @@
-import { poissonDisk, Noise } from "app/game/map/utils";
-import { RandomSeed, create as createRand } from "random-seed";
+import { poissonDisk, rasterizeLine, Noise } from 'worker/mapgen/utils';
+import { RandomSeed, create as createRand } from 'random-seed';
 import { voronoi, VoronoiDiagram } from 'd3-voronoi';
 import OpenSimplexNoise from "open-simplex-noise";
-import { vec2 } from "gl-matrix";
-import { Biome } from "app/game/map/Biome";
-import { TileMap } from "app/game/map/TileMap";
+import { vec2 } from 'gl-matrix';
+import { Biome } from 'worker/map/Biome';
+import { TileMap } from 'worker/map/TileMap';
+import { ProgressReporter } from 'worker/mapgen/MapGenerator';
 
 const BiomeSize = 32;
 const EdgeRoughness = 32;
@@ -106,7 +107,6 @@ export function generateBiomes(rand: RandomSeed, width: number, height: number):
       const temperature = computeTemp(x, y);
       const biome: Biome = {
         type: computeType(humidity, temperature),
-        //type: computeType(x / width, y / height),
         x, y,
         humidity, temperature
       };
@@ -117,32 +117,11 @@ export function generateBiomes(rand: RandomSeed, width: number, height: number):
   };
 }
 
-function line(x0: number, y0: number, x1: number, y1: number, cb: (x: number, y: number) => void) {
-  x0 = Math.floor(x0); y0 = Math.floor(y0);
-  x1 = Math.floor(x1); y1 = Math.floor(y1);
-
-  const dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
-  const sx = Math.sign(x1 - x0), sy = Math.sign(y1 - y0);
-  let err = dx - dy;
-  cb(x0, y0);
-  while (x0 !== x1 || y0 !== y1) {
-    const e2 = 2 * err;
-    if (e2 > -dy) {
-      err -= dy;
-      x0 += sx;
-    } else {
-      err += dx;
-      y0 += sy;
-    }
-    cb(x0, y0);
-  }
-}
-
-export function rasterize(biomeMap: BiomeMap, map: TileMap, rand: RandomSeed) {
+export function rasterize(biomeMap: BiomeMap, map: TileMap, rand: RandomSeed, reporter: ProgressReporter) {
   const noiseX = new Noise(rand, 1 / 32, 4);
   const noiseY = new Noise(rand, 1 / 32, 4);
 
-  for (let y = 0; y < map.height; y++)
+  for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       const roughnessX = noiseX.noise2D(x, y) * 2 - 1;
       const roughnessY = noiseY.noise2D(x, y) * 2 - 1;
@@ -173,8 +152,10 @@ export function rasterize(biomeMap: BiomeMap, map: TileMap, rand: RandomSeed) {
         case Biome.Type.Lake: type = 1; break;
         case Biome.Type.Swamp: type = 8; break;
       }
-      map.setTile(x, y, type, 0);
+      map.setTile(x, y, type, 1);
     }
+    reporter(null, y / map.height);
+  }
 
   for (const { from, to, level } of biomeMap.rivers) {
     function riverPoint(i: number) {
@@ -186,7 +167,7 @@ export function rasterize(biomeMap: BiomeMap, map: TileMap, rand: RandomSeed) {
     }
     for (let i = 0; i < RiverSegments; i++) {
       const from = riverPoint(i), to = riverPoint(i + 1);
-      line(from[0], from[1], to[0], to[1], (x, y) => {
+      rasterizeLine(from[0], from[1], to[0], to[1], (x, y) => {
         const size = Math.round(level * 4);
         for (let dy = 0; dy < size; dy++)
           for (let dx = 0; dx < size; dx++)

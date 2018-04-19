@@ -7,6 +7,22 @@ export class TileMap {
     this.version = new Uint8Array(width * height);
   }
 
+  public serialize() {
+    return {
+      width: this.width,
+      height: this.height,
+      data: this.data,
+      version: this.version
+    };
+  }
+
+  public static deserialize(data: ReturnType<TileMap['serialize']>) {
+    const map = new TileMap(data.width, data.height);
+    map.data.set(data.data);
+    map.version.set(data.version);
+    return map;
+  }
+
   private toIndex(x: number, y: number): number {
     return x >= 0 && x < this.width && y >= 0 && y < this.height ?
       (x + this.width * y) : -1;

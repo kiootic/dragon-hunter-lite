@@ -10,10 +10,10 @@
       "scripthost"
     ],
     "types": [],
-    "baseUrl": ".",
+    "baseUrl": "../..",
     "paths": {
       "worker/*": [
-        "worker/*"
+        "src/worker/*"
       ]
     }
   }

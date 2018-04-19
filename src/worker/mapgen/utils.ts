@@ -1,5 +1,5 @@
 import { RandomSeed } from 'random-seed';
-import OpenSimplexNoise from 'open-simplex-noise';
+import OpenSimplexNoise from './simplex';
 
 export function poissonDisk(width: number, height: number, radius: number, rand: RandomSeed) {
   // http://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
@@ -46,6 +46,27 @@ export function poissonDisk(width: number, height: number, radius: number, rand:
   }
 
   return samples;
+}
+
+export function rasterizeLine(x0: number, y0: number, x1: number, y1: number, cb: (x: number, y: number) => void) {
+  x0 = Math.floor(x0); y0 = Math.floor(y0);
+  x1 = Math.floor(x1); y1 = Math.floor(y1);
+
+  const dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+  const sx = Math.sign(x1 - x0), sy = Math.sign(y1 - y0);
+  let err = dx - dy;
+  cb(x0, y0);
+  while (x0 !== x1 || y0 !== y1) {
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x0 += sx;
+    } else {
+      err += dx;
+      y0 += sy;
+    }
+    cb(x0, y0);
+  }
 }
 
 export class Noise {

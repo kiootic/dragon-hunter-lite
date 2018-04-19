@@ -1,0 +1,41 @@
+[
+  null,
+  {
+    "id": 1,
+    "name": "stone",
+    "texture": "sprites/objects/stone",
+    "obstacle": true
+  },
+  {
+    "id": 2,
+    "name": "rocks",
+    "texture": "sprites/objects/rocks",
+    "terrain": true
+  },
+  {
+    "id": 3,
+    "name": "bush",
+    "texture": "sprites/objects/bush"
+  },
+  {
+    "id": 4,
+    "name": "cactus",
+    "texture": "sprites/objects/cactus",
+    "obstacle": true
+  },
+  {
+    "id": 5,
+    "name": "grass-1",
+    "texture": "sprites/objects/grass-1"
+  },
+  {
+    "id": 6,
+    "name": "grass-2",
+    "texture": "sprites/objects/grass-2"
+  },
+  {
+    "id": 7,
+    "name": "grass-3",
+    "texture": "sprites/objects/grass-3"
+  }
+]

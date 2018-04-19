@@ -1,7 +1,11 @@
 import { Terrain } from 'app/data/Terrain';
 
-const terrains = require('./terrains.json');
+export interface DataLibrary {
+  readonly terrains: Terrain[];
+}
 
-export class DataLibrary {
-  public readonly terrains: Terrain[] = require('./terrains.json');
+export namespace DataLibrary {
+  export const Empty: DataLibrary = {
+    terrains: []
+  };
 }

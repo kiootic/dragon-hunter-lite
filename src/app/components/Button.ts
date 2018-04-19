@@ -1,6 +1,6 @@
 import { Container, Sprite, Texture, mesh, Point } from 'pixi.js';
 import { times } from 'lodash';
-import { ScaleFactor } from 'app';
+import { UIScaleFactor } from 'app';
 
 export class Button extends Container {
   public static readonly Clicked = 'button.clicked';
@@ -25,7 +25,7 @@ export class Button extends Container {
     super();
     this.addChild(this.plane);
     this.addChild(this.content);
-    this.plane.scale = new Point(ScaleFactor, ScaleFactor);
+    this.plane.scale = new Point(UIScaleFactor, UIScaleFactor);
     this.interactive = true;
     this.buttonMode = true;
 
@@ -40,19 +40,19 @@ export class Button extends Container {
   public layout(width: number, height: number) {
     this.plane.x = 0;
     this.plane.y = 0;
-    this.plane.width = width / ScaleFactor;
-    this.plane.height = height / ScaleFactor;
+    this.plane.width = width / UIScaleFactor;
+    this.plane.height = height / UIScaleFactor;
 
     if (this.isPressed) {
-      this.content.x = ScaleFactor;
-      this.content.y = ScaleFactor;
-      this._contentWidth = width - ScaleFactor;
-      this._contentHeight = height - ScaleFactor;
+      this.content.x = UIScaleFactor;
+      this.content.y = UIScaleFactor;
+      this._contentWidth = width - UIScaleFactor;
+      this._contentHeight = height - UIScaleFactor;
     } else {
       this.content.x = 0;
       this.content.y = 0;
-      this._contentWidth = width - ScaleFactor;
-      this._contentHeight = height - ScaleFactor;
+      this._contentWidth = width - UIScaleFactor;
+      this._contentHeight = height - UIScaleFactor;
     }
   }
 }

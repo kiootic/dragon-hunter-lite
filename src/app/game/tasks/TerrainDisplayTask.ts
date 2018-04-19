@@ -1,6 +1,6 @@
 import { Task } from "app/game/Task";
 import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES } from "pixi.js";
-import { App, ScaleFactor } from "app";
+import { App, UIScaleFactor } from "app";
 import { vec2 } from "gl-matrix";
 
 export class TerrainDisplayTask extends Task {
@@ -34,7 +34,7 @@ export class TerrainDisplayTask extends Task {
     }
 
     const map = this.game.map;
-    const scale = 16 * ScaleFactor;
+    const scale = 16 * UIScaleFactor;
     const left = Math.max(0, Math.floor((x - r) / scale));
     const right = Math.min(map.width - 1, Math.ceil((x + r) / scale));
     const top = Math.max(0, Math.floor((y - r) / scale));
@@ -57,7 +57,7 @@ export class TerrainDisplayTask extends Task {
         const sprite = new Sprite(Texture.fromFrame(terrain.texture));
         sprite.x = tx;
         sprite.y = ty;
-        sprite.scale = new Point(ScaleFactor, ScaleFactor);
+        sprite.scale = new Point(UIScaleFactor, UIScaleFactor);
         this.container.addChild(sprite);
         this.sprites.set(key, sprite);
       }
