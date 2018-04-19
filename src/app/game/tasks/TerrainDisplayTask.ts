@@ -1,12 +1,12 @@
 import { Task } from 'app/game/Task';
-import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES } from 'pixi.js';
+import { Sprite, Texture, Point, Container, RenderTexture, SCALE_MODES } from 'pixi.js';
 import { App, UIScaleFactor } from 'app';
 import { vec2 } from 'gl-matrix';
 
 export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();
   private readonly container = new Container();
-  private readonly renderTex = new RenderTexture(new BaseRenderTexture(1, 1, SCALE_MODES.NEAREST));
+  private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
   private readonly view = new Sprite(this.renderTex);
 
   public update(dt: number) {
@@ -76,7 +76,7 @@ export class TerrainDisplayTask extends Task {
     }
     this.container.setTransform(-minX, -minY);
 
-    const length = 1 << (32 - Math.clz32(r * 2 - 1));
+    const length = 1 << (32 - Math.clz32(r - 1));
     this.renderTex.resize(length, length);
     App.instance.renderer.render(this.container, this.renderTex);
     this.view.setTransform((minX - x), (minY - y));
