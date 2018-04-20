@@ -18,10 +18,10 @@ export class GameView extends Container {
   private offsetY = 0;
 
   public layout(width: number, height: number) {
-    if (this.game.keyboard.isDown('a')) this.offsetX -= 10;
-    if (this.game.keyboard.isDown('d')) this.offsetX += 10;
-    if (this.game.keyboard.isDown('w')) this.offsetY -= 10;
-    if (this.game.keyboard.isDown('s')) this.offsetY += 10;
+    if (this.game.keyboard.isDown('a')) this.offsetX -= 100;
+    if (this.game.keyboard.isDown('d')) this.offsetX += 100;
+    if (this.game.keyboard.isDown('w')) this.offsetY -= 100;
+    if (this.game.keyboard.isDown('s')) this.offsetY += 100;
     this.camera.x = 0;
     this.camera.y = 0;
     this.camera.layout(this.offsetX, this.offsetY, width, height);

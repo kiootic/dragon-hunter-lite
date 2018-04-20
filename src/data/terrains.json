@@ -66,5 +66,11 @@
     "name": "deepwater",
     "texture": "sprites/terrains/deepwater",
     "color": "ff061166"
+  },
+  {
+    "id": 12,
+    "name": "soil",
+    "texture": "sprites/terrains/soil",
+    "color": "ff96685a"
   }
 ]
