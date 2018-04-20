@@ -1,5 +1,5 @@
-import { SerializedMap } from "app/game/map/SerializedMap";
-import { Subject } from "rxjs/Subject";
+import { SerializedMap } from 'app/game/map/SerializedMap';
+import { Subject } from 'rxjs/Subject';
 
 export interface MapChange {
   x: number;

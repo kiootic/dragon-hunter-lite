@@ -60,5 +60,11 @@
     "name": "sand",
     "texture": "sprites/terrains/sand",
     "color": "ffeec39a"
+  },
+  {
+    "id": 11,
+    "name": "deepwater",
+    "texture": "sprites/terrains/deepwater",
+    "color": "ff061166"
   }
 ]

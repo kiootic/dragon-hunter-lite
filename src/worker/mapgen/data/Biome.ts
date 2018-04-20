@@ -1,11 +1,14 @@
-import { vec2 } from "gl-matrix";
+import { vec2 } from 'gl-matrix';
 
 export interface Biome {
   index: number;
   type: Biome.Type;
   temperature: number;
   humidity: number;
+
   position: vec2;
+  min: vec2;
+  max: vec2;
 }
 
 export namespace Biome {
@@ -23,10 +26,12 @@ export namespace Biome {
     Lake,
     Swamp,
   }
-  export enum SubType {
+  export enum Feature {
     None,
     Pond,
     Floral,
     Oasis,
+    Camp,
+    Ruins,
   }
 }

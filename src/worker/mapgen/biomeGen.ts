@@ -21,6 +21,7 @@ function generateBiomePolygons(map: MapData) {
     index: i,
     type: Biome.Type.None,
     position: vec2.fromValues(x, y),
+    min: vec2.fromValues(map.width - 1, map.height - 1), max: vec2.fromValues(0, 0),
     humidity: 0, temperature: 0
   }));
 }
@@ -56,6 +57,7 @@ function generateHumidity(map: MapData) {
       if (h > biome.humidity) biome.humidity = h;
     }
   }
+  map.rivers = rivers;
 }
 
 function generateTemperature(map: MapData) {
@@ -134,6 +136,10 @@ function rasterizeBiomes(map: MapData, report: ProgressReporter) {
       }
       map.setTerrain(x, y, terrain);
       map.setBiomeIndex(x, y, realBiome.index);
+      realBiome.min[0] = Math.min(realBiome.min[0], x);
+      realBiome.min[1] = Math.min(realBiome.min[1], y);
+      realBiome.max[0] = Math.max(realBiome.max[0], x);
+      realBiome.max[1] = Math.max(realBiome.max[1], y);
     }
     report(null, y / map.height);
   }
@@ -165,5 +171,4 @@ export function generateBiomes(map: MapData, report: ProgressReporter) {
   generateTemperature(map);
   populateBiomeTypes(map);
   rasterizeBiomes(map, report);
-  report('done!', 1);
 }
