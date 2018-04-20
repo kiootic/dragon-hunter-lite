@@ -15,25 +15,32 @@ module.exports = [{
   },
   devtool: 'inline-source-map',
   module: {
-    rules: [{
-      test: /\.ts$/,
-      use: 'ts-loader',
-      exclude: /node_modules/
-    }, {
-      include: [
-        path.resolve(__dirname, 'assets')
-      ],
-      use: {
-        loader: 'file-loader',
-        options: { name: 'assets/[hash].[ext]' }
+    rules: [
+      {
+        test: /\.ts$/,
+        enforce: 'pre',
+        loader: 'tslint-loader',
+        options: { configFile: 'tslint.json', emitErrors: true, failOnHint: true }
+      }, {
+        test: /\.ts$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }, {
+        include: [
+          path.resolve(__dirname, 'assets')
+        ],
+        use: {
+          loader: 'file-loader',
+          options: { name: 'assets/[hash].[ext]' }
+        }
+      }, {
+        test: /index\.html$/,
+        use: {
+          loader: 'file-loader',
+          options: { name: '[path][name].[ext]' }
+        }
       }
-    }, {
-      test: /index\.html$/,
-      use: {
-        loader: 'file-loader',
-        options: { name: '[path][name].[ext]' }
-      }
-    }]
+    ]
   },
   resolve: {
     extensions: ['.ts', '.js'],
@@ -58,11 +65,18 @@ module.exports = [{
   },
   devtool: 'inline-source-map',
   module: {
-    rules: [{
-      test: /\.ts$/,
-      use: 'ts-loader',
-      exclude: /node_modules/
-    }]
+    rules: [
+      {
+        test: /\.ts$/,
+        enforce: 'pre',
+        loader: 'tslint-loader',
+        options: { configFile: 'tslint.json', emitErrors: true, failOnHint: true }
+      }, {
+        test: /\.ts$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
+    ]
   },
   resolve: {
     extensions: ['.ts', '.js'],
