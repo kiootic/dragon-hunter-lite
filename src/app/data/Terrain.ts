@@ -1,6 +1,8 @@
+import { TextureDef } from './TextureDef';
+
 export interface Terrain {
   id: number;
   name: string;
-  texture: string;
+  texture: TextureDef;
   color: string;
 }

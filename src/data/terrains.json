@@ -4,73 +4,113 @@
     "id": 1,
     "name": "water",
     "texture": "sprites/terrains/water",
-    "color": "ff0d27ff"
+    "color": "ff235c7c"
   },
   {
     "id": 2,
     "name": "grass",
-    "texture": "sprites/terrains/grass",
-    "color": "ff53a800"
+    "texture": {
+      "type": "random",
+      "texs": [
+        "sprites/terrains/grass-1",
+        "sprites/terrains/grass-2",
+        "sprites/terrains/grass-3"
+      ],
+      "tint": "00ff00"
+    },
+    "color": "ff51a01e"
   },
   {
     "id": 3,
-    "name": "deepgrass",
-    "texture": "sprites/terrains/deepgrass",
-    "color": "ff1f400f"
+    "name": "grass-deep",
+    "texture": {
+      "type": "random",
+      "texs": [
+        "sprites/terrains/grass-1",
+        "sprites/terrains/grass-2",
+        "sprites/terrains/grass-3"
+      ],
+      "tint": "00cc00"
+    },
+    "color": "ff316112"
   },
   {
     "id": 4,
-    "name": "lava",
-    "texture": "sprites/terrains/lava",
-    "passable": false,
-    "color": "ffde412f"
+    "name": "grass-light",
+    "texture": {
+      "type": "random",
+      "texs": [
+        "sprites/terrains/grass-1",
+        "sprites/terrains/grass-2",
+        "sprites/terrains/grass-3"
+      ],
+      "tint": "aaffaa"
+    },
+    "color": "ff487f61"
   },
   {
     "id": 5,
-    "name": "stone",
-    "texture": "sprites/terrains/stone",
-    "color": "ff404040"
+    "name": "lava",
+    "texture": "sprites/terrains/lava",
+    "passable": false,
+    "color": "ff8b1408"
   },
   {
     "id": 6,
-    "name": "ice",
-    "texture": "sprites/terrains/ice",
-    "color": "ff8ee4f6"
+    "name": "stone",
+    "texture": {
+      "type": "random",
+      "texs": [
+        "sprites/terrains/stone-1",
+        "sprites/terrains/stone-2",
+        "sprites/terrains/stone-3"
+      ],
+      "tint": "404040"
+    },
+    "color": "ff514845"
   },
   {
     "id": 7,
-    "name": "lightgrass",
-    "texture": "sprites/terrains/lightgrass",
-    "color": "ff5ccc76"
+    "name": "ice",
+    "texture": "sprites/terrains/ice",
+    "color": "ffaad0e7"
   },
   {
     "id": 8,
     "name": "mud",
     "texture": "sprites/terrains/mud",
-    "color": "ff572413"
+    "color": "ff6d584b"
   },
   {
     "id": 9,
     "name": "snow",
     "texture": "sprites/terrains/snow",
-    "color": "ffe0faff"
+    "color": "ffe0e9ee"
   },
   {
     "id": 10,
     "name": "sand",
-    "texture": "sprites/terrains/sand",
-    "color": "ffeec39a"
+    "texture": {
+      "type": "random",
+      "texs": [
+        "sprites/terrains/sand-1",
+        "sprites/terrains/sand-2",
+        "sprites/terrains/sand-3"
+      ]
+    },
+    "color": "ffe2bf90"
   },
   {
     "id": 11,
-    "name": "deepwater",
-    "texture": "sprites/terrains/deepwater",
-    "color": "ff061166"
-  },
-  {
-    "id": 12,
     "name": "soil",
-    "texture": "sprites/terrains/soil",
-    "color": "ff96685a"
+    "texture": {
+      "type": "random",
+      "texs": [
+        "sprites/terrains/soil-1",
+        "sprites/terrains/soil-2",
+        "sprites/terrains/soil-3"
+      ]
+    },
+    "color": "ff846b5c"
   }
 ]

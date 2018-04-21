@@ -1,7 +1,8 @@
-import { Task } from 'app/game/Task';
 import { Sprite, Texture, Point, Container, RenderTexture, SCALE_MODES } from 'pixi.js';
-import { App, UIScaleFactor } from 'app';
 import { vec2 } from 'gl-matrix';
+import { App, UIScaleFactor } from 'app';
+import { Task } from 'app/game/Task';
+import { TextureSprite } from 'app/game/tasks/TextureSprite';
 
 export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();
@@ -54,7 +55,7 @@ export class TerrainDisplayTask extends Task {
         const key = `${x}:${y}`;
         if (this.sprites.has(key)) continue;
 
-        const sprite = new Sprite(Texture.fromFrame(terrain.texture));
+        const sprite = new TextureSprite(terrain.texture, x + y * map.width);
         sprite.x = tx;
         sprite.y = ty;
         sprite.scale = new Point(UIScaleFactor, UIScaleFactor);

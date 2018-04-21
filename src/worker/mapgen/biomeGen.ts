@@ -123,13 +123,13 @@ function rasterizeBiomes(map: MapData, report: ProgressReporter) {
       let terrain: string | null = null;
       switch (biome.type) {
         case Biome.Type.FrozenBarren: terrain = 'snow'; break;
-        case Biome.Type.Barren:  terrain = map.random.range(50) ? 'stone' : 'soil'; break;
+        case Biome.Type.Barren: terrain = map.random.range(50) ? 'soil' : 'grass-light'; break;
         case Biome.Type.Desert: terrain = 'sand'; break;
         case Biome.Type.SnowPlain: terrain = 'snow'; break;
-        case Biome.Type.Savanna: terrain = 'lightgrass'; break;
+        case Biome.Type.Savanna: terrain = 'grass-light'; break;
         case Biome.Type.Plain: terrain = 'grass'; break;
         case Biome.Type.Taiga: terrain = 'snow'; break;
-        case Biome.Type.Forest: terrain = 'deepgrass'; break;
+        case Biome.Type.Forest: terrain = 'grass-deep'; break;
         case Biome.Type.FrozenLake: terrain = 'ice'; break;
         case Biome.Type.Lake: terrain = 'water'; break;
         case Biome.Type.Swamp: terrain = map.random.range(50) ? 'mud' : 'water'; break;
