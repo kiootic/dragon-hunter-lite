@@ -1,5 +1,13 @@
 import { RandomSeed } from 'random-seed';
 import OpenSimplexNoise from './simplex';
+import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
+
+export function* withProgress<T>(list: T[], report: ProgressReporter) {
+  for (let i = 0; i < list.length; i++) {
+    yield list[i];
+    report(null, i / list.length);
+  }
+}
 
 export function poissonDisk(width: number, height: number, radius: number, rand: RandomSeed) {
   // http://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf

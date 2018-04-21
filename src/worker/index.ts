@@ -1,7 +1,6 @@
 import { generate } from 'worker/mapgen';
 
 onmessage = ev => {
-  console.log('message', ev.data);
   switch (ev.data.action) {
     case 'generate': {
       const { width, height, seed, library } = ev.data;

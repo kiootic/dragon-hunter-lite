@@ -1,4 +1,4 @@
-import { Sprite, Texture } from 'pixi.js';
+import { Sprite, Texture, Filter } from 'pixi.js';
 import { TextureDef } from 'app/data/TextureDef';
 
 function hashKey(key: number) {
@@ -10,12 +10,20 @@ function hashKey(key: number) {
 }
 
 export class TextureSprite extends Sprite {
-  constructor(textureDef: TextureDef, key: number) {
+  public shader?: Filter<any> | null;
+
+  public setTexture(textureDef: TextureDef, key: number) {
     key = hashKey(key);
+    this.tint = 0xffffff;
+
     if (typeof textureDef === 'string') {
-      super(Texture.fromFrame(textureDef));
+      this.texture = Texture.fromFrame(textureDef);
+    } else if (textureDef.type === 'single') {
+      this.texture = Texture.fromFrame(textureDef.tex);
+      if (textureDef.tint)
+        this.tint = parseInt(textureDef.tint, 16);
     } else if (textureDef.type === 'random') {
-      super(Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]));
+      this.texture = Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]);
       if (textureDef.tint)
         this.tint = parseInt(textureDef.tint, 16);
     }

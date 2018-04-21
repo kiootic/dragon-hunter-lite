@@ -4,6 +4,7 @@ import { MapData } from 'worker/mapgen/data';
 import { DataLibrary } from 'worker/data';
 import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
 import { generateFeatures } from 'worker/mapgen/featureGen';
+import { decorateMap } from 'worker/mapgen/decoration';
 
 declare function require(path: string): any;
 
@@ -13,7 +14,8 @@ export function generate(
 ) {
   const map = new MapData(width, height, seed, library);
   generateBiomes(map, report);
-  // generateFeatures(map, report);
+  generateFeatures(map, report);
+  decorateMap(map, report);
   report('done!', 1);
 
   return map.finalize();

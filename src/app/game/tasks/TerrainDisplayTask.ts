@@ -2,7 +2,7 @@ import { Sprite, Texture, Point, Container, RenderTexture, SCALE_MODES } from 'p
 import { vec2 } from 'gl-matrix';
 import { App, UIScaleFactor } from 'app';
 import { Task } from 'app/game/Task';
-import { TextureSprite } from 'app/game/tasks/TextureSprite';
+import { TextureSprite } from 'app/game/map/TextureSprite';
 
 export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();
@@ -17,6 +17,10 @@ export class TerrainDisplayTask extends Task {
 
   public init() {
     this.game.view.camera.addChild(this.view);
+  }
+
+  public dispose() {
+    this.game.view.camera.removeChild(this.view);
   }
 
   private updateVisibility() {
@@ -55,7 +59,8 @@ export class TerrainDisplayTask extends Task {
         const key = `${x}:${y}`;
         if (this.sprites.has(key)) continue;
 
-        const sprite = new TextureSprite(terrain.texture, x + y * map.width);
+        const sprite = new TextureSprite();
+        sprite.setTexture(terrain.texture, x + y * map.width);
         sprite.x = tx;
         sprite.y = ty;
         sprite.scale = new Point(UIScaleFactor, UIScaleFactor);

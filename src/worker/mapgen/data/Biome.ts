@@ -3,6 +3,8 @@ import { vec2 } from 'gl-matrix';
 export interface Biome {
   index: number;
   type: Biome.Type;
+  feature: Biome.Feature;
+
   temperature: number;
   humidity: number;
 
@@ -29,9 +31,11 @@ export namespace Biome {
   export enum Feature {
     None,
     Pond,
+    LavaPond,
     Floral,
+    Rocky,
     Oasis,
-    Camp,
+    Cemetery,
     Ruins,
   }
 }

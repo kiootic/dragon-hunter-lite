@@ -6,11 +6,9 @@ import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
 import { Biome, MapData, RiverSegment } from 'worker/mapgen/data';
 
 const BiomeSize = 32;
-const EdgeRoughness = 32;
+const EdgeRoughness = 16;
 const EdgeJitter = 8;
 const WaterRarity = 16;
-const RiverSegments = 16;
-const RiverRoughness = 24;
 
 function generateBiomePolygons(map: MapData) {
   const biomeCenters = poissonDisk(map.width, map.height, BiomeSize, map.random);
@@ -20,6 +18,7 @@ function generateBiomePolygons(map: MapData) {
   map.biomes = biomeCenters.map<Biome>(([x, y], i) => ({
     index: i,
     type: Biome.Type.None,
+    feature: Biome.Feature.None,
     position: vec2.fromValues(x, y),
     min: vec2.fromValues(map.width - 1, map.height - 1), max: vec2.fromValues(0, 0),
     humidity: 0, temperature: 0
@@ -142,25 +141,6 @@ function rasterizeBiomes(map: MapData, report: ProgressReporter) {
       realBiome.max[1] = Math.max(realBiome.max[1], y);
     }
     report(null, y / map.height);
-  }
-
-  for (const { from, to, level } of map.rivers) {
-    function riverPoint(i: number) {
-      let x = from[0] + (to[0] - from[0]) * (i / RiverSegments);
-      let y = from[1] + (to[1] - from[1]) * (i / RiverSegments);
-      x += Math.floor((noiseX.noise2D(x, y) * 2 - 1) * RiverRoughness);
-      y += Math.floor((noiseY.noise2D(x, y) * 2 - 1) * RiverRoughness);
-      return [x, y];
-    }
-    for (let i = 0; i < RiverSegments; i++) {
-      const from = riverPoint(i), to = riverPoint(i + 1);
-      rasterizeLine(from[0], from[1], to[0], to[1], (x, y) => {
-        const size = Math.round(level * 4);
-        for (let dy = 0; dy < size; dy++)
-          for (let dx = 0; dx < size; dx++)
-            map.setTerrain(x + dx, y + dy, 'water');
-      });
-    }
   }
 }
 

@@ -36,13 +36,31 @@ export class MiniMapTask extends Task {
   private renderTile(x: number, y: number) {
     const index = (x + y * this.game.map.width) * 4;
 
-    const terrain = App.instance.library.terrains[this.game.map.getTerrain(x, y)];
-    const terrainColor = terrain ? parseInt(terrain.color, 16) : 0xff000000;
+    function parseColor(color: string) {
+      if (!color) return null;
+      const colorNum = parseInt(color, 16);
+      return [(colorNum >>> 16) & 0xff, (colorNum >>> 8) & 0xff, (colorNum >>> 0) & 0xff];
+    }
 
-    this.mapData[index] = (terrainColor >>> 16) & 0xff;
-    this.mapData[index + 1] = (terrainColor >>> 8) & 0xff;
-    this.mapData[index + 2] = (terrainColor >>> 0) & 0xff;
-    this.mapData[index + 3] = (terrainColor >>> 24) & 0xff;
+    const terrain = App.instance.library.terrains[this.game.map.getTerrain(x, y)];
+    const terrainColor = terrain ? parseColor(terrain.color)! : [0, 0, 0];
+
+    const object = App.instance.library.objects[this.game.map.getObject(x, y)];
+    const objectColor = object ? parseColor(object.color) : null;
+
+    let color = terrainColor;
+    if (objectColor !== null) {
+      color = [
+        terrainColor[0] * 1 / 4 + objectColor[0] * 3 / 4,
+        terrainColor[1] * 1 / 4 + objectColor[1] * 3 / 4,
+        terrainColor[2] * 1 / 4 + objectColor[2] * 3 / 4
+      ];
+    }
+
+    this.mapData[index] = color[0];
+    this.mapData[index + 1] = color[1];
+    this.mapData[index + 2] = color[2];
+    this.mapData[index + 3] = 0xff;
   }
 
   private updateCanvas() {

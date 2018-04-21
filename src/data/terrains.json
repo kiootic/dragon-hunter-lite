@@ -4,7 +4,7 @@
     "id": 1,
     "name": "water",
     "texture": "sprites/terrains/water",
-    "color": "ff235c7c"
+    "color": "235c7c"
   },
   {
     "id": 2,
@@ -18,7 +18,7 @@
       ],
       "tint": "00ff00"
     },
-    "color": "ff51a01e"
+    "color": "51a01e"
   },
   {
     "id": 3,
@@ -32,7 +32,7 @@
       ],
       "tint": "00cc00"
     },
-    "color": "ff316112"
+    "color": "316112"
   },
   {
     "id": 4,
@@ -46,14 +46,14 @@
       ],
       "tint": "aaffaa"
     },
-    "color": "ff487f61"
+    "color": "487f61"
   },
   {
     "id": 5,
     "name": "lava",
     "texture": "sprites/terrains/lava",
     "passable": false,
-    "color": "ff8b1408"
+    "color": "8b1408"
   },
   {
     "id": 6,
@@ -67,25 +67,25 @@
       ],
       "tint": "404040"
     },
-    "color": "ff514845"
+    "color": "514845"
   },
   {
     "id": 7,
     "name": "ice",
     "texture": "sprites/terrains/ice",
-    "color": "ffaad0e7"
+    "color": "aad0e7"
   },
   {
     "id": 8,
     "name": "mud",
     "texture": "sprites/terrains/mud",
-    "color": "ff6d584b"
+    "color": "6d584b"
   },
   {
     "id": 9,
     "name": "snow",
     "texture": "sprites/terrains/snow",
-    "color": "ffe0e9ee"
+    "color": "e0e9ee"
   },
   {
     "id": 10,
@@ -98,7 +98,7 @@
         "sprites/terrains/sand-3"
       ]
     },
-    "color": "ffe2bf90"
+    "color": "e2bf90"
   },
   {
     "id": 11,
@@ -111,6 +111,6 @@
         "sprites/terrains/soil-3"
       ]
     },
-    "color": "ff846b5c"
+    "color": "846b5c"
   }
 ]
