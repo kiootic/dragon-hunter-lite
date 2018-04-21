@@ -77,7 +77,7 @@ export class TerrainDisplayTask extends Task {
     }
     this.container.setTransform(-minX, -minY);
 
-    const length = 1 << (32 - Math.clz32(r - 1));
+    const length = r * 2;
     this.renderTex.resize(length, length);
     App.instance.renderer.render(this.container, this.renderTex);
     this.view.setTransform((minX - x), (minY - y));
