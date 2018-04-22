@@ -62,7 +62,7 @@ const decorationProps: { [type: number]: [string, number][] } = {
 function decorateTile(x: number, y: number, map: MapData) {
   if (map.getObject(x, y)) return;
   const terrain = map.getTerrain(x, y);
-  if (terrain === 'water' || terrain === 'lava') return;
+  if (terrain === 'water' || terrain === 'lava' || terrain === 'ice') return;
 
   const biome = map.biomes[map.getBiomeIndex(x, y)];
   const decorations = decorationProps[biome.type];
