@@ -10,22 +10,40 @@ function hashKey(key: number) {
 }
 
 export class TextureSprite extends Sprite {
-  public shader?: Filter<any> | null;
+  private overlay?: TextureSprite;
 
   public setTexture(textureDef: TextureDef, key: number) {
     key = hashKey(key);
     this.tint = 0xffffff;
+    this.removeChildren();
+    this.overlay = undefined;
 
     if (typeof textureDef === 'string') {
       this.texture = Texture.fromFrame(textureDef);
-    } else if (textureDef.type === 'single') {
-      this.texture = Texture.fromFrame(textureDef.tex);
-      if (textureDef.tint)
-        this.tint = parseInt(textureDef.tint, 16);
-    } else if (textureDef.type === 'random') {
-      this.texture = Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]);
-      if (textureDef.tint)
-        this.tint = parseInt(textureDef.tint, 16);
+    } else {
+      switch (textureDef.type) {
+        case 'single':
+          this.texture = Texture.fromFrame(textureDef.tex);
+          if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
+          break;
+        case 'random':
+          this.texture = Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]);
+          if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
+          break;
+        case 'composite':
+          this.setTexture(textureDef.base, key);
+          this.overlay = new TextureSprite();
+          this.overlay.anchor.copy(this.anchor);
+          this.overlay.setTexture(textureDef.overlay, key);
+          this.addChild(this.overlay);
+          break;
+      }
     }
+  }
+
+  _onAnchorUpdate() {
+    (Sprite.prototype as any)._onAnchorUpdate.call(this);
+
+    this.overlay && this.overlay.anchor.copy(this._anchor);
   }
 }

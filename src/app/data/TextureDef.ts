@@ -10,4 +10,10 @@ export interface TextureRandom {
   tint?: string;
 }
 
-export type TextureDef = string | TextureSingle | TextureRandom;
+export interface TextureComposite {
+  type: 'composite';
+  base: TextureDef;
+  overlay: TextureDef;
+}
+
+export type TextureDef = string | TextureSingle | TextureRandom | TextureComposite;

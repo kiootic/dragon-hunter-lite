@@ -4,7 +4,7 @@ import {
 } from 'pixi.js';
 import { UIScaleFactor } from 'app';
 
-const OutlineWidth = 1;
+const OutlineWidth = 2;
 
 export class OutlineRenderer extends ObjectRenderer {
   public static readonly Name = 'outline';
@@ -119,6 +119,7 @@ void main(void)
     a = max(a, sampleAlpha(uThickness.x, -uThickness.y));
     a = max(a, sampleAlpha(-uThickness.x, uThickness.y));
     a = max(a, sampleAlpha(uThickness.x, uThickness.y));
+    if (sample.a == 0.0) a *= 0.5;
     gl_FragColor = vec4(sample.rgb * a, a) * uColor;
 }
 `);
