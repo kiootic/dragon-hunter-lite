@@ -17,8 +17,9 @@ export class ObjectDisplayTask extends Task {
   private readonly container = new Container();
 
   public update(dt: number) {
-    this.updateVisibility();
+    const updated = this.updateVisibility();
     this.updateTransforms();
+    this.sortObjects();
   }
 
   public init() {
@@ -39,11 +40,13 @@ export class ObjectDisplayTask extends Task {
     }
 
     const removePool: TileObjectSprite[] = [];
+    let updated = false;
 
     for (const [key, sprite] of this.sprites) {
       if (!isVisible(sprite.tileX * scale, sprite.tileY * scale)) {
         removePool.push(sprite);
         this.sprites.delete(key);
+        updated = true;
       }
     }
 
@@ -73,10 +76,12 @@ export class ObjectDisplayTask extends Task {
         if (!sprite.parent)
           this.container.addChild(sprite);
         this.sprites.set(key, Object.assign(sprite, { tileX: x, tileY: y }));
+        updated = true;
       }
 
     for (const sprite of removePool)
       this.container.removeChild(sprite);
+    return updated;
   }
 
   private updateTransforms() {
@@ -94,5 +99,13 @@ export class ObjectDisplayTask extends Task {
       const ty = (sprite.tileY + 1) * DisplayTileSize;
       sprite.position.set(tx - dx, ty - dy);
     }
+  }
+
+  private sortObjects() {
+    this.container.children.sort((a, b) => {
+      let d = Math.round(a.y - b.y);
+      if (d === 0) d = Math.round(a.x - b.x);
+      return d;
+    });
   }
 }
