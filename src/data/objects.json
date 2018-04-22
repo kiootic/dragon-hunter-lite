@@ -6,6 +6,7 @@
     "texture": "sprites/objects/tree-coco",
     "color": "4d6211",
     "scale": 2,
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -13,6 +14,7 @@
     "name": "bones",
     "texture": "sprites/objects/bones",
     "color": "cccccc",
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -21,6 +23,7 @@
     "texture": "sprites/objects/cross",
     "color": "cccccc",
     "scale": 1.5,
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -49,7 +52,8 @@
         "sprites/objects/fern-3"
       ]
     },
-    "color": "416652"
+    "color": "416652",
+    "jitter": true
   },
   {
     "id": 6,
@@ -57,6 +61,7 @@
     "texture": "sprites/objects/cactus",
     "color": "416652",
     "scale": 1.5,
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -64,7 +69,8 @@
     "name": "bush",
     "texture": "sprites/objects/bush",
     "color": "416652",
-    "scale": 1.5
+    "scale": 1.5,
+    "jitter": true
   },
   {
     "id": 8,
@@ -72,6 +78,7 @@
     "texture": "sprites/objects/tree-oak",
     "color": "01ac1d",
     "scale": 2,
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -80,6 +87,7 @@
     "texture": "sprites/objects/tree-spruce",
     "color": "004b01",
     "scale": 2,
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -87,6 +95,7 @@
     "name": "stone",
     "texture": "sprites/objects/stone",
     "color": "505050",
+    "jitter": true,
     "obstacle": true
   },
   {
@@ -101,7 +110,7 @@
       ]
     },
     "color": "505050",
-    "terrain": true
+    "jitter": true
   },
   {
     "id": 12,
@@ -118,7 +127,8 @@
         "tex": "sprites/objects/flower-stem-1"
       }
     },
-    "color": "cc3d3d"
+    "color": "cc3d3d",
+    "jitter": true
   },
   {
     "id": 13,
@@ -135,7 +145,8 @@
         "tex": "sprites/objects/flower-stem-2"
       }
     },
-    "color": "ccc63d"
+    "color": "ccc63d",
+    "jitter": true
   },
   {
     "id": 14,
@@ -152,7 +163,8 @@
         "tex": "sprites/objects/flower-stem-3"
       }
     },
-    "color": "3dcc4e"
+    "color": "3dcc4e",
+    "jitter": true
   },
   {
     "id": 15,
@@ -169,6 +181,7 @@
         "tex": "sprites/objects/flower-stem-4"
       }
     },
-    "color": "3d79cc"
+    "color": "3d79cc",
+    "jitter": true
   }
 ]

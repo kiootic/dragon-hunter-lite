@@ -4,17 +4,22 @@ import { App, UIScaleFactor, DisplayTileSize } from 'app';
 import { vec2 } from 'gl-matrix';
 import { TextureSprite } from 'app/game/map/TextureSprite';
 import { OutlineRenderer } from 'app/game/map/OutlineRenderer';
+import { Noise } from 'common/noise';
+import { create as createRand } from 'random-seed';
 
 const ObjectSize = 32;
 
 interface TileObjectSprite extends TextureSprite {
   tileX: number;
   tileY: number;
+  jitter: [number, number];
 }
 
 export class ObjectDisplayTask extends Task {
   private readonly sprites = new Map<string, TileObjectSprite>();
   private readonly container = new Container();
+  private jitterNoiseX!: Noise;
+  private jitterNoiseY!: Noise;
 
   public update(dt: number) {
     const updated = this.updateVisibility();
@@ -24,6 +29,9 @@ export class ObjectDisplayTask extends Task {
 
   public init() {
     this.game.view.camera.addChild(this.container);
+    const rand = createRand(this.game.map.seed);
+    this.jitterNoiseX = new Noise(rand, 1, 1);
+    this.jitterNoiseY = new Noise(rand, 1, 1);
   }
 
   public dispose() {
@@ -75,7 +83,13 @@ export class ObjectDisplayTask extends Task {
         sprite.setTexture(obj.texture, x + y * map.width);
         if (!sprite.parent)
           this.container.addChild(sprite);
-        this.sprites.set(key, Object.assign(sprite, { tileX: x, tileY: y }));
+
+        const jitter: [number, number] = [0, 0];
+        if (obj.jitter) {
+          jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
+          jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
+        }
+        this.sprites.set(key, Object.assign(sprite, { tileX: x, tileY: y, jitter }));
         updated = true;
       }
 
@@ -92,11 +106,13 @@ export class ObjectDisplayTask extends Task {
     for (const [key, sprite] of this.sprites) {
       const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];
 
+      sprite.anchor.set(0.5, 1);
+
       const scale = (DisplayTileSize / ObjectSize) * (obj.scale || 1);
       sprite.scale.set(scale, scale);
-      sprite.anchor.set(0.5, 1);
-      const tx = (sprite.tileX + 0.5) * DisplayTileSize;
-      const ty = (sprite.tileY + 1) * DisplayTileSize;
+
+      const tx = (sprite.tileX + 0.5) * DisplayTileSize + sprite.jitter[0];
+      const ty = (sprite.tileY + 1) * DisplayTileSize + sprite.jitter[1];
       sprite.position.set(tx - dx, ty - dy);
     }
   }

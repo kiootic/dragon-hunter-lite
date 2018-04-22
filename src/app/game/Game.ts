@@ -9,7 +9,7 @@ import { MiniMapTask } from 'app/game/tasks/MiniMapTask';
 export class Game {
   public readonly view = new GameView(this);
   public readonly keyboard = new Keyboard(App.instance.view);
-  public map = new TileMap(0, 0);
+  public map = new TileMap(0, 0, '');
 
   public init(map: TileMap) {
     this.map = map;

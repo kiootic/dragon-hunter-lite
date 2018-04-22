@@ -44,6 +44,7 @@ export class MapData {
 
   public finalize(): SerializedMap {
     return {
+      seed: this.seed,
       width: this.width, height: this.height,
       terrains: this.terrains,
       objects: this.objects

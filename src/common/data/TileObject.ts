@@ -6,6 +6,6 @@ export interface TileObject {
   texture: TextureDef;
   color: string;
   scale?: number;
-  terrain?: boolean;
+  jitter?: boolean;
   obstacle?: boolean;
 }
