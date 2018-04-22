@@ -1,1 +1,0 @@
-../../../app/game/map/SerializedMap.ts

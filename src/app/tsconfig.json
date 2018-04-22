@@ -1,20 +1,10 @@
 {
+  "extends": "../base",
   "compilerOptions": {
-    "sourceMap": true,
-    "target": "es2015",
-    "module": "commonjs",
-    "strict": true,
-    "baseUrl": "../..",
-    "paths": {
-      "app": [
-        "src/app"
-      ],
-      "app/*": [
-        "src/app/*"
-      ],
-      "assets/*": [
-        "assets/*"
-      ]
-    }
+    "lib": [
+      "es2015",
+      "dom",
+      "scripthost"
+    ]
   }
 }

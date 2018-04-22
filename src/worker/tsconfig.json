@@ -1,20 +1,10 @@
 {
+  "extends": "../base",
   "compilerOptions": {
-    "sourceMap": true,
-    "target": "es2015",
-    "module": "commonjs",
-    "strict": true,
     "lib": [
       "es2015",
       "webworker",
       "scripthost"
-    ],
-    "types": [],
-    "baseUrl": "../..",
-    "paths": {
-      "worker/*": [
-        "src/worker/*"
-      ]
-    }
+    ]
   }
 }

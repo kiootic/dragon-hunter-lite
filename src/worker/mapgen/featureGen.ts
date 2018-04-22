@@ -1,6 +1,7 @@
 import { MapData, Biome } from 'worker/mapgen/data';
-import { poissonDisk, Noise, rasterizeLine, withProgress } from 'worker/mapgen/utils';
+import { poissonDisk, rasterizeLine, withProgress } from 'worker/mapgen/utils';
 import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
+import { Noise } from 'common/noise';
 import { vec2 } from 'gl-matrix';
 
 const FeatureSize = 128;

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "strict": true,
+    "baseUrl": "..",
+    "lib": [],
+    "paths": {
+      "app": [
+        "src/app"
+      ],
+      "app/*": [
+        "src/app/*"
+      ],
+      "worker": [
+        "src/worker"
+      ],
+      "worker/*": [
+        "src/worker/*"
+      ],
+      "common/*": [
+        "src/common/*"
+      ],
+      "assets/*": [
+        "assets/*"
+      ]
+    }
+  }
+}

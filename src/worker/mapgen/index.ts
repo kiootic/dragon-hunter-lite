@@ -1,7 +1,7 @@
 import { generateBiomes } from 'worker/mapgen/biomeGen';
 import { create as createRand } from 'random-seed';
 import { MapData } from 'worker/mapgen/data';
-import { DataLibrary } from 'worker/data';
+import { DataLibrary } from 'common/data';
 import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
 import { generateFeatures } from 'worker/mapgen/featureGen';
 import { decorateMap } from 'worker/mapgen/decoration';

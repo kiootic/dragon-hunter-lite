@@ -1,6 +1,6 @@
 import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
 import { GameState } from 'app/states';
-import { DataLibrary } from 'app/data';
+import { DataLibrary } from 'common/data';
 
 export const UIScaleFactor = 4;
 export const TextScaleFactor = 2;

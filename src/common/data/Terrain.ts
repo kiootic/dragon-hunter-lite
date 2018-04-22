@@ -1,4 +1,4 @@
-import { TextureDef } from './TextureDef';
+import { TextureDef } from 'common/data/TextureDef';
 
 export interface Terrain {
   id: number;

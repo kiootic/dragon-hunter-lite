@@ -1,5 +1,4 @@
 import { TileMap } from 'app/game/map/TileMap';
-import { DataLibrary } from 'app/data';
 import { App } from 'app';
 
 export interface ProgressReporter {

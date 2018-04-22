@@ -1,5 +1,5 @@
 import { Sprite, Texture, Filter } from 'pixi.js';
-import { TextureDef } from 'app/data/TextureDef';
+import { TextureDef } from 'common/data/TextureDef';
 
 function hashKey(key: number) {
   // https://stackoverflow.com/a/12996028

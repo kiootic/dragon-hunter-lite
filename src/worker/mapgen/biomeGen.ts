@@ -1,9 +1,10 @@
-import { poissonDisk, rasterizeLine, Noise } from 'worker/mapgen/utils';
+import { poissonDisk, rasterizeLine } from 'worker/mapgen/utils';
+import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
+import { Biome, MapData, RiverSegment } from 'worker/mapgen/data';
+import { Noise } from 'common/noise';
 import { RandomSeed } from 'random-seed';
 import { voronoi, VoronoiDiagram } from 'd3-voronoi';
 import { vec2 } from 'gl-matrix';
-import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
-import { Biome, MapData, RiverSegment } from 'worker/mapgen/data';
 
 const BiomeSize = 32;
 const EdgeRoughness = 16;

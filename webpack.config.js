@@ -46,7 +46,8 @@ module.exports = [{
     extensions: ['.ts', '.js'],
     alias: {
       'app': path.resolve(__dirname, 'src', 'app'),
-      'assets': path.resolve(__dirname, 'assets')
+      'common': path.resolve(__dirname, 'src', 'common'),
+      'assets': path.resolve(__dirname, 'assets'),
     }
   },
   output: {
@@ -82,6 +83,7 @@ module.exports = [{
     extensions: ['.ts', '.js'],
     alias: {
       'worker': path.resolve(__dirname, 'src', 'worker'),
+      'common': path.resolve(__dirname, 'src', 'common'),
     }
   },
   output: {
