@@ -3,7 +3,6 @@ import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SC
 import { App, UIScaleFactor, DisplayTileSize } from 'app';
 import { vec2 } from 'gl-matrix';
 import { TextureSprite } from 'app/game/map/TextureSprite';
-import { OutlineRenderer } from 'app/game/map/OutlineRenderer';
 import { Noise } from 'common/noise';
 import { create as createRand } from 'random-seed';
 
@@ -12,6 +11,7 @@ const ObjectSize = 32;
 interface TileObjectSprite extends TextureSprite {
   tileX: number;
   tileY: number;
+  terrain: boolean;
   jitter: [number, number];
 }
 
@@ -39,19 +39,17 @@ export class ObjectDisplayTask extends Task {
   }
 
   private updateVisibility() {
-    const { offsetX: x, offsetY: y, viewWidth: w, viewHeight: h } = this.game.view.camera;
-    const r = Math.ceil(Math.sqrt(w * w + h * h));
-    const origin = vec2.fromValues(x, y);
-    const scale = DisplayTileSize;
+    const { offsetX, offsetY, viewWidth: w, viewHeight: h } = this.game.view.camera;
     function isVisible(x: number, y: number) {
-      return vec2.sqrDist(origin, [x, y]) <= r * r;
+      return x >= offsetX - DisplayTileSize && x <= offsetX + w + DisplayTileSize &&
+        y >= offsetY - DisplayTileSize && y <= offsetY + h + DisplayTileSize;
     }
 
     const removePool: TileObjectSprite[] = [];
     let updated = false;
 
     for (const [key, sprite] of this.sprites) {
-      if (!isVisible(sprite.tileX * scale, sprite.tileY * scale)) {
+      if (!isVisible(sprite.tileX * DisplayTileSize, sprite.tileY * DisplayTileSize)) {
         removePool.push(sprite);
         this.sprites.delete(key);
         updated = true;
@@ -59,10 +57,10 @@ export class ObjectDisplayTask extends Task {
     }
 
     const map = this.game.map;
-    const left = Math.max(0, Math.floor((x - r) / scale));
-    const right = Math.min(map.width - 1, Math.ceil((x + r) / scale));
-    const top = Math.max(0, Math.floor((y - r) / scale));
-    const bottom = Math.min(map.height - 1, Math.ceil((y + r) / scale));
+    const left = Math.max(0, Math.floor(offsetX / DisplayTileSize));
+    const right = Math.min(map.width - 1, Math.ceil((offsetX + w) / DisplayTileSize));
+    const top = Math.max(0, Math.floor(offsetY / DisplayTileSize));
+    const bottom = Math.min(map.height - 1, Math.ceil((offsetY + h) / DisplayTileSize));
 
     const objectData = App.instance.library.objects;
     for (let x = left; x <= right; x++)
@@ -70,8 +68,8 @@ export class ObjectDisplayTask extends Task {
         const obj = objectData[map.getObject(x, y)];
         if (!obj) continue;
 
-        const tx = x * scale;
-        const ty = y * scale;
+        const tx = x * DisplayTileSize;
+        const ty = y * DisplayTileSize;
         if (!isVisible(tx, ty))
           continue;
 
@@ -79,7 +77,7 @@ export class ObjectDisplayTask extends Task {
         if (this.sprites.has(key)) continue;
 
         const sprite = removePool.pop() || new TextureSprite();
-        sprite.pluginName = OutlineRenderer.Name;
+        sprite.outline = true;
         sprite.setTexture(obj.texture, x + y * map.width);
         if (!sprite.parent)
           this.container.addChild(sprite);
@@ -89,7 +87,7 @@ export class ObjectDisplayTask extends Task {
           jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
           jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
         }
-        this.sprites.set(key, Object.assign(sprite, { tileX: x, tileY: y, jitter }));
+        this.sprites.set(key, Object.assign(sprite, { tileX: x, tileY: y, jitter, terrain: obj.terrain || false }));
         updated = true;
       }
 
@@ -119,8 +117,12 @@ export class ObjectDisplayTask extends Task {
 
   private sortObjects() {
     this.container.children.sort((a, b) => {
-      let d = Math.round(a.y - b.y);
-      if (d === 0) d = Math.round(a.x - b.x);
+      let ay = a.y, by = b.y;
+      if ((a as TileObjectSprite).terrain) ay = -ay;
+      if ((b as TileObjectSprite).terrain) by = -by;
+
+      let d = ay - by;
+      if (d === 0) d = a.x - b.x;
       return d;
     });
   }

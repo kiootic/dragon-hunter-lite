@@ -15,6 +15,7 @@
     "texture": "sprites/objects/bones",
     "color": "cccccc",
     "jitter": true,
+    "terrain": true,
     "obstacle": true
   },
   {
@@ -110,7 +111,8 @@
       ]
     },
     "color": "505050",
-    "jitter": true
+    "jitter": true,
+    "terrain": true
   },
   {
     "id": 12,

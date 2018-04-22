@@ -1,5 +1,6 @@
 import { Sprite, Texture, Filter } from 'pixi.js';
 import { TextureDef } from 'common/data/TextureDef';
+import { MapSpriteRenderer, MapSprite } from 'app/game/map/MapSpriteRenderer';
 
 function hashKey(key: number) {
   // https://stackoverflow.com/a/12996028
@@ -9,14 +10,16 @@ function hashKey(key: number) {
   return key;
 }
 
-export class TextureSprite extends Sprite {
+export class TextureSprite extends Sprite implements MapSprite {
   private overlay?: TextureSprite;
+  public outline: boolean = false;
 
   public setTexture(textureDef: TextureDef, key: number) {
     key = hashKey(key);
     this.tint = 0xffffff;
     this.removeChildren();
     this.overlay = undefined;
+    this.pluginName = MapSpriteRenderer.Name;
 
     if (typeof textureDef === 'string') {
       this.texture = Texture.fromFrame(textureDef);
@@ -43,7 +46,6 @@ export class TextureSprite extends Sprite {
 
   _onAnchorUpdate() {
     (Sprite.prototype as any)._onAnchorUpdate.call(this);
-
     this.overlay && this.overlay.anchor.copy(this._anchor);
   }
 }

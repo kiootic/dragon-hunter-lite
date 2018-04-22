@@ -9,7 +9,7 @@ const TileSize = 16;
 export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();
   private readonly container = new Container();
-  private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.LINEAR);
+  private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
   private readonly view = new Sprite(this.renderTex);
 
   public update(dt: number) {
@@ -29,8 +29,9 @@ export class TerrainDisplayTask extends Task {
     const { offsetX: x, offsetY: y, viewWidth: w, viewHeight: h } = this.game.view.camera;
     const r = Math.ceil(Math.sqrt(w * w + h * h));
     const origin = vec2.fromValues(x, y);
+    const scale = DisplayTileSize / TileSize;
     function isVisible(x: number, y: number) {
-      return vec2.sqrDist(origin, [x, y]) <= r * r;
+      return vec2.sqrDist(origin, [x * scale, y * scale]) <= r * r;
     }
 
     for (const [key, sprite] of this.sprites) {
@@ -41,11 +42,10 @@ export class TerrainDisplayTask extends Task {
     }
 
     const map = this.game.map;
-    const scale = DisplayTileSize;
-    const left = Math.max(0, Math.floor((x - r) / scale));
-    const right = Math.min(map.width - 1, Math.ceil((x + r) / scale));
-    const top = Math.max(0, Math.floor((y - r) / scale));
-    const bottom = Math.min(map.height - 1, Math.ceil((y + r) / scale));
+    const left = Math.max(0, Math.floor((x - r) / DisplayTileSize));
+    const right = Math.min(map.width - 1, Math.ceil((x + r) / DisplayTileSize));
+    const top = Math.max(0, Math.floor((y - r) / DisplayTileSize));
+    const bottom = Math.min(map.height - 1, Math.ceil((y + r) / DisplayTileSize));
 
     const terrainData = App.instance.library.terrains;
     for (let x = left; x <= right; x++)
@@ -53,8 +53,8 @@ export class TerrainDisplayTask extends Task {
         const terrain = terrainData[map.getTerrain(x, y)];
         if (!terrain) continue;
 
-        const tx = x * scale;
-        const ty = y * scale;
+        const tx = x * TileSize;
+        const ty = y * TileSize;
         if (!isVisible(tx, ty))
           continue;
 
@@ -65,7 +65,6 @@ export class TerrainDisplayTask extends Task {
         sprite.setTexture(terrain.texture, x + y * map.width);
         sprite.x = tx;
         sprite.y = ty;
-        sprite.scale = new Point(DisplayTileSize / TileSize, DisplayTileSize / TileSize);
         this.container.addChild(sprite);
         this.sprites.set(key, sprite);
       }
@@ -75,18 +74,20 @@ export class TerrainDisplayTask extends Task {
     const { offsetX: x, offsetY: y, viewWidth: w, viewHeight: h } = this.game.view.camera;
     const r = Math.ceil(Math.sqrt(w * w + h * h));
 
-    let minX: number = -1, minY: number = -1;
+    let minX: number = Number.MAX_VALUE, minY: number = Number.MAX_VALUE;
     for (const sprite of this.sprites.values()) {
-      if (minX < 0 || sprite.x < minX)
-        minX = sprite.x;
-      if (minY < 0 || sprite.y < minY)
-        minY = sprite.y;
+      minX = Math.min(minX, sprite.x);
+      minY = Math.min(minY, sprite.y);
     }
     this.container.setTransform(-minX, -minY);
 
-    const length = r * 2;
+    const length = Math.ceil(r / DisplayTileSize) * TileSize * 2;
     this.renderTex.resize(length, length);
     App.instance.renderer.render(this.container, this.renderTex);
-    this.view.setTransform((minX - x), (minY - y));
+    const scale = DisplayTileSize / TileSize;
+    this.view.setTransform(
+      (minX * scale - x), (minY * scale - y),
+      scale, scale
+    );
   }
 }

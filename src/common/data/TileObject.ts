@@ -7,5 +7,6 @@ export interface TileObject {
   color: string;
   scale?: number;
   jitter?: boolean;
+  terrain?: boolean;
   obstacle?: boolean;
 }
