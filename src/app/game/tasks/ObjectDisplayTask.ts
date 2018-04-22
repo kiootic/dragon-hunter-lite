@@ -1,8 +1,11 @@
 import { Task } from 'app/game/Task';
 import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES, Filter } from 'pixi.js';
-import { App, UIScaleFactor } from 'app';
+import { App, UIScaleFactor, DisplayTileSize } from 'app';
 import { vec2 } from 'gl-matrix';
 import { TextureSprite } from 'app/game/map/TextureSprite';
+import { OutlineRenderer } from 'app/game/map/OutlineRenderer';
+
+const ObjectSize = 32;
 
 interface TileObjectSprite extends TextureSprite {
   tileX: number;
@@ -30,7 +33,7 @@ export class ObjectDisplayTask extends Task {
     const { offsetX: x, offsetY: y, viewWidth: w, viewHeight: h } = this.game.view.camera;
     const r = Math.ceil(Math.sqrt(w * w + h * h));
     const origin = vec2.fromValues(x, y);
-    const scale = 16 * UIScaleFactor;
+    const scale = DisplayTileSize;
     function isVisible(x: number, y: number) {
       return vec2.sqrDist(origin, [x, y]) <= r * r;
     }
@@ -65,6 +68,7 @@ export class ObjectDisplayTask extends Task {
         if (this.sprites.has(key)) continue;
 
         const sprite = removePool.pop() || new TextureSprite();
+        sprite.pluginName = OutlineRenderer.Name;
         sprite.setTexture(obj.texture, x + y * map.width);
         if (!sprite.parent)
           this.container.addChild(sprite);
@@ -83,11 +87,11 @@ export class ObjectDisplayTask extends Task {
     for (const [key, sprite] of this.sprites) {
       const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];
 
-      const scale = UIScaleFactor * (obj.scale || 1);
+      const scale = (DisplayTileSize / ObjectSize) * (obj.scale || 1);
       sprite.scale.set(scale, scale);
       sprite.anchor.set(0.5, 1);
-      const tx = (sprite.tileX + 0.5) * 16 * UIScaleFactor;
-      const ty = (sprite.tileY + 1) * 16 * UIScaleFactor;
+      const tx = (sprite.tileX + 0.5) * DisplayTileSize;
+      const ty = (sprite.tileY + 1) * DisplayTileSize;
       sprite.position.set(tx - dx, ty - dy);
     }
   }

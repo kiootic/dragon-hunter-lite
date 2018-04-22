@@ -4,6 +4,7 @@ import { DataLibrary } from 'app/data';
 
 export const UIScaleFactor = 4;
 export const TextScaleFactor = 2;
+export const DisplayTileSize = 64;
 
 export class App extends Application {
   private constructor() {

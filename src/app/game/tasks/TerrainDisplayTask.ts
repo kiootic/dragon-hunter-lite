@@ -1,13 +1,15 @@
 import { Sprite, Texture, Point, Container, RenderTexture, SCALE_MODES } from 'pixi.js';
 import { vec2 } from 'gl-matrix';
-import { App, UIScaleFactor } from 'app';
+import { App, DisplayTileSize } from 'app';
 import { Task } from 'app/game/Task';
 import { TextureSprite } from 'app/game/map/TextureSprite';
+
+const TileSize = 16;
 
 export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();
   private readonly container = new Container();
-  private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
+  private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.LINEAR);
   private readonly view = new Sprite(this.renderTex);
 
   public update(dt: number) {
@@ -39,7 +41,7 @@ export class TerrainDisplayTask extends Task {
     }
 
     const map = this.game.map;
-    const scale = 16 * UIScaleFactor;
+    const scale = DisplayTileSize;
     const left = Math.max(0, Math.floor((x - r) / scale));
     const right = Math.min(map.width - 1, Math.ceil((x + r) / scale));
     const top = Math.max(0, Math.floor((y - r) / scale));
@@ -63,7 +65,7 @@ export class TerrainDisplayTask extends Task {
         sprite.setTexture(terrain.texture, x + y * map.width);
         sprite.x = tx;
         sprite.y = ty;
-        sprite.scale = new Point(UIScaleFactor, UIScaleFactor);
+        sprite.scale = new Point(DisplayTileSize / TileSize, DisplayTileSize / TileSize);
         this.container.addChild(sprite);
         this.sprites.set(key, sprite);
       }
