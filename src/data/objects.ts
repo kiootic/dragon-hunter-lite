@@ -2,7 +2,7 @@ import { TileObject } from 'common/data';
 
 export type ObjectDef = Pick<TileObject, Exclude<keyof TileObject, 'id' | 'name'>>;
 
-export const objects: Record<string, ObjectDef> = {
+export const makeObjects = (): Record<string, ObjectDef> => ({
   // trees
   'tree-coconut': {
     texture: 'sprites/objects/tree-coco',
@@ -88,42 +88,4 @@ export const objects: Record<string, ObjectDef> = {
     jitter: true,
     terrain: true,
   },
-
-  // flowers
-  'flower1': {
-    texture: {
-      type: 'composite',
-      overlay: { type: 'single', tex: 'sprites/objects/flower-petal-1', tint: 'cc3d3d' },
-      base: { type: 'single', tex: 'sprites/objects/flower-stem-1' }
-    },
-    color: 'cc3d3d',
-    jitter: true,
-  },
-  'flower2': {
-    texture: {
-      type: 'composite',
-      overlay: { type: 'single', tex: 'sprites/objects/flower-petal-2', tint: 'ccc63d' },
-      base: { type: 'single', tex: 'sprites/objects/flower-stem-2' }
-    },
-    color: 'ccc63d',
-    jitter: true,
-  },
-  'flower3': {
-    texture: {
-      type: 'composite',
-      overlay: { type: 'single', tex: 'sprites/objects/flower-petal-3', tint: '3dcc4e' },
-      base: { type: 'single', tex: 'sprites/objects/flower-stem-3' }
-    },
-    color: '3dcc4e',
-    jitter: true,
-  },
-  'flower4': {
-    texture: {
-      type: 'composite',
-      overlay: { type: 'single', tex: 'sprites/objects/flower-petal-4', tint: '3d79cc' },
-      base: { type: 'single', tex: 'sprites/objects/flower-stem-4' }
-    },
-    color: '3d79cc',
-    jitter: true,
-  },
-};
+});

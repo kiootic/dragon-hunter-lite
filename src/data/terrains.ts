@@ -2,7 +2,7 @@ import { Terrain } from 'common/data';
 
 export type TerrainDef = Pick<Terrain, Exclude<keyof Terrain, 'id' | 'name'>>;
 
-export const terrains: Record<string, TerrainDef> = {
+export const makeTerrains = (): Record<string, TerrainDef> => ({
   'water': {
     texture: 'sprites/terrains/water',
     color: '235c7c',
@@ -71,4 +71,4 @@ export const terrains: Record<string, TerrainDef> = {
     texture: 'sprites/terrains/snow',
     color: 'e0e9ee',
   },
-};
+});

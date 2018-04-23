@@ -55,6 +55,40 @@ export function poissonDisk(width: number, height: number, radius: number, rand:
   return samples;
 }
 
+export function hsl2rgb(h: number, s: number, l: number) {
+  // https://www.w3.org/TR/css-color-3/#hsl-color
+  const m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
+  const m1 = l * 2 - m2;
+
+  function hue2rgb(m1: number, m2: number, h: number) {
+    if (h < 0) h++;
+    else if (h > 1) h--;
+
+    if (h * 6 < 1) return m1 + (m2 - m1) * h * 6;
+    else if (h * 2 < 1) return m2;
+    else if (h * 3 < 2) return m1 + (m2 - m1) * (2 / 3 - h) * 6;
+    else return m1;
+  }
+
+  const r = hue2rgb(m1, m2, h + 1 / 3);
+  const g = hue2rgb(m1, m2, h);
+  const b = hue2rgb(m1, m2, h - 1 / 3);
+  return [r, g, b];
+}
+
+export function randomColors(rand: RandomSeed, n: number, saturation = 1, lightness = 0.5) {
+  const interval = 1 / n;
+  const begin = rand.random();
+
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    const h = (begin + interval * i) % 1;
+    const [r, g, b] = hsl2rgb(h, saturation, lightness).map(value => Math.floor(value * 255));
+    result.push(r * 0x10000 + g * 0x100 + b * 0x1);
+  }
+  return result;
+}
+
 export function rasterizeLine(x0: number, y0: number, x1: number, y1: number, cb: (x: number, y: number) => void) {
   x0 = Math.floor(x0); y0 = Math.floor(y0);
   x1 = Math.floor(x1); y1 = Math.floor(y1);
