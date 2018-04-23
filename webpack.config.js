@@ -47,6 +47,7 @@ module.exports = [{
     alias: {
       'app': path.resolve(__dirname, 'src', 'app'),
       'common': path.resolve(__dirname, 'src', 'common'),
+      'data': path.resolve(__dirname, 'src', 'data'),
       'assets': path.resolve(__dirname, 'assets'),
     }
   },
@@ -84,6 +85,7 @@ module.exports = [{
     alias: {
       'worker': path.resolve(__dirname, 'src', 'worker'),
       'common': path.resolve(__dirname, 'src', 'common'),
+      'data': path.resolve(__dirname, 'src', 'data'),
     }
   },
   output: {

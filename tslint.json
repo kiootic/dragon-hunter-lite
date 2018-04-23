@@ -3,7 +3,8 @@
     "extends": [],
     "jsRules": {},
     "rules": {
-        "quotemark": [true, "single"]
+        "quotemark": [true, "single"],
+        "semicolon": [true, "always", "ignore-interfaces"]
     },
     "rulesDirectory": []
 }

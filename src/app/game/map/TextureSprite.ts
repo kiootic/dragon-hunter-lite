@@ -1,5 +1,5 @@
 import { Sprite, Texture, Filter } from 'pixi.js';
-import { TextureDef } from 'common/data/TextureDef';
+import { TextureDef } from 'common/data';
 import { MapSpriteRenderer, MapSprite } from 'app/game/map/MapSpriteRenderer';
 
 function hashKey(key: number) {

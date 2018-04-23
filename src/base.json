@@ -22,6 +22,9 @@
       "common/*": [
         "src/common/*"
       ],
+      "data/*": [
+        "src/data/*"
+      ],
       "assets/*": [
         "assets/*"
       ]

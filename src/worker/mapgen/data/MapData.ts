@@ -48,7 +48,7 @@ export class MapData {
       width: this.width, height: this.height,
       terrains: this.terrains,
       objects: this.objects
-    }
+    };
   }
 
   private toIndex(x: number, y: number): number {

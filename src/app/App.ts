@@ -1,6 +1,9 @@
 import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
 import { GameState } from 'app/states';
-import { DataLibrary } from 'common/data';
+import { DataLibrary, loadDataLib } from 'common/data';
+
+import { objects } from 'data/objects';
+import { terrains } from 'data/terrains';
 
 export const UIScaleFactor = 4;
 export const TextScaleFactor = 2;
@@ -51,8 +54,5 @@ export class App extends Application {
   }
 
   public readonly resources: Record<string, any> = {};
-  public library: DataLibrary = {
-    terrains: require('../data/terrains.json'),
-    objects: require('../data/objects.json')
-  };
+  public library = loadDataLib(terrains, objects);
 }

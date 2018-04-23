@@ -10,7 +10,7 @@ export function bootstrap<App extends Application>(app: App) {
     const height = window.innerHeight;
     app.renderer.resize(width, height);
     app.stage.emit('resize');
-  };
+  }
   window.onresize = resize;
   resize();
 
