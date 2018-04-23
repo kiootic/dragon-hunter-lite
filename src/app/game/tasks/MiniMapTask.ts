@@ -1,6 +1,6 @@
 import { Task } from 'app/game/Task';
 import { MapChange } from 'app/game/map';
-import { App, UIScaleFactor } from 'app';
+import { UIScaleFactor } from 'app';
 import { Texture, Sprite } from 'pixi.js';
 
 export class MiniMapTask extends Task {
@@ -42,10 +42,10 @@ export class MiniMapTask extends Task {
       return [(colorNum >>> 16) & 0xff, (colorNum >>> 8) & 0xff, (colorNum >>> 0) & 0xff];
     }
 
-    const terrain = App.instance.library.terrains[this.game.map.getTerrain(x, y)];
+    const terrain = this.game.library.terrains[this.game.map.getTerrain(x, y)];
     const terrainColor = terrain ? parseColor(terrain.color)! : [0, 0, 0];
 
-    const object = App.instance.library.objects[this.game.map.getObject(x, y)];
+    const object = this.game.library.objects[this.game.map.getObject(x, y)];
     const objectColor = object ? parseColor(object.color) : null;
 
     let color = terrainColor;

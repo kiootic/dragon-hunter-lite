@@ -1,5 +1,5 @@
 import { RandomSeed } from 'random-seed';
-import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 export function* withProgress<T>(list: T[], report: ProgressReporter) {
   for (let i = 0; i < list.length; i++) {

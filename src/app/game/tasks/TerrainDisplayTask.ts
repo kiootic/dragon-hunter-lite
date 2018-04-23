@@ -2,7 +2,7 @@ import { Sprite, Texture, Point, Container, RenderTexture, SCALE_MODES } from 'p
 import { vec2 } from 'gl-matrix';
 import { App, DisplayTileSize } from 'app';
 import { Task } from 'app/game/Task';
-import { TextureSprite } from 'app/game/map/TextureSprite';
+import { TextureSprite } from 'app/game/map';
 
 const TileSize = 16;
 
@@ -47,7 +47,7 @@ export class TerrainDisplayTask extends Task {
     const top = Math.max(0, Math.floor((y - r) / DisplayTileSize));
     const bottom = Math.min(map.height - 1, Math.ceil((y + r) / DisplayTileSize));
 
-    const terrainData = App.instance.library.terrains;
+    const terrainData = this.game.library.terrains;
     for (let x = left; x <= right; x++)
       for (let y = top; y <= bottom; y++) {
         const terrain = terrainData[map.getTerrain(x, y)];

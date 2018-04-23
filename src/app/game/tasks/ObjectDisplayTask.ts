@@ -1,8 +1,8 @@
 import { Task } from 'app/game/Task';
 import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES, Filter } from 'pixi.js';
-import { App, UIScaleFactor, DisplayTileSize } from 'app';
+import { UIScaleFactor, DisplayTileSize } from 'app';
 import { vec2 } from 'gl-matrix';
-import { TextureSprite } from 'app/game/map/TextureSprite';
+import { TextureSprite } from 'app/game/map';
 import { Noise } from 'common/noise';
 import { create as createRand } from 'random-seed';
 
@@ -64,7 +64,7 @@ export class ObjectDisplayTask extends Task {
     const top = Math.max(0, Math.floor((offsetY - margin) / DisplayTileSize));
     const bottom = Math.min(map.height - 1, Math.ceil((offsetY + h + margin) / DisplayTileSize));
 
-    const objectData = App.instance.library.objects;
+    const objectData = this.game.library.objects;
     for (let x = left; x <= right; x++)
       for (let y = top; y <= bottom; y++) {
         const obj = objectData[map.getObject(x, y)];
@@ -101,7 +101,7 @@ export class ObjectDisplayTask extends Task {
   private updateTransforms() {
     const { offsetX: dx, offsetY: dy } = this.game.view.camera;
     const map = this.game.map;
-    const objectData = App.instance.library.objects;
+    const objectData = this.game.library.objects;
 
     for (const [key, sprite] of this.sprites) {
       const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];

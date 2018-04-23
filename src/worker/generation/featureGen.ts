@@ -1,6 +1,6 @@
-import { MapData, Biome } from 'worker/mapgen/data';
-import { poissonDisk, rasterizeLine, withProgress } from 'worker/mapgen/utils';
-import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
+import { MapData, Biome } from 'worker/generation/data';
+import { poissonDisk, rasterizeLine, withProgress } from 'worker/generation/utils';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 import { Noise } from 'common/noise';
 import { vec2 } from 'gl-matrix';
 

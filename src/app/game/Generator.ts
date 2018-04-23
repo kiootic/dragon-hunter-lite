@@ -1,5 +1,4 @@
-import { TileMap } from 'app/game/map/TileMap';
-import { App } from 'app';
+import { GameSave } from 'common/data';
 
 export interface ProgressReporter {
   (message: string | null, progress: number): void;
@@ -17,10 +16,10 @@ export class Generator {
   }
 
   public async generate(report: ProgressReporter = () => { }) {
-    const map = await new Promise<TileMap>(resolve => {
+    const save = await new Promise<GameSave>(resolve => {
       this.worker.onmessage = ev => {
         if (ev.data.action === 'completed')
-          resolve(TileMap.deserialize(ev.data.map));
+          resolve(GameSave.load(ev.data.save));
         else if (ev.data.action === 'progress')
           report(ev.data.message, ev.data.progress);
       };
@@ -29,11 +28,10 @@ export class Generator {
         action: 'generate',
         width: this.width,
         height: this.height,
-        seed: this.seed,
-        library: App.instance.library
+        seed: this.seed
       });
     });
     this.worker.terminate();
-    return map;
+    return save;
   }
 }

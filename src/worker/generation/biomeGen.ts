@@ -1,6 +1,6 @@
-import { poissonDisk, rasterizeLine } from 'worker/mapgen/utils';
-import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
-import { Biome, MapData, RiverSegment } from 'worker/mapgen/data';
+import { poissonDisk, rasterizeLine } from 'worker/generation/utils';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
+import { Biome, MapData, RiverSegment } from 'worker/generation/data';
 import { Noise } from 'common/noise';
 import { RandomSeed } from 'random-seed';
 import { voronoi, VoronoiDiagram } from 'd3-voronoi';

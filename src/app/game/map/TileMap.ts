@@ -1,4 +1,4 @@
-import { SerializedMap } from 'common/map/SerializedMap';
+import { SerializedMap } from 'common/map';
 import { Subject } from 'rxjs/Subject';
 
 export interface MapChange {

@@ -1,2 +1,3 @@
 export * from './TileMap';
-export * from './Generator';
+export * from './TextureSprite';
+export * from './MiniMapPanel';

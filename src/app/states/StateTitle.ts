@@ -1,11 +1,10 @@
 import { Container, loaders, Sprite, Texture } from 'pixi.js';
-import { App } from 'app';
+import { App, TextScaleFactor } from 'app';
 import { GameState } from 'app/states/GameState';
 import { StateMain } from 'app/states/StateMain';
 import { fadeOut, fadeIn } from 'app/utils/animations';
 import { Button, Text } from 'app/components';
-import { Generator } from 'app/game/map/Generator';
-import { TextScaleFactor } from 'app/App';
+import { Generator } from 'app/game';
 
 export class StateTitle extends GameState {
   public get name() { return 'title'; }

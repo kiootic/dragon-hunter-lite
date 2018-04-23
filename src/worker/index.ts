@@ -1,13 +1,13 @@
-import { generate } from 'worker/mapgen';
+import { generate } from 'worker/generation';
 
 onmessage = ev => {
   switch (ev.data.action) {
     case 'generate': {
-      const { width, height, seed, library } = ev.data;
-      const map = generate(width, height, seed, library, (message, progress) => {
+      const { width, height, seed } = ev.data;
+      const gameSave = generate(width, height, seed, (message, progress) => {
         postMessage({ action: 'progress', message, progress });
       });
-      postMessage({ action: 'completed', map });
+      postMessage({ action: 'completed', save: gameSave.save() });
     } break;
 
     default:

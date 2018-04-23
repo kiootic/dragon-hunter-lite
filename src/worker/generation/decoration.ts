@@ -1,5 +1,5 @@
-import { MapData, Biome } from 'worker/mapgen/data';
-import { ProgressReporter } from 'worker/mapgen/ProgressReporter';
+import { MapData, Biome } from 'worker/generation/data';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const flowers = [
   'flower1', 'flower2', 'flower3', 'flower4'

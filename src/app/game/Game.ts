@@ -2,18 +2,21 @@ import { GameView } from 'app/game/GameView';
 import { App } from 'app';
 import { Keyboard } from 'app/utils/Keyboard';
 import { Task } from 'app/game/Task';
-import { TileMap } from 'app/game/map/TileMap';
-import { TerrainDisplayTask, ObjectDisplayTask } from 'app/game/tasks';
-import { MiniMapTask } from 'app/game/tasks/MiniMapTask';
+import { TileMap } from 'app/game/map';
+import { TerrainDisplayTask, ObjectDisplayTask, MiniMapTask } from 'app/game/tasks';
+import { GameSave } from 'common/data';
 
 export class Game {
+  constructor(public readonly save: GameSave) {
+    this.map = TileMap.deserialize(save.map);
+  }
+
   public readonly view = new GameView(this);
   public readonly keyboard = new Keyboard(App.instance.view);
-  public map = new TileMap(0, 0, '');
+  public readonly map: TileMap;
+  public get library() { return this.save.library; }
 
-  public init(map: TileMap) {
-    this.map = map;
-
+  public init() {
     this.addTask(TerrainDisplayTask);
     this.addTask(ObjectDisplayTask);
     this.addTask(MiniMapTask);

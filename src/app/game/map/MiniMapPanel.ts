@@ -1,4 +1,4 @@
-import { Panel } from 'app/components/Panel';
+import { Panel } from 'app/components';
 import { Sprite, Point } from 'pixi.js';
 import { Camera } from 'app/game/Camera';
 import { UIScaleFactor } from 'app';
