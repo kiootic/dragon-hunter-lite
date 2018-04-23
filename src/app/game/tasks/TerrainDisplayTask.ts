@@ -82,7 +82,8 @@ export class TerrainDisplayTask extends Task {
     this.container.setTransform(-minX, -minY);
 
     const length = Math.ceil(r / DisplayTileSize) * TileSize * 2;
-    this.renderTex.resize(length, length);
+    const texSize = 1 << (32 - Math.clz32(length - 1));
+    this.renderTex.resize(texSize, texSize);
     App.instance.renderer.render(this.container, this.renderTex);
     const scale = DisplayTileSize / TileSize;
     this.view.setTransform(
