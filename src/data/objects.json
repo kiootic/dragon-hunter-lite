@@ -5,7 +5,7 @@
     "name": "tree-coconut",
     "texture": "sprites/objects/tree-coco",
     "color": "4d6211",
-    "scale": 2,
+    "scale": 3,
     "jitter": true,
     "obstacle": true
   },
@@ -23,7 +23,7 @@
     "name": "cross",
     "texture": "sprites/objects/cross",
     "color": "cccccc",
-    "scale": 1.5,
+    "scale": 2,
     "jitter": true,
     "obstacle": true
   },
@@ -39,7 +39,7 @@
       ]
     },
     "color": "606060",
-    "scale": 1.5,
+    "scale": 2,
     "obstacle": true
   },
   {
@@ -78,7 +78,7 @@
     "name": "tree-oak",
     "texture": "sprites/objects/tree-oak",
     "color": "01ac1d",
-    "scale": 2,
+    "scale": 3,
     "jitter": true,
     "obstacle": true
   },
@@ -87,7 +87,7 @@
     "name": "tree-spruce",
     "texture": "sprites/objects/tree-spruce",
     "color": "004b01",
-    "scale": 2,
+    "scale": 3,
     "jitter": true,
     "obstacle": true
   },

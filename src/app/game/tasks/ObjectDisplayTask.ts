@@ -7,6 +7,7 @@ import { Noise } from 'common/noise';
 import { create as createRand } from 'random-seed';
 
 const ObjectSize = 32;
+const MarginSize = 5;
 
 interface TileObjectSprite extends TextureSprite {
   tileX: number;
@@ -40,9 +41,10 @@ export class ObjectDisplayTask extends Task {
 
   private updateVisibility() {
     const { offsetX, offsetY, viewWidth: w, viewHeight: h } = this.game.view.camera;
+    const margin = MarginSize * DisplayTileSize;
     function isVisible(x: number, y: number) {
-      return x >= offsetX - DisplayTileSize && x <= offsetX + w + DisplayTileSize &&
-        y >= offsetY - DisplayTileSize && y <= offsetY + h + DisplayTileSize;
+      return x >= offsetX - margin && x <= offsetX + w + margin &&
+        y >= offsetY - margin && y <= offsetY + h + margin;
     }
 
     const removePool: TileObjectSprite[] = [];
@@ -57,10 +59,10 @@ export class ObjectDisplayTask extends Task {
     }
 
     const map = this.game.map;
-    const left = Math.max(0, Math.floor(offsetX / DisplayTileSize));
-    const right = Math.min(map.width - 1, Math.ceil((offsetX + w) / DisplayTileSize));
-    const top = Math.max(0, Math.floor(offsetY / DisplayTileSize));
-    const bottom = Math.min(map.height - 1, Math.ceil((offsetY + h) / DisplayTileSize));
+    const left = Math.max(0, Math.floor((offsetX - margin) / DisplayTileSize));
+    const right = Math.min(map.width - 1, Math.ceil((offsetX + w + margin) / DisplayTileSize));
+    const top = Math.max(0, Math.floor((offsetY - margin) / DisplayTileSize));
+    const bottom = Math.min(map.height - 1, Math.ceil((offsetY + h + margin) / DisplayTileSize));
 
     const objectData = App.instance.library.objects;
     for (let x = left; x <= right; x++)
@@ -116,6 +118,7 @@ export class ObjectDisplayTask extends Task {
   }
 
   private sortObjects() {
+    const copy = this.container.children.slice();
     this.container.children.sort((a, b) => {
       let ay = a.y, by = b.y;
       if ((a as TileObjectSprite).terrain) ay = -ay;
@@ -123,6 +126,7 @@ export class ObjectDisplayTask extends Task {
 
       let d = ay - by;
       if (d === 0) d = a.x - b.x;
+      if (d == 0) d = copy.indexOf(a) - copy.indexOf(b);
       return d;
     });
   }
