@@ -36,6 +36,7 @@
     "spritesheet-js": "^1.2.6",
     "ts-loader": "^4.2.0",
     "tslint": "^5.9.1",
+    "tslint-language-service": "^0.9.9",
     "tslint-loader": "^3.6.0",
     "typescript": "^2.7.2",
     "uglifyjs-webpack-plugin": "^1.2.5",
