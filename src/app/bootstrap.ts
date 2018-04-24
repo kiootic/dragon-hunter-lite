@@ -1,6 +1,5 @@
 import { Application } from 'pixi.js';
 import Stats = require('stats.js');
-import { update as tweenUpdate } from '@tweenjs/tween.js';
 
 export function bootstrap<App extends Application>(app: App) {
   document.body.appendChild(app.view);
@@ -13,8 +12,6 @@ export function bootstrap<App extends Application>(app: App) {
   }
   window.onresize = resize;
   resize();
-
-  app.ticker.add(() => tweenUpdate());
 
   const stats = new Stats();
   document.body.appendChild(stats.dom);

@@ -1,4 +1,5 @@
 import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
+import { update as tweenUpdate } from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 
 export const UIScaleFactor = 4;
@@ -15,7 +16,7 @@ export class App extends Application {
     this.view.oncontextmenu = event => event.preventDefault();
 
     settings.SCALE_MODE = SCALE_MODES.NEAREST;
-    this.ticker.add(dt => this.state && this.state.update(dt));
+    this.ticker.add(this.tick.bind(this));
   }
 
   private static _instance: App;
@@ -47,6 +48,11 @@ export class App extends Application {
   public topState(next: GameState) {
     this.popState();
     this.pushState(next);
+  }
+
+  private tick() {
+    this.state && this.state.update(this.ticker.elapsedMS);
+    tweenUpdate();
   }
 
   public readonly resources: Record<string, any> = {};

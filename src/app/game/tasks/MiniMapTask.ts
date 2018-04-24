@@ -3,6 +3,8 @@ import { MapChange } from 'app/game/map';
 import { UIScaleFactor } from 'app';
 import { Texture, Sprite } from 'pixi.js';
 
+const ObjectAlpha = 0.25;
+
 export class MiniMapTask extends Task {
   private canvas!: HTMLCanvasElement;
   private mapData!: Uint8ClampedArray;
@@ -51,9 +53,9 @@ export class MiniMapTask extends Task {
     let color = terrainColor;
     if (objectColor !== null) {
       color = [
-        terrainColor[0] * 1 / 4 + objectColor[0] * 3 / 4,
-        terrainColor[1] * 1 / 4 + objectColor[1] * 3 / 4,
-        terrainColor[2] * 1 / 4 + objectColor[2] * 3 / 4
+        terrainColor[0] * (1 - ObjectAlpha) + objectColor[0] * ObjectAlpha,
+        terrainColor[1] * (1 - ObjectAlpha) + objectColor[1] * ObjectAlpha,
+        terrainColor[2] * (1 - ObjectAlpha) + objectColor[2] * ObjectAlpha
       ];
     }
 

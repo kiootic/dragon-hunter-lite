@@ -193,7 +193,7 @@ void main(void)
     a = max(a, sampleAlpha(vThickness.x, -vThickness.y));
     a = max(a, sampleAlpha(-vThickness.x, vThickness.y));
     a = max(a, sampleAlpha(vThickness.x, vThickness.y));
-    gl_FragColor = vec4(sample.rgb * a, a) * vColor;
+    gl_FragColor = vec4((sample.rgb + vec3(0.2) * (1.0 - sample.a)) * a, a) * vColor;
 }
 `);
   }
