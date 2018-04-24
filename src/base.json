@@ -29,12 +29,6 @@
       "assets/*": [
         "assets/*"
       ]
-    },
-    "plugins": [
-      {
-        "name": "tslint-language-service",
-        "configFile": "../../tslint.json"
-      }
-    ]
+    }
   }
 }

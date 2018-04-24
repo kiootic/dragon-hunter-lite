@@ -25,19 +25,23 @@ module.exports = {
         test: /\.ts$/,
         enforce: 'pre',
         loader: 'tslint-loader',
-        options: { configFile: 'tslint.json', typeCheck: true, tsConfigFile: 'src/base.json', emitErrors: true, failOnHint: true }
-      }, {
-        test: /\.worker\/index\.ts$/,
-        use: { loader: 'worker-loader' }
+        options: {
+          configFile: 'tslint.json', typeCheck: true, tsConfigFile: 'src/base.json',
+          fix: true, emitErrors: true, failOnHint: true
+        }
       }, {
         test: /\.ts$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        loader: 'ts-loader',
+        include: /src\/(app|common|data)\/.*\.ts/,
+        options: { instance: 'app', configFile: 'src/app/tsconfig.json' }
+      }, {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        include: /src\/(worker|common|data)\/.*\.ts/,
+        options: { instance: 'worker', configFile: 'src/worker/tsconfig.json' }
       }, {
         exclude: /\.json/,
-        include: [
-          path.resolve(__dirname, 'assets')
-        ],
+        include: [path.resolve(__dirname, 'assets')],
         use: {
           loader: 'file-loader',
           options: { name: 'assets/[hash].[ext]' }
