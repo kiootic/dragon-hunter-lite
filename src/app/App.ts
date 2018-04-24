@@ -1,5 +1,5 @@
 import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
-import { update as tweenUpdate } from '@tweenjs/tween.js';
+import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 
 export const UIScaleFactor = 4;
@@ -52,7 +52,7 @@ export class App extends Application {
 
   private tick() {
     this.state && this.state.update(this.ticker.elapsedMS);
-    tweenUpdate();
+    TWEEN.update();
   }
 
   public readonly resources: Record<string, any> = {};

@@ -1,11 +1,13 @@
+/// <reference path="./worker.d.ts" />
 import { GameSave } from 'common/data';
+import Worker from 'worker-loader!worker';
 
 export interface ProgressReporter {
   (message: string | null, progress: number): void;
 }
 
 export class Generator {
-  private readonly worker = new Worker('worker.js');
+  private readonly worker = new Worker();
 
   constructor(
     public readonly width: number,

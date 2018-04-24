@@ -2,7 +2,8 @@
   "compilerOptions": {
     "sourceMap": true,
     "target": "es2015",
-    "module": "commonjs",
+    "module": "es2015",
+    "moduleResolution": "node",
     "strict": true,
     "baseUrl": "..",
     "lib": [],

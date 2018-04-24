@@ -34,25 +34,26 @@ export class StatePreload extends GameState {
       this.loadingText.text = `loading...\n${Math.round(loader.progress)}%`;
     });
 
-    loader.baseUrl = 'assets';
     const context = require.context('assets', true, /.*/);
     for (const key of context.keys()) {
       const match = /^\.\/(.*)\.(.*)$/.exec(key);
       if (!match) continue;
 
       const [, name, ext] = match;
-      if (name.startsWith('sprites/') && ext !== 'json') {
-        continue;
+      if (name.startsWith('sprites/')) {
+        if (ext === 'json')
+          loader.add(name, key);
+      } else {
+        loader.add(name, context(key));
       }
-      loader.add(name, context(key));
     }
 
     loader.pre((res: loaders.Resource, next: () => void) => {
-      res.url = res.url.replace('assets/', '');
       if (res.name.startsWith('sprites/') && res.extension === 'json') {
-        res.onComplete.once(() => {
-          res.data.meta.image = context(`./sprites/${res.data.meta.image}`);
-        });
+        res.type = loaders.Resource.TYPE.JSON;
+        res.data = context(res.url);
+        res.data.meta.image = `../${context(`./sprites/${res.data.meta.image}`)}`;
+        res.complete();
       }
       next();
     });

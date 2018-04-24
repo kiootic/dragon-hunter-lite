@@ -1,5 +1,5 @@
 import { Application } from 'pixi.js';
-import Stats = require('stats.js');
+import * as Stats from 'stats.js';
 
 export function bootstrap<App extends Application>(app: App) {
   document.body.appendChild(app.view);
