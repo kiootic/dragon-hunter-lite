@@ -1,5 +1,5 @@
 import { DataLibrary } from 'common/data';
-import { PlayerProps } from 'common/data/props/PlayerProps';
+import { GameProps, PlayerProps } from 'common/data/props';
 import { MapProps } from 'common/map/MapProps';
 import { SerializedMap } from 'common/map/SerializedMap';
 import { VoronoiDiagram } from 'd3-voronoi';
@@ -12,7 +12,7 @@ export interface RiverSegment {
   level: number;
 }
 
-export class MapData {
+export class GameData {
   public readonly random: RandomSeed;
   private readonly terrains: Uint16Array;
   private readonly objects: Uint16Array;
@@ -21,11 +21,12 @@ export class MapData {
   public biomes: Biome[] = [];
   public rivers: RiverSegment[] = [];
 
-  public props: MapProps = {} as MapProps;
 
   private readonly terrainLookup: Record<string, number>;
   private readonly objectLookup: Record<string, number>;
 
+  public readonly map: MapProps = {} as MapProps;
+  public readonly game: GameProps = {} as GameProps;
   public readonly player: PlayerProps = {} as PlayerProps;
 
   constructor(
@@ -36,7 +37,9 @@ export class MapData {
     this.objects = new Uint16Array(width * height);
     this.tileBiomes = new Uint16Array(width * height);
     this.random = createRand(seed);
-    this.props.seed = seed;
+
+    this.map.seed = seed;
+    this.game.nextEntityId = 1;
 
     function makeLookup(items: ({ name: string, id: number } | null)[]): Record<string, number> {
       return Object.assign({}, ...items
@@ -49,10 +52,10 @@ export class MapData {
     this.objectLookup = makeLookup(library.objects);
   }
 
-  public finalize(): SerializedMap {
+  public finalizeMap(): SerializedMap {
     return {
       width: this.width, height: this.height,
-      props: this.props as MapProps,
+      props: this.map as MapProps,
       terrains: this.terrains,
       objects: this.objects
     };

@@ -1,4 +1,4 @@
-import { Biome, MapData } from 'worker/generation/data';
+import { Biome, GameData } from 'worker/generation/data';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const decorationProps: { [type: number]: [string, number][] } = {
@@ -61,21 +61,21 @@ const decorationProps: { [type: number]: [string, number][] } = {
   ],
 };
 
-export function decorateMap(map: MapData, report: ProgressReporter) {
+export function decorateMap(data: GameData, report: ProgressReporter) {
   report('decorating map...', 0);
-  const flowers = map.library.objects
+  const flowers = data.library.objects
     .filter(obj => obj && /^flower-\d+$/.test(obj.name))
     .map(obj => obj.name);
-  const berries = map.library.objects
+  const berries = data.library.objects
     .filter(obj => obj && /^berrybush-\d+$/.test(obj.name))
     .map(obj => obj.name);
 
-  function decorateTile(x: number, y: number, map: MapData) {
-    if (map.getObject(x, y)) return;
-    const terrain = map.getTerrain(x, y);
+  function decorateTile(x: number, y: number) {
+    if (data.getObject(x, y)) return;
+    const terrain = data.getTerrain(x, y);
     if (terrain === 'water' || terrain === 'lava' || terrain === 'ice') return;
 
-    const biome = map.biomes[map.getBiomeIndex(x, y)];
+    const biome = data.biomes[data.getBiomeIndex(x, y)];
     const decorations = decorationProps[biome.type];
     if (!decorations) return;
     if (
@@ -85,7 +85,7 @@ export function decorateMap(map: MapData, report: ProgressReporter) {
     )
       return;
 
-    let r = map.random.random();
+    let r = data.random.random();
     for (const [decor, prob] of decorations) {
       r -= prob;
       if (biome.feature === Biome.Feature.Floral && decor === 'flower')
@@ -95,19 +95,19 @@ export function decorateMap(map: MapData, report: ProgressReporter) {
 
       if (r <= 0) {
         if (decor === 'flower')
-          map.setObject(x, y, flowers[map.random.range(flowers.length)]);
+          data.setObject(x, y, flowers[data.random.range(flowers.length)]);
         else if (decor === 'berries')
-          map.setObject(x, y, berries[map.random.range(berries.length)]);
+          data.setObject(x, y, berries[data.random.range(berries.length)]);
         else
-          map.setObject(x, y, decor);
+          data.setObject(x, y, decor);
         break;
       }
     }
   }
 
-  for (let y = 0; y < map.height; y++) {
-    for (let x = 0; x < map.width; x++)
-      decorateTile(x, y, map);
-    report(null, y / map.height);
+  for (let y = 0; y < data.height; y++) {
+    for (let x = 0; x < data.width; x++)
+      decorateTile(x, y);
+    report(null, y / data.height);
   }
 }

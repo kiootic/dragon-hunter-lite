@@ -1,4 +1,5 @@
 import { App, DisplayTileSize } from 'app';
+import { Entity } from 'app/game/Entity';
 import { GameView } from 'app/game/GameView';
 import { TileMap } from 'app/game/map';
 import { Task } from 'app/game/Task';
@@ -35,6 +36,8 @@ export class Game {
   public dispose() {
     this.keyboard.dispose();
   }
+
+  public entities = new Map<number, Entity>();
 
   private offsetX = 0;
   private offsetY = 0;

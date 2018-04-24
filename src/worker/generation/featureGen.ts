@@ -1,6 +1,6 @@
 import { Noise } from 'common/noise';
 import { vec2 } from 'gl-matrix';
-import { Biome, MapData } from 'worker/generation/data';
+import { Biome, GameData } from 'worker/generation/data';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 import { poissonDisk, rasterizeLine, withProgress } from 'worker/generation/utils';
 
@@ -89,7 +89,7 @@ const featureProps: { [type: number]: Biome.Feature[] } = {
   ],
 };
 
-function rasterizeBiome(map: MapData, biome: Biome,
+function rasterizeBiome(data: GameData, biome: Biome,
   cb: (x: number, y: number) => void,
   offset?: (x: number, y: number) => [number, number]
 ) {
@@ -101,21 +101,21 @@ function rasterizeBiome(map: MapData, biome: Biome,
         px += dx;
         py += dy;
       }
-      if (map.getBiomeIndex(px, py) === biome.index)
+      if (data.getBiomeIndex(px, py) === biome.index)
         cb(x, y);
     }
 }
 
-function generateBiomeFeatures(map: MapData, report: ProgressReporter) {
-  const featurePoints = poissonDisk(map.width, map.height, FeatureSize, map.random);
-  const noiseX = new Noise(map.random, 1 / 32, 4);
-  const noiseY = new Noise(map.random, 1 / 32, 4);
+function generateBiomeFeatures(data: GameData, report: ProgressReporter) {
+  const featurePoints = poissonDisk(data.width, data.height, FeatureSize, data.random);
+  const noiseX = new Noise(data.random, 1 / 32, 4);
+  const noiseY = new Noise(data.random, 1 / 32, 4);
 
   for (const [x, y] of withProgress(featurePoints, report)) {
-    const biome = map.biomes[map.getBiomeIndex(x, y)];
+    const biome = data.biomes[data.getBiomeIndex(x, y)];
     const features = featureProps[biome.type];
     if (!features) continue;
-    const feature = features[map.random.range(10)];
+    const feature = features[data.random.range(10)];
     if (!feature) continue;
 
     switch (feature) {
@@ -126,21 +126,21 @@ function generateBiomeFeatures(map: MapData, report: ProgressReporter) {
         else terrain = 'water';
 
         if (terrain === 'water') {
-          rasterizeBiome(map, biome,
-            (x, y) => map.setTerrain(x, y, 'sand'),
+          rasterizeBiome(data, biome,
+            (x, y) => data.setTerrain(x, y, 'sand'),
             (x, y) => [
               (noiseX.noise2D(x, y) * 2 - 1) * BeachSize,
               (noiseY.noise2D(x, y) * 2 - 1) * BeachSize
             ]);
         }
-        rasterizeBiome(map, biome, (x, y) => map.setTerrain(x, y, terrain));
+        rasterizeBiome(data, biome, (x, y) => data.setTerrain(x, y, terrain));
       } break;
       case Biome.Feature.Oasis: {
-        rasterizeBiome(map, biome, (x, y) => map.setTerrain(x, y, 'water'));
-        rasterizeBiome(map, biome,
+        rasterizeBiome(data, biome, (x, y) => data.setTerrain(x, y, 'water'));
+        rasterizeBiome(data, biome,
           (x, y) => {
-            if (map.getTerrain(x, y) === 'sand' && map.random.range(5) === 0)
-              map.setObject(x, y, 'tree-coconut');
+            if (data.getTerrain(x, y) === 'sand' && data.random.range(5) === 0)
+              data.setObject(x, y, 'tree-coconut');
           },
           (x, y) => {
             const d = vec2.sub(vec2.create(), [x, y], biome.position);
@@ -150,28 +150,28 @@ function generateBiomeFeatures(map: MapData, report: ProgressReporter) {
         );
       } break;
       case Biome.Feature.Cemetery: {
-        rasterizeBiome(map, biome,
+        rasterizeBiome(data, biome,
           (x, y) => {
-            if (map.random.range(3) === 0) {
-              map.setTerrain(x, y, 'mud');
-              if (map.random.range(10) === 0) map.setObject(x, y, 'cross');
-              else if (map.random.range(10) === 0) map.setObject(x, y, 'bones');
+            if (data.random.range(3) === 0) {
+              data.setTerrain(x, y, 'mud');
+              if (data.random.range(10) === 0) data.setObject(x, y, 'cross');
+              else if (data.random.range(10) === 0) data.setObject(x, y, 'bones');
             }
           }
         );
       } break;
       case Biome.Feature.Ruins: {
-        rasterizeBiome(map, biome,
+        rasterizeBiome(data, biome,
           (x, y) => {
-            map.setTerrain(x, y, 'stone');
-            if (map.random.range(50) === 0)
-              map.setObject(x, y, 'pillar');
-            else if (map.random.range(50) === 0)
-              map.setObject(x, y, 'bones');
+            data.setTerrain(x, y, 'stone');
+            if (data.random.range(50) === 0)
+              data.setObject(x, y, 'pillar');
+            else if (data.random.range(50) === 0)
+              data.setObject(x, y, 'bones');
           },
           (x, y) => [
-            map.random.intBetween(-EdgeJitter, EdgeJitter),
-            map.random.intBetween(-EdgeJitter, EdgeJitter)
+            data.random.intBetween(-EdgeJitter, EdgeJitter),
+            data.random.intBetween(-EdgeJitter, EdgeJitter)
           ]
         );
       } break;
@@ -179,23 +179,23 @@ function generateBiomeFeatures(map: MapData, report: ProgressReporter) {
     biome.feature = feature;
     if (feature === Biome.Feature.Floral || feature === Biome.Feature.Rocky) {
       let neighbor: Biome;
-      if (neighbor = map.biomes[map.getBiomeIndex(x - FeatureSize, y)])
+      if (neighbor = data.biomes[data.getBiomeIndex(x - FeatureSize, y)])
         neighbor.feature = feature;
-      if (neighbor = map.biomes[map.getBiomeIndex(x + FeatureSize, y)])
+      if (neighbor = data.biomes[data.getBiomeIndex(x + FeatureSize, y)])
         neighbor.feature = feature;
-      if (neighbor = map.biomes[map.getBiomeIndex(x, y - FeatureSize)])
+      if (neighbor = data.biomes[data.getBiomeIndex(x, y - FeatureSize)])
         neighbor.feature = feature;
-      if (neighbor = map.biomes[map.getBiomeIndex(x, y + FeatureSize)])
+      if (neighbor = data.biomes[data.getBiomeIndex(x, y + FeatureSize)])
         neighbor.feature = feature;
     }
   }
 
-  const spawnMargins = [map.width * SpawnMargins, map.height * SpawnMargins];
+  const spawnMargins = [data.width * SpawnMargins, data.height * SpawnMargins];
   let spawnBiome: Biome;
   do {
-    spawnBiome = map.biomes[map.getBiomeIndex(
-      map.random.intBetween(spawnMargins[0], map.width - spawnMargins[0]),
-      map.random.intBetween(spawnMargins[1], map.width - spawnMargins[1])
+    spawnBiome = data.biomes[data.getBiomeIndex(
+      data.random.intBetween(spawnMargins[0], data.width - spawnMargins[0]),
+      data.random.intBetween(spawnMargins[1], data.width - spawnMargins[1])
     )];
   } while (
     spawnBiome.feature !== Biome.Feature.None &&
@@ -203,14 +203,14 @@ function generateBiomeFeatures(map: MapData, report: ProgressReporter) {
     spawnBiome.type !== Biome.Type.FrozenLake);
 
   spawnBiome.feature = Biome.Feature.Spawn;
-  map.props.spawn = [spawnBiome.position[0], spawnBiome.position[1]];
+  data.map.spawn = [spawnBiome.position[0], spawnBiome.position[1]];
 }
 
-function rasterizeRivers(map: MapData, report: ProgressReporter) {
-  const noiseX = new Noise(map.random, 1 / 32, 4);
-  const noiseY = new Noise(map.random, 1 / 32, 4);
+function rasterizeRivers(data: GameData, report: ProgressReporter) {
+  const noiseX = new Noise(data.random, 1 / 32, 4);
+  const noiseY = new Noise(data.random, 1 / 32, 4);
 
-  for (const { from, to, level } of withProgress(map.rivers, report)) {
+  for (const { from, to, level } of withProgress(data.rivers, report)) {
     function riverPoint(i: number) {
       let x = from[0] + (to[0] - from[0]) * (i / RiverSegments);
       let y = from[1] + (to[1] - from[1]) * (i / RiverSegments);
@@ -231,24 +231,24 @@ function rasterizeRivers(map: MapData, report: ProgressReporter) {
     }
     for (let i = 0; i < RiverSegments; i++) {
       const from = riverPoint(i), to = riverPoint(i + 1);
-      const biomeA = map.biomes[map.getBiomeIndex(from[0], from[1])];
-      const biomeB = map.biomes[map.getBiomeIndex(to[0], to[1])];
+      const biomeA = data.biomes[data.getBiomeIndex(from[0], from[1])];
+      const biomeB = data.biomes[data.getBiomeIndex(to[0], to[1])];
       const terrain = isFrozen(biomeA) && isFrozen(biomeB) ? 'ice' : 'water';
       rasterizeLine(from[0], from[1], to[0], to[1], (x, y) => {
         const size = Math.round(level * 4);
         for (let dy = 0; dy < size; dy++)
           for (let dx = 0; dx < size; dx++) {
-            if (map.getTerrain(x + dx, y + dy) !== 'water')
-              map.setTerrain(x + dx, y + dy, terrain);
-            map.setObject(x + dx, y + dy, null);
+            if (data.getTerrain(x + dx, y + dy) !== 'water')
+              data.setTerrain(x + dx, y + dy, terrain);
+            data.setObject(x + dx, y + dy, null);
           }
       });
     }
   }
 }
 
-export function generateFeatures(map: MapData, report: ProgressReporter) {
+export function generateFeatures(data: GameData, report: ProgressReporter) {
   report('generating features...', 0);
-  generateBiomeFeatures(map, report);
-  rasterizeRivers(map, report);
+  generateBiomeFeatures(data, report);
+  rasterizeRivers(data, report);
 }

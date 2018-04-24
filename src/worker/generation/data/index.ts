@@ -1,2 +1,2 @@
 export * from './Biome';
-export * from './MapData';
+export * from './GameData';
