@@ -1,4 +1,4 @@
-import { Container, DisplayObject, Texture, Sprite, Graphics } from 'pixi.js';
+import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 
 export class Camera extends Container {
   public offsetX = 0;
@@ -22,7 +22,7 @@ export class Camera extends Container {
     if (this.viewWidth !== width || this.viewHeight !== height) {
       this.viewWidth = width;
       this.viewHeight = height;
-      
+
       const mask = new Graphics();
       mask.beginFill(0xffffff);
       mask.drawRect(this.x, this.y, width, height);

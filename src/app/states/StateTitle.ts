@@ -1,10 +1,10 @@
-import { Container, loaders, Sprite, Texture } from 'pixi.js';
 import { App, TextScaleFactor } from 'app';
-import { GameState } from 'app/states/GameState';
-import { StateMain } from 'app/states/StateMain';
-import { fadeOut, fadeIn } from 'app/utils/animations';
 import { Button, Text } from 'app/components';
 import { Generator } from 'app/game';
+import { GameState } from 'app/states/GameState';
+import { StateMain } from 'app/states/StateMain';
+import { fadeIn, fadeOut } from 'app/utils/animations';
+import { Sprite, Texture } from 'pixi.js';
 
 export class StateTitle extends GameState {
   public get name() { return 'title'; }
@@ -34,7 +34,6 @@ export class StateTitle extends GameState {
   }
 
   update() {
-    const contentWidth = Math.max(this.logo.width, 150);
     const contentHeight = this.logo.height + 50 + 75 + 20 + 50;
 
     this.logo.x = (App.instance.screen.width - this.logo.width) / 2;

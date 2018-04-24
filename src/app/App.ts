@@ -1,6 +1,6 @@
-import { Application, loaders, settings, SCALE_MODES } from 'pixi.js';
 import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
+import { Application, SCALE_MODES, settings } from 'pixi.js';
 
 export const UIScaleFactor = 4;
 export const TextScaleFactor = 2;

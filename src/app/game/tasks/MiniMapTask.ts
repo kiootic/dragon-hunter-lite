@@ -1,14 +1,13 @@
 import { UIScaleFactor } from 'app';
 import { MapChange } from 'app/game/map';
 import { Task } from 'app/game/Task';
-import { Sprite, Texture } from 'pixi.js';
+import { Texture } from 'pixi.js';
 
 const ObjectAlpha = 0.25;
 
 export class MiniMapTask extends Task {
   private canvas!: HTMLCanvasElement;
   private mapData!: Uint8ClampedArray;
-  private sprite!: Sprite;
 
   public init() {
     const { width, height } = this.game.map;

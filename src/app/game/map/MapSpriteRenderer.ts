@@ -1,8 +1,6 @@
 import {
-  ObjectRenderer, TextureUvs, Sprite, utils, Shader, Quad,
-  CanvasRenderer, WebGLRenderer, CanvasSpriteRenderer, Rectangle, glCore, BaseTexture
+  BaseTexture, CanvasRenderer, CanvasSpriteRenderer, glCore, ObjectRenderer, Shader, Sprite, TextureUvs, utils, WebGLRenderer
 } from 'pixi.js';
-import { UIScaleFactor } from 'app';
 
 export interface MapSprite extends Sprite {
   outline: boolean;
@@ -25,12 +23,7 @@ for (let i = 0; i < BatchSize; i++) {
 export class MapSpriteRenderer extends ObjectRenderer {
   public static readonly Name = 'map-sprite';
 
-  private readonly _tint = new Float32Array(4);
-  private readonly _thickness = new Float32Array(2);
-  private readonly _center = new Float32Array(2);
-  private readonly _clamp = new Float32Array(4);
-  private readonly _bounds = new Rectangle();
-  private _shader!: Shader;
+  private shader!: Shader;
 
   private currentTex: BaseTexture | null = null;
   private currentBlendMode: number = -1;
@@ -45,7 +38,7 @@ export class MapSpriteRenderer extends ObjectRenderer {
 
   onContextChange() {
     const gl = this.renderer.gl;
-    this._shader = new SpriteShader(gl);
+    this.shader = new SpriteShader(gl);
 
     this.vb = glCore.GLBuffer.createVertexBuffer(gl, null, gl.STREAM_DRAW);
     this.ib = glCore.GLBuffer.createIndexBuffer(gl, indices, gl.STATIC_DRAW);
@@ -53,11 +46,11 @@ export class MapSpriteRenderer extends ObjectRenderer {
     const vaoSize = 10 * 4;
     this.vao = this.renderer.createVao()
       .addIndex(this.ib)
-      .addAttribute(this.vb, this._shader.attributes.aVertexPosition, gl.FLOAT, false, vaoSize, 0)
-      .addAttribute(this.vb, this._shader.attributes.aTextureCoord, gl.UNSIGNED_SHORT, true, vaoSize, 2 * 4)
-      .addAttribute(this.vb, this._shader.attributes.aColor, gl.UNSIGNED_BYTE, true, vaoSize, 3 * 4)
-      .addAttribute(this.vb, this._shader.attributes.aClamp, gl.FLOAT, true, vaoSize, 4 * 4)
-      .addAttribute(this.vb, this._shader.attributes.aThickness, gl.FLOAT, true, vaoSize, 8 * 4);
+      .addAttribute(this.vb, this.shader.attributes.aVertexPosition, gl.FLOAT, false, vaoSize, 0)
+      .addAttribute(this.vb, this.shader.attributes.aTextureCoord, gl.UNSIGNED_SHORT, true, vaoSize, 2 * 4)
+      .addAttribute(this.vb, this.shader.attributes.aColor, gl.UNSIGNED_BYTE, true, vaoSize, 3 * 4)
+      .addAttribute(this.vb, this.shader.attributes.aClamp, gl.FLOAT, true, vaoSize, 4 * 4)
+      .addAttribute(this.vb, this.shader.attributes.aThickness, gl.FLOAT, true, vaoSize, 8 * 4);
   }
 
   render(sprite: MapSprite) {
@@ -75,7 +68,7 @@ export class MapSpriteRenderer extends ObjectRenderer {
   }
 
   start() {
-    this.renderer.bindShader(this._shader);
+    this.renderer.bindShader(this.shader);
     this.renderer.bindVao(this.vao);
     this.vb.bind();
   }

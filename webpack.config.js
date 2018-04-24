@@ -25,7 +25,7 @@ module.exports = {
         test: /\.ts$/,
         enforce: 'pre',
         loader: 'tslint-loader',
-        options: { configFile: 'tslint.json', emitErrors: true, failOnHint: true }
+        options: { configFile: 'tslint.json', typeCheck: true, tsConfigFile: 'src/base.json', emitErrors: true, failOnHint: true }
       }, {
         test: /\.worker\/index\.ts$/,
         use: { loader: 'worker-loader' }

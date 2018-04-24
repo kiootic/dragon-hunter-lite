@@ -1,8 +1,8 @@
-import { Sprite, Texture, Point, Container, RenderTexture, SCALE_MODES } from 'pixi.js';
-import { vec2 } from 'gl-matrix';
 import { App, DisplayTileSize } from 'app';
-import { Task } from 'app/game/Task';
 import { TextureSprite } from 'app/game/map';
+import { Task } from 'app/game/Task';
+import { vec2 } from 'gl-matrix';
+import { Container, RenderTexture, SCALE_MODES, Sprite } from 'pixi.js';
 
 const TileSize = 16;
 

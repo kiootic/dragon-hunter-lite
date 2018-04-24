@@ -1,6 +1,6 @@
-import { bootstrap } from './bootstrap';
-import { App, UIScaleFactor } from 'app/App';
+import { App } from 'app/App';
 import { StatePreload } from 'app/states';
+import { bootstrap } from './bootstrap';
 export * from 'app/App';
 
 const app = bootstrap(App.instance);

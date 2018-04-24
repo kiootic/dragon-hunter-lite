@@ -1,9 +1,8 @@
-import { Task } from 'app/game/Task';
-import { Sprite, Texture, Point, Container, RenderTexture, BaseRenderTexture, SCALE_MODES, Filter } from 'pixi.js';
-import { UIScaleFactor, DisplayTileSize } from 'app';
-import { vec2 } from 'gl-matrix';
+import { DisplayTileSize } from 'app';
 import { TextureSprite } from 'app/game/map';
+import { Task } from 'app/game/Task';
 import { Noise } from 'common/noise';
+import { Container } from 'pixi.js';
 import { create as createRand } from 'random-seed';
 
 const ObjectSize = 32;
@@ -23,7 +22,7 @@ export class ObjectDisplayTask extends Task {
   private jitterNoiseY!: Noise;
 
   public update(dt: number) {
-    const updated = this.updateVisibility();
+    this.updateVisibility();
     this.updateTransforms();
     this.sortObjects();
   }
@@ -103,7 +102,7 @@ export class ObjectDisplayTask extends Task {
     const map = this.game.map;
     const objectData = this.game.library.objects;
 
-    for (const [key, sprite] of this.sprites) {
+    for (const [, sprite] of this.sprites) {
       const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];
 
       sprite.anchor.set(0.5, 1);
@@ -126,7 +125,7 @@ export class ObjectDisplayTask extends Task {
 
       let d = ay - by;
       if (d === 0) d = a.x - b.x;
-      if (d == 0) d = copy.indexOf(a) - copy.indexOf(b);
+      if (d === 0) d = copy.indexOf(a) - copy.indexOf(b);
       return d;
     });
   }

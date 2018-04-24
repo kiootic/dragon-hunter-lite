@@ -1,13 +1,4 @@
 import {
-  NORM_2D,
-  NORM_3D,
-  NORM_4D,
-  SQUISH_2D,
-  SQUISH_3D,
-  SQUISH_4D,
-  STRETCH_2D,
-  STRETCH_3D,
-  STRETCH_4D,
   base2D,
   base3D,
   base4D,
@@ -17,9 +8,18 @@ import {
   lookupPairs2D,
   lookupPairs3D,
   lookupPairs4D,
+  NORM_2D,
+  NORM_3D,
+  NORM_4D,
   p2D,
   p3D,
-  p4D
+  p4D,
+  SQUISH_2D,
+  SQUISH_3D,
+  SQUISH_4D,
+  STRETCH_2D,
+  STRETCH_3D,
+  STRETCH_4D
 } from './constants';
 
 class Contribution2 {

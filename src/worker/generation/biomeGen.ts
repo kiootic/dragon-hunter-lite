@@ -1,10 +1,9 @@
-import { poissonDisk, rasterizeLine } from 'worker/generation/utils';
-import { ProgressReporter } from 'worker/generation/ProgressReporter';
-import { Biome, MapData, RiverSegment } from 'worker/generation/data';
 import { Noise } from 'common/noise';
-import { RandomSeed } from 'random-seed';
-import { voronoi, VoronoiDiagram } from 'd3-voronoi';
+import { voronoi } from 'd3-voronoi';
 import { vec2 } from 'gl-matrix';
+import { Biome, MapData, RiverSegment } from 'worker/generation/data';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
+import { poissonDisk } from 'worker/generation/utils';
 
 const BiomeSize = 32;
 const EdgeRoughness = 16;

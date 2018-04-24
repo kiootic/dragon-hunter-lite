@@ -1,6 +1,6 @@
-import { Sprite, Texture, Filter } from 'pixi.js';
+import { MapSprite, MapSpriteRenderer } from 'app/game/map/MapSpriteRenderer';
 import { TextureDef } from 'common/data';
-import { MapSpriteRenderer, MapSprite } from 'app/game/map/MapSpriteRenderer';
+import { Sprite, Texture } from 'pixi.js';
 
 function hashKey(key: number) {
   // https://stackoverflow.com/a/12996028

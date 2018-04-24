@@ -1,5 +1,5 @@
-import OpenSimplexNoise from './simplex';
 import { RandomSeed } from 'random-seed';
+import OpenSimplexNoise from './simplex';
 
 export class Noise {
   private readonly noise: OpenSimplexNoise;

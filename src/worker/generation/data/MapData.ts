@@ -1,9 +1,9 @@
-import { VoronoiDiagram } from 'd3-voronoi';
-import { Biome } from 'worker/generation/data/Biome';
-import { RandomSeed, create as createRand } from 'random-seed';
 import { DataLibrary } from 'common/data';
-import { SerializedMap } from 'common/map/SerializedMap';
 import { MapProps } from 'common/map/MapProps';
+import { SerializedMap } from 'common/map/SerializedMap';
+import { VoronoiDiagram } from 'd3-voronoi';
+import { create as createRand, RandomSeed } from 'random-seed';
+import { Biome } from 'worker/generation/data/Biome';
 
 export interface RiverSegment {
   from: [number, number];

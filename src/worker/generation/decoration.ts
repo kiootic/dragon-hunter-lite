@@ -1,4 +1,4 @@
-import { MapData, Biome } from 'worker/generation/data';
+import { Biome, MapData } from 'worker/generation/data';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const decorationProps: { [type: number]: [string, number][] } = {
@@ -90,7 +90,7 @@ export function decorateMap(map: MapData, report: ProgressReporter) {
       r -= prob;
       if (biome.feature === Biome.Feature.Floral && decor === 'flower')
         r -= 0.1;
-      else if (biome.feature === Biome.Feature.Rocky && decor == 'rocks')
+      else if (biome.feature === Biome.Feature.Rocky && decor === 'rocks')
         r -= 0.1;
 
       if (r <= 0) {

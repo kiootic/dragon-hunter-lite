@@ -1,9 +1,8 @@
-import { Container, Texture, mesh, Point, Sprite, Graphics, RenderTexture } from 'pixi.js';
-import { UIScaleFactor, App } from 'app';
+import { App, UIScaleFactor } from 'app';
+import { Container, mesh, Point, RenderTexture, Sprite, Texture } from 'pixi.js';
 
 export class Panel extends Container {
   public readonly content = new Container();
-  private tex = Texture.fromFrame('sprites/ui/panel');
 
   private panelBg = new Sprite(Texture.WHITE);
   private panelMask = new mesh.NineSlicePlane(Texture.fromFrame('sprites/ui/panel-mask'), 6, 6, 6, 6);

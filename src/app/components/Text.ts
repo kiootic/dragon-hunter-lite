@@ -1,5 +1,5 @@
-import { Container, Text as PixiText, TextStyleOptions, Point } from 'pixi.js';
 import { UIScaleFactor } from 'app';
+import { Container, Point, Text as PixiText, TextStyleOptions } from 'pixi.js';
 
 export class Text extends Container {
   private _text: PixiText;

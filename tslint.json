@@ -4,7 +4,13 @@
     "jsRules": {},
     "rules": {
         "quotemark": [true, "single"],
-        "semicolon": [true, "always", "ignore-interfaces"]
+        "semicolon": [true, "always", "ignore-interfaces"],
+        "triple-equals": true,
+        "no-irregular-whitespace": true,
+        "no-trailing-whitespace": true,
+        "ordered-imports": true,
+        "whitespace": true,
+        "no-unused-variable": true
     },
     "rulesDirectory": []
 }

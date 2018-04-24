@@ -1,17 +1,15 @@
-import { Container, loaders, Sprite, Texture } from 'pixi.js';
-import { App } from 'app';
-import { GameState } from 'app/states/GameState';
-import { fadeOut, fadeIn } from 'app/utils/animations';
 import { Game } from 'app/game';
-import { TileMap } from 'app/game/map';
+import { GameState } from 'app/states/GameState';
+import { fadeIn } from 'app/utils/animations';
 import { GameSave } from 'common/data';
+import { Container, loaders, Sprite, Texture } from 'pixi.js';
 
 export class StateMain extends GameState {
   public get name() { return 'main'; }
 
   private readonly game: Game;
 
-  constructor(private readonly gameSave: GameSave) {
+  constructor(gameSave: GameSave) {
     super();
     this.game = new Game(gameSave);
     this.root.addChild(this.game.view);

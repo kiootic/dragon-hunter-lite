@@ -1,13 +1,10 @@
+import { GameSave } from 'common/data';
 import { generateBiomes } from 'worker/generation/biomeGen';
-import { create as createRand } from 'random-seed';
 import { MapData } from 'worker/generation/data';
-import { DataLibrary, loadDataLib, GameSave } from 'common/data';
-import { ProgressReporter } from 'worker/generation/ProgressReporter';
-import { generateFeatures } from 'worker/generation/featureGen';
 import { decorateMap } from 'worker/generation/decoration';
+import { generateFeatures } from 'worker/generation/featureGen';
 import { generateLibrary } from 'worker/generation/libraryGen';
-
-declare function require(path: string): any;
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 export function generate(
   width: number, height: number, seed: string,

@@ -1,9 +1,9 @@
-import { Container, Text, loaders } from 'pixi.js';
-import * as FontFaceObserver from 'fontfaceobserver';
 import { App } from 'app';
 import { GameState } from 'app/states/GameState';
 import { StateTitle } from 'app/states/StateTitle';
 import { fadeOut } from 'app/utils/animations';
+import * as FontFaceObserver from 'fontfaceobserver';
+import { loaders, Text } from 'pixi.js';
 
 export class StatePreload extends GameState {
   public get name() { return 'preload'; }

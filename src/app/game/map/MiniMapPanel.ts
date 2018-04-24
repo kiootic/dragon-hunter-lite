@@ -1,7 +1,6 @@
-import { Panel } from 'app/components';
-import { Sprite, Point } from 'pixi.js';
-import { Camera } from 'app/game/Camera';
 import { UIScaleFactor } from 'app';
+import { Panel } from 'app/components';
+import { Point, Sprite } from 'pixi.js';
 
 const Opacity = 0.8;
 export class MiniMapPanel extends Panel {

@@ -1,8 +1,7 @@
-import { Container } from 'pixi.js';
-import { Game } from 'app/game/Game';
 import { Camera } from 'app/game/Camera';
-import { Panel } from 'app/components';
+import { Game } from 'app/game/Game';
 import { MiniMapPanel } from 'app/game/map';
+import { Container } from 'pixi.js';
 
 export class GameView extends Container {
   public readonly camera = new Camera();

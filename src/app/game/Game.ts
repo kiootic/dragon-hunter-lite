@@ -1,9 +1,9 @@
-import { GameView } from 'app/game/GameView';
 import { App, DisplayTileSize } from 'app';
-import { Keyboard } from 'app/utils/Keyboard';
-import { Task } from 'app/game/Task';
+import { GameView } from 'app/game/GameView';
 import { TileMap } from 'app/game/map';
-import { TerrainDisplayTask, ObjectDisplayTask, MiniMapTask } from 'app/game/tasks';
+import { Task } from 'app/game/Task';
+import { MiniMapTask, ObjectDisplayTask, TerrainDisplayTask } from 'app/game/tasks';
+import { Keyboard } from 'app/utils/Keyboard';
 import { GameSave } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
@@ -54,8 +54,8 @@ export class Game {
     vec2.normalize(v, v);
     if (this.keyboard.isDown('Control')) vec2.scale(v, v, 10);
     const [x, y] = vec2.scale(v, v, dt / 1000 * 10 * 64);
-    this.offsetX += v[0];
-    this.offsetY += v[1];
+    this.offsetX += x;
+    this.offsetY += y;
     this.view.offsetX = Math.round(this.offsetX);
     this.view.offsetY = Math.round(this.offsetY);
 
