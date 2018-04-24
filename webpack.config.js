@@ -27,18 +27,19 @@ module.exports = {
         loader: 'tslint-loader',
         options: {
           configFile: 'tslint.json', typeCheck: true, tsConfigFile: 'src/base.json',
-          fix: true, emitErrors: true, failOnHint: true
+          emitErrors: true, failOnHint: true
         }
       }, {
         test: /\.ts$/,
         loader: 'ts-loader',
-        include: /src\/(app|common|data)\/.*\.ts/,
-        options: { instance: 'app', configFile: 'src/app/tsconfig.json' }
+        include: path.resolve(__dirname, 'src'),
+        exclude: path.resolve(__dirname, 'src/worker'),
+        options: { instance: 'app' }
       }, {
         test: /\.ts$/,
         loader: 'ts-loader',
-        include: /src\/(worker|common|data)\/.*\.ts/,
-        options: { instance: 'worker', configFile: 'src/worker/tsconfig.json' }
+        include: path.resolve(__dirname, 'src/worker'),
+        options: { instance: 'worker' }
       }, {
         exclude: /\.json/,
         include: [path.resolve(__dirname, 'assets')],
@@ -61,9 +62,8 @@ module.exports = {
   },
   output: {
     filename: 'app.[hash].js',
-    chunkFilename: 'app.[name].[chunkhash].js',
-    path: path.resolve(__dirname, 'dist'),
-    globalObject: 'this'    // workaround of webpack#6642
+    chunkFilename: 'app.[chunkhash].js',
+    path: path.resolve(__dirname, 'dist')
   },
   plugins: [
     new HtmlWebpackPlugin({ template: 'src/index.html' }),
