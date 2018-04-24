@@ -30,6 +30,7 @@ export namespace Biome {
   }
   export enum Feature {
     None,
+    Spawn,
     Pond,
     LavaPond,
     Floral,

@@ -30,7 +30,7 @@ export class ObjectDisplayTask extends Task {
 
   public init() {
     this.game.view.camera.addChild(this.container);
-    const rand = createRand(this.game.map.seed);
+    const rand = createRand(this.game.map.props.seed);
     this.jitterNoiseX = new Noise(rand, 1, 1);
     this.jitterNoiseY = new Noise(rand, 1, 1);
   }

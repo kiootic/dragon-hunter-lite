@@ -9,6 +9,7 @@ const EdgeJitter = 4;
 const BeachSize = 16;
 const RiverSegments = 16;
 const RiverRoughness = 24;
+const SpawnMargins = 0.2;
 
 const featureProps: { [type: number]: Biome.Feature[] } = {
   [Biome.Type.Barren]: [
@@ -188,6 +189,21 @@ function generateBiomeFeatures(map: MapData, report: ProgressReporter) {
         neighbor.feature = feature;
     }
   }
+
+  const spawnMargins = [map.width * SpawnMargins, map.height * SpawnMargins];
+  let spawnBiome: Biome;
+  do {
+    spawnBiome = map.biomes[map.getBiomeIndex(
+      map.random.intBetween(spawnMargins[0], map.width - spawnMargins[0]),
+      map.random.intBetween(spawnMargins[1], map.width - spawnMargins[1])
+    )];
+  } while (
+    spawnBiome.feature !== Biome.Feature.None &&
+    spawnBiome.type !== Biome.Type.Lake &&
+    spawnBiome.type !== Biome.Type.FrozenLake);
+
+  spawnBiome.feature = Biome.Feature.Spawn;
+  map.props.spawn = [spawnBiome.position[0], spawnBiome.position[1]];
 }
 
 function rasterizeRivers(map: MapData, report: ProgressReporter) {

@@ -1,4 +1,4 @@
-import { SerializedMap } from 'common/map';
+import { MapProps, SerializedMap } from 'common/map';
 import { Subject } from 'rxjs/Subject';
 
 export interface MapChange {
@@ -10,7 +10,10 @@ export class TileMap {
   private readonly data: Uint16Array;
   public readonly changes$ = new Subject<MapChange>();
 
-  constructor(public readonly width: number, public readonly height: number, public readonly seed: string) {
+  constructor(
+    public readonly width: number, public readonly height: number,
+    public readonly props: MapProps
+  ) {
     this.data = new Uint16Array(width * height * 2);
   }
 
@@ -22,15 +25,15 @@ export class TileMap {
       objects[i] = this.data[i * 2 + 1];
     }
     return {
-      seed: this.seed,
       width: this.width,
       height: this.height,
+      props: this.props,
       terrains, objects
     };
   }
 
   public static deserialize(data: SerializedMap) {
-    const map = new TileMap(data.width, data.height, data.seed);
+    const map = new TileMap(data.width, data.height, data.props);
     const len = data.width * data.height;
     for (let i = 0; i < len; i++) {
       map.data[i * 2] = data.terrains[i];

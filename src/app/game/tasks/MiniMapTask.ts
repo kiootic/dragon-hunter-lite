@@ -1,7 +1,7 @@
-import { Task } from 'app/game/Task';
-import { MapChange } from 'app/game/map';
 import { UIScaleFactor } from 'app';
-import { Texture, Sprite } from 'pixi.js';
+import { MapChange } from 'app/game/map';
+import { Task } from 'app/game/Task';
+import { Sprite, Texture } from 'pixi.js';
 
 const ObjectAlpha = 0.25;
 

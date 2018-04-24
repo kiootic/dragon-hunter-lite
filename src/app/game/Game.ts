@@ -1,5 +1,5 @@
 import { GameView } from 'app/game/GameView';
-import { App } from 'app';
+import { App, DisplayTileSize } from 'app';
 import { Keyboard } from 'app/utils/Keyboard';
 import { Task } from 'app/game/Task';
 import { TileMap } from 'app/game/map';
@@ -10,6 +10,8 @@ import { vec2 } from 'gl-matrix';
 export class Game {
   constructor(public readonly save: GameSave) {
     this.map = TileMap.deserialize(save.map);
+    this.offsetX = this.map.props.spawn[0] * DisplayTileSize;
+    this.offsetY = this.map.props.spawn[1] * DisplayTileSize;
   }
 
   public readonly view = new GameView(this);
@@ -50,7 +52,7 @@ export class Game {
     if (this.keyboard.isDown('w')) v[1]--;
     if (this.keyboard.isDown('s')) v[1]++;
     vec2.normalize(v, v);
-    if (this.keyboard.isDown('Shift')) vec2.scale(v, v, 10);
+    if (this.keyboard.isDown('Control')) vec2.scale(v, v, 10);
     const [x, y] = vec2.scale(v, v, dt / 1000 * 10 * 64);
     this.offsetX += v[0];
     this.offsetY += v[1];

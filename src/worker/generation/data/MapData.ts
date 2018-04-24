@@ -3,6 +3,7 @@ import { Biome } from 'worker/generation/data/Biome';
 import { RandomSeed, create as createRand } from 'random-seed';
 import { DataLibrary } from 'common/data';
 import { SerializedMap } from 'common/map/SerializedMap';
+import { MapProps } from 'common/map/MapProps';
 
 export interface RiverSegment {
   from: [number, number];
@@ -19,6 +20,8 @@ export class MapData {
   public biomes: Biome[] = [];
   public rivers: RiverSegment[] = [];
 
+  public props: Partial<MapProps> = {};
+
   private readonly terrainLookup: Record<string, number>;
   private readonly objectLookup: Record<string, number>;
 
@@ -30,6 +33,7 @@ export class MapData {
     this.objects = new Uint16Array(width * height);
     this.tileBiomes = new Uint16Array(width * height);
     this.random = createRand(seed);
+    this.props.seed = seed;
 
     function makeLookup(items: ({ name: string, id: number } | null)[]): Record<string, number> {
       return Object.assign({}, ...items
@@ -44,8 +48,8 @@ export class MapData {
 
   public finalize(): SerializedMap {
     return {
-      seed: this.seed,
       width: this.width, height: this.height,
+      props: this.props as MapProps,
       terrains: this.terrains,
       objects: this.objects
     };
