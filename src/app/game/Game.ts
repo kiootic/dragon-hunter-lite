@@ -5,6 +5,7 @@ import { Task } from 'app/game/Task';
 import { TileMap } from 'app/game/map';
 import { TerrainDisplayTask, ObjectDisplayTask, MiniMapTask } from 'app/game/tasks';
 import { GameSave } from 'common/data';
+import { vec2 } from 'gl-matrix';
 
 export class Game {
   constructor(public readonly save: GameSave) {
@@ -33,6 +34,9 @@ export class Game {
     this.keyboard.dispose();
   }
 
+  private offsetX = 0;
+  private offsetY = 0;
+
   private tasks: Task[] = [];
   public addTask<T extends Task>(Task: { new(game: Game): Task }) {
     const task = new Task(this);
@@ -40,6 +44,19 @@ export class Game {
     task.init();
   }
   private updateTasks(dt: number) {
+    const v = vec2.fromValues(0, 0);
+    if (this.keyboard.isDown('a')) v[0]--;
+    if (this.keyboard.isDown('d')) v[0]++;
+    if (this.keyboard.isDown('w')) v[1]--;
+    if (this.keyboard.isDown('s')) v[1]++;
+    vec2.normalize(v, v);
+    if (this.keyboard.isDown('Shift')) vec2.scale(v, v, 10);
+    const [x, y] = vec2.scale(v, v, dt / 1000 * 10 * 64);
+    this.offsetX += v[0];
+    this.offsetY += v[1];
+    this.view.offsetX = Math.round(this.offsetX);
+    this.view.offsetY = Math.round(this.offsetY);
+
     for (let i = 0; i < this.tasks.length; i++) {
       if (this.tasks[i].isActive)
         this.tasks[i].update(dt);
