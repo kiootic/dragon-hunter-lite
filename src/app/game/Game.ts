@@ -4,6 +4,7 @@ import { GameView } from 'app/game/GameView';
 import { TileMap } from 'app/game/map';
 import { Task } from 'app/game/Task';
 import { MiniMapTask, ObjectDisplayTask, TerrainDisplayTask } from 'app/game/tasks';
+import { Trait } from 'app/game/Trait';
 import { Keyboard } from 'app/utils/Keyboard';
 import { GameSave } from 'common/data';
 import { vec2 } from 'gl-matrix';
@@ -37,12 +38,19 @@ export class Game {
     this.keyboard.dispose();
   }
 
-  public entities = new Map<number, Entity>();
+  public readonly entities = Object.assign(new Map<number, Entity>(), {
+    findType: (entityType: typeof Entity & { Type: string }) => {
+      return Array.from(this.entities.values()).filter(entity => entity.type === entityType.Type);
+    },
+    findTrait: <T extends Trait>(traitType: { _mark: T, Type: string }) => {
+      return Array.from(this.entities.values()).filter(entity => entity.traits.get(traitType));
+    }
+  });
 
   private offsetX = 0;
   private offsetY = 0;
 
-  private tasks: Task[] = [];
+  private readonly tasks: Task[] = [];
   public addTask<T extends Task>(Task: { new(game: Game): Task }) {
     const task = new Task(this);
     this.tasks.push(task);

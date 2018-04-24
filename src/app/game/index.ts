@@ -3,3 +3,5 @@ export * from './GameView';
 export * from './Camera';
 export * from './Generator';
 export * from './Task';
+export * from './Entity';
+export * from './Trait';
