@@ -10,8 +10,8 @@ import { vec2 } from 'gl-matrix';
 export class Game {
   constructor(public readonly save: GameSave) {
     this.map = TileMap.deserialize(save.map);
-    this.offsetX = this.map.props.spawn[0] * DisplayTileSize;
-    this.offsetY = this.map.props.spawn[1] * DisplayTileSize;
+    this.offsetX = save.player.position[0] * DisplayTileSize;
+    this.offsetY = save.player.position[1] * DisplayTileSize;
   }
 
   public readonly view = new GameView(this);

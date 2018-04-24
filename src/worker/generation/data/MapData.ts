@@ -1,4 +1,5 @@
 import { DataLibrary } from 'common/data';
+import { PlayerProps } from 'common/data/props/PlayerProps';
 import { MapProps } from 'common/map/MapProps';
 import { SerializedMap } from 'common/map/SerializedMap';
 import { VoronoiDiagram } from 'd3-voronoi';
@@ -20,10 +21,12 @@ export class MapData {
   public biomes: Biome[] = [];
   public rivers: RiverSegment[] = [];
 
-  public props: Partial<MapProps> = {};
+  public props: MapProps = {} as MapProps;
 
   private readonly terrainLookup: Record<string, number>;
   private readonly objectLookup: Record<string, number>;
+
+  public readonly player: PlayerProps = {} as PlayerProps;
 
   constructor(
     public readonly width: number, public readonly height: number,
