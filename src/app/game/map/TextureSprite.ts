@@ -13,12 +13,14 @@ function hashKey(key: number) {
 export class TextureSprite extends Sprite implements MapSprite {
   public outline: boolean = false;
   public offset?: [number, number];
+  public clip: [number, number] = [0, 0];
 
   public animName: string = '';
   public still: boolean = true;
 
   private overlay?: Sprite;
   private textureDef?: Exclude<TextureDef, string>;
+  private currentTex = Texture.EMPTY;
 
   public setTexture(textureDef: TextureDef, key: number) {
     key = hashKey(key);
@@ -30,16 +32,16 @@ export class TextureSprite extends Sprite implements MapSprite {
 
     if (typeof textureDef === 'string') {
       this.textureDef = undefined;
-      this.texture = Texture.fromFrame(textureDef);
+      this.currentTex = Texture.fromFrame(textureDef);
     } else {
       this.textureDef = textureDef;
       switch (textureDef.type) {
         case 'single':
-          this.texture = Texture.fromFrame(textureDef.tex);
+          this.currentTex = Texture.fromFrame(textureDef.tex);
           if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
           break;
         case 'random':
-          this.texture = Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]);
+          this.currentTex = Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]);
           if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
           break;
         case 'composite': {
@@ -52,10 +54,10 @@ export class TextureSprite extends Sprite implements MapSprite {
         } break;
         case 'animation':
           this.frame = -1;
-          this.texture = Texture.EMPTY;
+          this.currentTex = Texture.EMPTY;
           break;
         case 'liquid':
-          this.texture = Texture.fromFrame(textureDef.tex);
+          this.currentTex = Texture.fromFrame(textureDef.tex);
           if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
       }
     }
@@ -63,24 +65,33 @@ export class TextureSprite extends Sprite implements MapSprite {
 
   private frame = -1;
   public update(elapsed: number) {
-    if (!this.textureDef)
-      return;
-
-    if (this.textureDef.type === 'animation' && this.animName in this.textureDef.anims) {
-      const animation = this.textureDef.anims[this.animName];
-      if (this.still) {
-        this.frame = -1;
-      } else {
-        const frameDuration = 1000 / animation.fps;
-        this.frame = Math.floor(elapsed / frameDuration) % animation.numFrames;
+    if (this.textureDef) {
+      if (this.textureDef.type === 'animation' && this.animName in this.textureDef.anims) {
+        const animation = this.textureDef.anims[this.animName];
+        if (this.still) {
+          this.frame = -1;
+        } else {
+          const frameDuration = 1000 / animation.fps;
+          this.frame = Math.floor(elapsed / frameDuration) % animation.numFrames;
+        }
+        this.currentTex = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
+      } else if (this.textureDef.type === 'liquid') {
+        let d = (elapsed % this.textureDef.time) / this.textureDef.time;
+        d = Math.sin(d * Math.PI * 2);
+        const offset = this.textureDef.offset * d;
+        this.offset = [offset, offset];
       }
-      this.texture = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
-    } else if (this.textureDef.type === 'liquid') {
-      let d = (elapsed % this.textureDef.time) / this.textureDef.time;
-      d = Math.sin(d * Math.PI * 2);
-      const offset = this.textureDef.offset * d;
-      this.offset = [offset, offset];
     }
+
+    const tex = this.currentTex.clone();
+    const frame = tex.frame.clone();
+    frame.width -= Math.round(this.clip[0] * frame.width);
+    frame.height -= Math.round(this.clip[1] * frame.height);
+    tex.frame = frame;
+    this.texture = tex;
+
+    if (this.overlay instanceof TextureSprite)
+      this.overlay.update(elapsed);
   }
 
   _onAnchorUpdate() {

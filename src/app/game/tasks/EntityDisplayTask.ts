@@ -60,6 +60,10 @@ export class EntityDisplayTask extends Task {
       sprite.anchor.set(0.5, 1);
       sprite.scale.set(scale[0], scale[1]);
 
+      const terrain = this.game.library.terrains[this.game.map.getTerrain(position[0], position[1])];
+      const liquid = terrain && terrain.liquid;
+      sprite.clip = liquid ? [0, 1 / 6] : [0, 0];
+
       const tx = Math.floor(position[0] * DisplayTileSize);
       const ty = Math.floor(position[1] * DisplayTileSize);
       sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));

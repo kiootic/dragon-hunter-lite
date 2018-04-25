@@ -73,7 +73,7 @@ export function decorateMap(data: GameData, report: ProgressReporter) {
   function decorateTile(x: number, y: number) {
     if (data.getObject(x, y)) return;
     const terrain = data.getTerrain(x, y);
-    if (terrain === 'water' || terrain === 'lava' || terrain === 'ice') return;
+    if (terrain === 'water' || terrain === 'lava' || terrain === 'ice' || terrain === 'mud') return;
 
     const biome = data.biomes[data.getBiomeIndex(x, y)];
     const decorations = decorationProps[biome.type];

@@ -43,6 +43,8 @@ export class TileMap {
   }
 
   private toIndex(x: number, y: number): number {
+    x = Math.floor(x);
+    y = Math.floor(y);
     return x >= 0 && x < this.width && y >= 0 && y < this.height ?
       (x + this.width * y) : -1;
   }

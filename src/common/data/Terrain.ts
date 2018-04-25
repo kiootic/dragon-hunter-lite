@@ -5,4 +5,5 @@ export interface Terrain {
   name: string;
   texture: TextureDef;
   color: string;
+  liquid?: boolean;
 }

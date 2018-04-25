@@ -131,7 +131,7 @@ function rasterizeBiomes(data: GameData, report: ProgressReporter) {
         case Biome.Type.Forest: terrain = 'grass-deep'; break;
         case Biome.Type.FrozenLake: terrain = 'ice'; break;
         case Biome.Type.Lake: terrain = 'water'; break;
-        case Biome.Type.Swamp: terrain = data.random.range(50) ? 'mud' : 'water'; break;
+        case Biome.Type.Swamp: terrain = data.random.range(5) ? 'mud' : 'grass-deep'; break;
       }
       data.setTerrain(x, y, terrain);
       data.setBiomeIndex(x, y, realBiome.index);
