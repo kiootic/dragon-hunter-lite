@@ -1,5 +1,5 @@
 import { DisplayTileSize } from 'app';
-import { Entity } from 'app/game';
+import { Camera, Entity } from 'app/game';
 import { Task } from 'app/game/Task';
 import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
@@ -39,7 +39,7 @@ export class EntityDisplayTask extends Task {
       const { position, sprite } = entity.traits.get(Spatial);
       if (isVisible(position) && !this.visible.has(entity)) {
         this.visible.add(entity);
-        this.game.view.camera.addChild(sprite);
+        this.game.view.camera.add(Object.assign(sprite, { layer: Camera.Layer.Objects }));
       }
     }
   }

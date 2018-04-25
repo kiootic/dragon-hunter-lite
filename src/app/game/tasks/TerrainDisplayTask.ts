@@ -1,4 +1,5 @@
 import { App, DisplayTileSize } from 'app';
+import { Camera } from 'app/game/Camera';
 import { Game } from 'app/game/Game';
 import { TextureSprite } from 'app/game/map';
 import { Task } from 'app/game/Task';
@@ -11,15 +12,11 @@ export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, Sprite>();
   private readonly container = new Container();
   private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
-  private readonly view = new Sprite(this.renderTex);
+  private readonly view = Object.assign(new Sprite(this.renderTex), { layer: Camera.Layer.Terrain });
 
   constructor(game: Game) {
     super(game);
-    this.game.view.camera.addChild(this.view);
-  }
-
-  public dispose() {
-    this.game.view.camera.removeChild(this.view);
+    this.game.view.camera.add(this.view);
   }
 
   public update(dt: number) {
