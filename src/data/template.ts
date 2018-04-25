@@ -19,6 +19,7 @@ export function makeBush(): ObjectDef {
     color: '416652',
     scale: 1.5,
     jitter: true,
+    obstacle: true,
   };
 }
 
@@ -32,5 +33,6 @@ export function makeBerryBush(color: string): ObjectDef {
     color: '416652',
     scale: 1.5,
     jitter: true,
+    obstacle: true,
   };
 }

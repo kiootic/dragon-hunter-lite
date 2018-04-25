@@ -120,7 +120,7 @@ export class ObjectDisplayTask extends Task {
       sprite.scale.set(scale, scale);
 
       const tx = (sprite.tileX + 0.5) * DisplayTileSize + sprite.jitter[0];
-      const ty = (sprite.tileY + 1) * DisplayTileSize + sprite.jitter[1];
+      const ty = (sprite.tileY + (obj.terrain ? 1 : 0.5)) * DisplayTileSize + sprite.jitter[1];
       sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));
     }
   }

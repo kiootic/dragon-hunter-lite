@@ -72,6 +72,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '416652',
     scale: 1.5,
     jitter: true,
+    obstacle: true,
   },
   'stone': {
     texture: 'sprites/objects/stone',
