@@ -1,20 +1,26 @@
-import { UIScaleFactor } from 'app';
+import { Game } from 'app/game/Game';
 import { MapChange } from 'app/game/map';
 import { Task } from 'app/game/Task';
+import { Spatial } from 'app/game/traits';
+import { vec2 } from 'gl-matrix';
 import { Texture } from 'pixi.js';
 
 const ObjectAlpha = 0.25;
 
 export class MiniMapTask extends Task {
-  private canvas!: HTMLCanvasElement;
-  private mapData!: Uint8ClampedArray;
+  private readonly playerPosition: vec2;
+  private readonly canvas: HTMLCanvasElement;
+  private readonly mapData: Uint8ClampedArray;
 
-  public init() {
+  constructor(game: Game) {
+    super(game);
+
     const { width, height } = this.game.map;
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
     this.canvas.height = height;
     this.mapData = new Uint8ClampedArray(width * height * 4);
+    this.playerPosition = this.game.player.traits.get(Spatial).position;
 
     this.game.map.changes$.subscribe(this.onMapUpdate);
     for (let y = 0; y < height; y++) {
@@ -28,9 +34,7 @@ export class MiniMapTask extends Task {
   }
 
   public update(dt: number) {
-    const { offsetX: x, offsetY: y } = this.game.view.camera;
-    const scale = 16 * UIScaleFactor;
-    this.game.view.minimap.setOffset(-x / scale, -y / scale);
+    this.game.view.minimap.setOffset(this.playerPosition);
   }
 
   private onMapUpdate = ({ x, y }: MapChange) => (this.renderTile(x, y), this.updateCanvas());

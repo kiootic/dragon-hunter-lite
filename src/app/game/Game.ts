@@ -1,19 +1,19 @@
-import { App, DisplayTileSize } from 'app';
+import { App } from 'app';
+import { Player } from 'app/game/entities/Player';
 import { Entity } from 'app/game/Entity';
 import { GameView } from 'app/game/GameView';
 import { TileMap } from 'app/game/map';
 import { Task } from 'app/game/Task';
-import { MiniMapTask, ObjectDisplayTask, TerrainDisplayTask } from 'app/game/tasks';
+import {
+  EntityDisplayTask, MiniMapTask, ObjectDisplayTask, PlayerMovementTask, TerrainDisplayTask
+} from 'app/game/tasks';
 import { Trait } from 'app/game/Trait';
 import { Keyboard } from 'app/utils/Keyboard';
 import { GameSave } from 'common/data';
-import { vec2 } from 'gl-matrix';
 
 export class Game {
   constructor(public readonly save: GameSave) {
     this.map = TileMap.deserialize(save.map);
-    this.offsetX = save.player.position[0] * DisplayTileSize;
-    this.offsetY = save.player.position[1] * DisplayTileSize;
   }
 
   public readonly view = new GameView(this);
@@ -22,8 +22,11 @@ export class Game {
   public get library() { return this.save.library; }
 
   public init() {
+    new Player(this);
+    this.addTask(PlayerMovementTask);
     this.addTask(TerrainDisplayTask);
     this.addTask(ObjectDisplayTask);
+    this.addTask(EntityDisplayTask);
     this.addTask(MiniMapTask);
   }
 
@@ -47,29 +50,14 @@ export class Game {
     }
   });
 
-  private offsetX = 0;
-  private offsetY = 0;
+  public get player() { return this.entities.get(1)!; }
 
   private readonly tasks: Task[] = [];
   public addTask<T extends Task>(Task: { new(game: Game): Task }) {
     const task = new Task(this);
     this.tasks.push(task);
-    task.init();
   }
   private updateTasks(dt: number) {
-    const v = vec2.fromValues(0, 0);
-    if (this.keyboard.isDown('a')) v[0]--;
-    if (this.keyboard.isDown('d')) v[0]++;
-    if (this.keyboard.isDown('w')) v[1]--;
-    if (this.keyboard.isDown('s')) v[1]++;
-    vec2.normalize(v, v);
-    if (this.keyboard.isDown('Control')) vec2.scale(v, v, 10);
-    const [x, y] = vec2.scale(v, v, dt / 1000 * 10 * 64);
-    this.offsetX += x;
-    this.offsetY += y;
-    this.view.offsetX = Math.round(this.offsetX);
-    this.view.offsetY = Math.round(this.offsetY);
-
     for (let i = 0; i < this.tasks.length; i++) {
       if (this.tasks[i].isActive)
         this.tasks[i].update(dt);

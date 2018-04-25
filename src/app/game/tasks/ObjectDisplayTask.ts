@@ -1,4 +1,5 @@
 import { DisplayTileSize } from 'app';
+import { Game } from 'app/game/Game';
 import { TextureSprite } from 'app/game/map';
 import { Task } from 'app/game/Task';
 import { Noise } from 'common/noise';
@@ -18,16 +19,12 @@ interface TileObjectSprite extends TextureSprite {
 export class ObjectDisplayTask extends Task {
   private readonly sprites = new Map<string, TileObjectSprite>();
   private readonly container = new Container();
-  private jitterNoiseX!: Noise;
-  private jitterNoiseY!: Noise;
+  private readonly jitterNoiseX: Noise;
+  private readonly jitterNoiseY: Noise;
 
-  public update(dt: number) {
-    this.updateVisibility();
-    this.updateTransforms();
-    this.sortObjects();
-  }
+  constructor(game: Game) {
+    super(game);
 
-  public init() {
     this.game.view.camera.addChild(this.container);
     const rand = createRand(this.game.map.props.seed);
     this.jitterNoiseX = new Noise(rand, 1, 1);
@@ -38,12 +35,19 @@ export class ObjectDisplayTask extends Task {
     this.game.view.camera.removeChild(this.container);
   }
 
+  public update(dt: number) {
+    this.updateVisibility();
+    this.updateTransforms();
+    this.sortObjects();
+  }
+
   private updateVisibility() {
-    const { offsetX, offsetY, viewWidth: w, viewHeight: h } = this.game.view.camera;
+    const { offset: [offsetX, offsetY], viewWidth: w, viewHeight: h } = this.game.view.camera;
     const margin = MarginSize * DisplayTileSize;
+    const halfW = w / 2 + margin, halfH = h / 2 + margin;
     function isVisible(x: number, y: number) {
-      return x >= offsetX - margin && x <= offsetX + w + margin &&
-        y >= offsetY - margin && y <= offsetY + h + margin;
+      return x >= offsetX - halfW && x <= offsetX + halfW &&
+        y >= offsetY - halfH && y <= offsetY + halfH;
     }
 
     const removePool: TileObjectSprite[] = [];
@@ -58,10 +62,10 @@ export class ObjectDisplayTask extends Task {
     }
 
     const map = this.game.map;
-    const left = Math.max(0, Math.floor((offsetX - margin) / DisplayTileSize));
-    const right = Math.min(map.width - 1, Math.ceil((offsetX + w + margin) / DisplayTileSize));
-    const top = Math.max(0, Math.floor((offsetY - margin) / DisplayTileSize));
-    const bottom = Math.min(map.height - 1, Math.ceil((offsetY + h + margin) / DisplayTileSize));
+    const left = Math.max(0, Math.floor((offsetX - halfW) / DisplayTileSize));
+    const right = Math.min(map.width - 1, Math.ceil((offsetX + halfW) / DisplayTileSize));
+    const top = Math.max(0, Math.floor((offsetY - halfH) / DisplayTileSize));
+    const bottom = Math.min(map.height - 1, Math.ceil((offsetY + halfH) / DisplayTileSize));
 
     const objectData = this.game.library.objects;
     for (let x = left; x <= right; x++)
@@ -98,7 +102,7 @@ export class ObjectDisplayTask extends Task {
   }
 
   private updateTransforms() {
-    const { offsetX: dx, offsetY: dy } = this.game.view.camera;
+    const { offset: [dx, dy], viewWidth: w, viewHeight: h } = this.game.view.camera;
     const map = this.game.map;
     const objectData = this.game.library.objects;
 
@@ -112,7 +116,7 @@ export class ObjectDisplayTask extends Task {
 
       const tx = (sprite.tileX + 0.5) * DisplayTileSize + sprite.jitter[0];
       const ty = (sprite.tileY + 1) * DisplayTileSize + sprite.jitter[1];
-      sprite.position.set(tx - dx, ty - dy);
+      sprite.position.set(tx - dx + w / 2, ty - dy + h / 2);
     }
   }
 

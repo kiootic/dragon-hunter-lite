@@ -1,5 +1,5 @@
 import { GameSave } from 'common/data';
-import * as work from 'webworkify-webpack';
+import work from 'webworkify-webpack';
 export interface ProgressReporter {
   (message: string | null, progress: number): void;
 }

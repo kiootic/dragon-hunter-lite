@@ -1,4 +1,5 @@
 import { App, DisplayTileSize } from 'app';
+import { Game } from 'app/game/Game';
 import { TextureSprite } from 'app/game/map';
 import { Task } from 'app/game/Task';
 import { vec2 } from 'gl-matrix';
@@ -12,12 +13,8 @@ export class TerrainDisplayTask extends Task {
   private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
   private readonly view = new Sprite(this.renderTex);
 
-  public update(dt: number) {
-    this.updateVisibility();
-    this.render();
-  }
-
-  public init() {
+  constructor(game: Game) {
+    super(game);
     this.game.view.camera.addChild(this.view);
   }
 
@@ -25,8 +22,13 @@ export class TerrainDisplayTask extends Task {
     this.game.view.camera.removeChild(this.view);
   }
 
+  public update(dt: number) {
+    this.updateVisibility();
+    this.render();
+  }
+
   private updateVisibility() {
-    const { offsetX: x, offsetY: y, viewWidth: w, viewHeight: h } = this.game.view.camera;
+    const { offset: [x, y], viewWidth: w, viewHeight: h } = this.game.view.camera;
     const r = Math.ceil(Math.sqrt(w * w + h * h));
     const origin = vec2.fromValues(x, y);
     const scale = DisplayTileSize / TileSize;
@@ -71,7 +73,7 @@ export class TerrainDisplayTask extends Task {
   }
 
   private render() {
-    const { offsetX: x, offsetY: y, viewWidth: w, viewHeight: h } = this.game.view.camera;
+    const { offset: [x, y], viewWidth: w, viewHeight: h } = this.game.view.camera;
     const r = Math.ceil(Math.sqrt(w * w + h * h));
 
     let minX: number = Number.MAX_VALUE, minY: number = Number.MAX_VALUE;
@@ -87,7 +89,7 @@ export class TerrainDisplayTask extends Task {
     App.instance.renderer.render(this.container, this.renderTex);
     const scale = DisplayTileSize / TileSize;
     this.view.setTransform(
-      (minX * scale - x), (minY * scale - y),
+      (minX * scale - x + w / 2), (minY * scale - y + h / 2),
       scale, scale
     );
   }

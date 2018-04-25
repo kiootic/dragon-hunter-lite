@@ -1,8 +1,8 @@
+import { vec2 } from 'gl-matrix';
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 
 export class Camera extends Container {
-  public offsetX = 0;
-  public offsetY = 0;
+  public offset = vec2.create();
   public viewWidth = 0;
   public viewHeight = 0;
 
@@ -13,9 +13,7 @@ export class Camera extends Container {
     this.addChild(this.bg);
   }
 
-  public layout(x: number, y: number, width: number, height: number) {
-    this.offsetX = x;
-    this.offsetY = y;
+  public layout(width: number, height: number) {
     this.bg.width = width;
     this.bg.height = height;
 

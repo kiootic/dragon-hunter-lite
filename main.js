@@ -6,11 +6,11 @@ if (!process.env['ELECTRON_RUN_AS_NODE']) {
     win.setMenu(null);
     win.loadURL('http://localhost:8080/');
     win.webContents.on('did-finish-load', () => {
-      win.webContents.executeJavaScript(`
+      win.webContents.executeJavaScript(`(function() {
 const gl = document.createElement('canvas').getContext('webgl');
 const ext = gl.getExtension('WEBGL_debug_renderer_info');
 console.log('RENDERER: ' + gl.getParameter(ext.UNMASKED_RENDERER_WEBGL));
-`);
+})()`);
     });
   });
   app.on('window-all-closed', () => app.quit());

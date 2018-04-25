@@ -13,7 +13,6 @@ export class Task {
     this._active = false;
   }
 
-  public init() { }
   public update(dt: number) { }
   public dispose() { }
 }

@@ -1,6 +1,6 @@
-import { UIScaleFactor } from 'app';
 import { Panel } from 'app/components';
-import { Point, Sprite } from 'pixi.js';
+import { vec2 } from 'gl-matrix';
+import { Sprite } from 'pixi.js';
 
 const Opacity = 0.8;
 export class MiniMapPanel extends Panel {
@@ -8,9 +8,9 @@ export class MiniMapPanel extends Panel {
   public isFullscreen = false;
   private isMouseOver = false;
 
-  private _offset = new Point();
-  public setOffset(x: number, y: number) {
-    this._offset.set(x, y);
+  private readonly _offset = vec2.create();
+  public setOffset(offset: vec2) {
+    vec2.copy(this._offset, offset);
   }
 
   constructor() {
@@ -34,17 +34,20 @@ export class MiniMapPanel extends Panel {
       super.layout(width - 32, height - 32);
       this.mapSprite.scale.set(1, 1);
       this.alpha = 1;
+      this.mapSprite.position.set(
+        -this._offset[0] + (width - 32) / 2,
+        -this._offset[1] + (height - 32) / 2
+      );
     } else {
       this.x = width - 16 - 256;
       this.y = 16;
       super.layout(256, 256);
-      this.mapSprite.scale.set(UIScaleFactor, UIScaleFactor);
+      this.mapSprite.scale.set(4, 4);
       this.alpha = this.isMouseOver ? 1 : Opacity;
+      this.mapSprite.position.set(
+        -this._offset[0] * 4 + 256 / 2,
+        -this._offset[1] * 4 + 256 / 2
+      );
     }
-
-    this.mapSprite.position.set(
-      this._offset.x * this.mapSprite.scale.x,
-      this._offset.y * this.mapSprite.scale.y
-    );
   }
 }

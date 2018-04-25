@@ -19,7 +19,7 @@ export class GameView extends Container {
   public layout(width: number, height: number) {
     this.camera.x = 0;
     this.camera.y = 0;
-    this.camera.layout(this.offsetX, this.offsetY, width, height);
+    this.camera.layout(width, height);
     this.minimap.layout(width, height);
   }
 }
