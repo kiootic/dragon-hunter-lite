@@ -21,6 +21,7 @@ export class TerrainDisplayTask extends Task {
 
   public update(dt: number) {
     this.updateVisibility();
+    this.updateSprites(dt);
     this.render();
   }
 
@@ -67,6 +68,11 @@ export class TerrainDisplayTask extends Task {
         this.container.addChild(sprite);
         this.sprites.set(key, sprite);
       }
+  }
+
+  private updateSprites(dt: number) {
+    for (const sprite of this.container.children)
+      (sprite as TextureSprite).update(dt);
   }
 
   private render() {

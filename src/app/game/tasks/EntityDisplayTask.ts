@@ -12,6 +12,7 @@ export class EntityDisplayTask extends Task {
 
   public update(dt: number) {
     this.updateVisibility();
+    this.updateSprites(dt);
     this.updateTransforms();
   }
 
@@ -44,6 +45,11 @@ export class EntityDisplayTask extends Task {
     }
   }
 
+  private updateSprites(dt: number) {
+    for (const entity of this.visible)
+      entity.traits.get(Spatial).sprite.update(dt);
+  }
+
   private updateTransforms() {
     const { offset: [dx, dy], viewWidth: w, viewHeight: h } = this.game.view.camera;
 
@@ -52,9 +58,9 @@ export class EntityDisplayTask extends Task {
       sprite.anchor.set(0.5, 1);
       sprite.scale.set(scale[0], scale[1]);
 
-      const tx = position[0] * DisplayTileSize;
-      const ty = position[1] * DisplayTileSize;
-      sprite.position.set(tx - dx + w / 2, ty - dy + h / 2);
+      const tx = Math.floor(position[0] * DisplayTileSize);
+      const ty = Math.floor(position[1] * DisplayTileSize);
+      sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));
     }
   }
 }

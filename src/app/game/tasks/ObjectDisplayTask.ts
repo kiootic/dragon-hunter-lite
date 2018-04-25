@@ -30,6 +30,7 @@ export class ObjectDisplayTask extends Task {
 
   public update(dt: number) {
     this.updateVisibility();
+    this.updateSprites(dt);
     this.updateTransforms();
   }
 
@@ -98,12 +99,17 @@ export class ObjectDisplayTask extends Task {
     return updated;
   }
 
+  private updateSprites(dt: number) {
+    for (const sprite of this.sprites.values())
+      (sprite as TextureSprite).update(dt);
+  }
+
   private updateTransforms() {
     const { offset: [dx, dy], viewWidth: w, viewHeight: h } = this.game.view.camera;
     const map = this.game.map;
     const objectData = this.game.library.objects;
 
-    for (const [, sprite] of this.sprites) {
+    for (const sprite of this.sprites.values()) {
       const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];
 
       sprite.anchor.set(0.5, 1);
@@ -113,7 +119,7 @@ export class ObjectDisplayTask extends Task {
 
       const tx = (sprite.tileX + 0.5) * DisplayTileSize + sprite.jitter[0];
       const ty = (sprite.tileY + 1) * DisplayTileSize + sprite.jitter[1];
-      sprite.position.set(tx - dx + w / 2, ty - dy + h / 2);
+      sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));
     }
   }
 }

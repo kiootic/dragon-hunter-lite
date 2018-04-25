@@ -16,4 +16,15 @@ export interface TextureComposite {
   overlay: TextureDef;
 }
 
-export type TextureDef = string | TextureSingle | TextureRandom | TextureComposite;
+export interface AnimationDef {
+  frameId: string;
+  numFrames: number;
+  fps: number;
+}
+
+export interface TextureAnimation {
+  type: 'animation';
+  anims: Record<string, AnimationDef>;
+}
+
+export type TextureDef = string | TextureSingle | TextureRandom | TextureComposite | TextureAnimation;

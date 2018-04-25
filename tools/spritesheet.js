@@ -16,7 +16,7 @@ module.exports = function () {
           const jsonPath = path.resolve(outPath, `${name}.json`);
           const pattern = path.resolve(inPath, name, '*.png');
           const hash = glob.sync(pattern).reduce(
-            (hash, file) => hash.update(fs.readFileSync(file)),
+            (hash, file) => hash.update(file).update(fs.readFileSync(file)),
             crypto.createHash('sha1')
           ).digest().toString('hex');
 
