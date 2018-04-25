@@ -1,3 +1,4 @@
+import { glMatrix } from 'gl-matrix';
 import { Application } from 'pixi.js';
 import * as Stats from 'stats.js';
 
@@ -21,6 +22,8 @@ export function bootstrap<App extends Application>(app: App) {
     _update.apply(app.ticker, args);
     stats.end();
   };
+
+  glMatrix.setMatrixArrayType(Float64Array);
 
   return app;
 }

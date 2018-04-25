@@ -5,7 +5,7 @@ import { Task } from 'app/game/Task';
 import { Spatial } from 'app/game/traits';
 import * as intersect from 'app/utils/intersect';
 import { vec2 } from 'gl-matrix';
-import { clamp, round } from 'lodash';
+import { clamp } from 'lodash';
 
 const Speed = 5;
 
@@ -34,11 +34,11 @@ export class PlayerMovementTask extends Task {
 
     const obstacles = this.game.keyboard.isDown('Alt') ? [] : Array.from(this.getObstacles());
     const shape = new intersect.AABB(
-      new intersect.Point(0, 0),
+      new intersect.Point(this.pos[0], this.pos[1]),
       new intersect.Point(0.25, 0.25));
     this.resolve(obstacles, shape);
 
-    vec2.set(this.pos, round(shape.pos.x + this.pos[0], 3), round(shape.pos.y + this.pos[1], 3));
+    vec2.set(this.pos, shape.pos.x, shape.pos.y);
 
     this.updateDisplay();
   }
@@ -57,23 +57,33 @@ export class PlayerMovementTask extends Task {
         const objectDef = lib.objects[map.getObject(x, y)];
         if (objectDef && objectDef.obstacle)
           yield new intersect.AABB(
-            new intersect.Point(x - this.pos[0] + 0.5, y - this.pos[1] + 0.5),
+            new intersect.Point(x + 0.5, y + 0.5),
             new intersect.Point(0.4, 0.4)
           );
       }
   }
 
   private resolve(obstacles: intersect.AABB[], shape: intersect.AABB) {
+    const handleSweep = (sweep: intersect.Sweep) => {
+      if (sweep.hit && sweep.hit.time > 0) {
+        const collider = sweep.hit.collider;
+        if (sweep.hit.normal.x !== 0)
+          sweep.pos.x = collider.pos.x + (collider.half.x + shape.half.x + intersect.EPSILON) * sweep.hit.normal.x;
+        if (sweep.hit.normal.y !== 0)
+          sweep.pos.y = collider.pos.y + (collider.half.y + shape.half.y + intersect.EPSILON) * sweep.hit.normal.y;
 
-    const sweep = shape.sweepInto(obstacles, new intersect.Point(this.vel[0], this.vel[1]));
-    shape.pos = sweep.pos;
-    if (sweep.hit) {
-      vec2.mul(this.vel, this.vel, [1 - Math.abs(sweep.hit.normal.x), 1 - Math.abs(sweep.hit.normal.y)]);
-      const nextSweep = shape.sweepInto(obstacles, new intersect.Point(this.vel[0], this.vel[1]));
-      shape.pos = nextSweep.pos;
-      if (sweep.hit)
         vec2.mul(this.vel, this.vel, [1 - Math.abs(sweep.hit.normal.x), 1 - Math.abs(sweep.hit.normal.y)]);
-    }
+      }
+      shape.pos = sweep.pos;
+    };
+
+    const sweepX = shape.sweepInto(obstacles, new intersect.Point(this.vel[0], 0));
+    const sweepY = shape.sweepInto(obstacles, new intersect.Point(0, this.vel[1]));
+    const maxSweep = sweepX.time > sweepY.time ? sweepX : sweepY;
+    handleSweep(maxSweep);
+    const nextVel = sweepX.time > sweepY.time ? new intersect.Point(0, this.vel[1]) : new intersect.Point(this.vel[0], 0);
+    const sweepFinal = shape.sweepInto(obstacles, nextVel);
+    handleSweep(sweepFinal);
   }
 
   private updateDisplay() {
