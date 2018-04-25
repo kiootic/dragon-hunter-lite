@@ -30,6 +30,8 @@ const featureProps: { [type: number]: Biome.Feature[] } = {
   ],
   [Biome.Type.Desert]: [
     Biome.Feature.LavaPond,
+    Biome.Feature.LavaPond,
+    Biome.Feature.LavaPond,
     Biome.Feature.Rocky,
     Biome.Feature.Rocky,
     Biome.Feature.Oasis,

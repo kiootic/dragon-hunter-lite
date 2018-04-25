@@ -70,9 +70,11 @@ export class TerrainDisplayTask extends Task {
       }
   }
 
+  private elapsed = 0;
   private updateSprites(dt: number) {
+    this.elapsed += dt;
     for (const sprite of this.container.children)
-      (sprite as TextureSprite).update(dt);
+      (sprite as TextureSprite).update(this.elapsed);
   }
 
   private render() {

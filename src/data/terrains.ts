@@ -4,15 +4,15 @@ export type TerrainDef = Pick<Terrain, Exclude<keyof Terrain, 'id' | 'name'>>;
 
 export const makeTerrains = (): Record<string, TerrainDef> => ({
   'water': {
-    texture: 'sprites/terrains/water',
+    texture: { type: 'liquid', tex: 'sprites/terrains/water', offset: 16, time: 5000 },
     color: '235c7c',
   },
   'lava': {
-    texture: 'sprites/terrains/lava',
+    texture: { type: 'liquid', tex: 'sprites/terrains/lava', offset: 16, time: 15000 },
     color: '8b1408',
   },
   'mud': {
-    texture: 'sprites/terrains/mud',
+    texture: { type: 'liquid', tex: 'sprites/terrains/mud', offset: 8, time: 5000 },
     color: '6d584b',
   },
 

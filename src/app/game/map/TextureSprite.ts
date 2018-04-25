@@ -12,10 +12,12 @@ function hashKey(key: number) {
 
 export class TextureSprite extends Sprite implements MapSprite {
   public outline: boolean = false;
+  public offset?: [number, number];
+
   public animName: string = '';
   public still: boolean = true;
 
-  private overlay?: TextureSprite;
+  private overlay?: Sprite;
   private textureDef?: Exclude<TextureDef, string>;
 
   public setTexture(textureDef: TextureDef, key: number) {
@@ -40,45 +42,45 @@ export class TextureSprite extends Sprite implements MapSprite {
           this.texture = Texture.fromFrame(textureDef.texs[key % textureDef.texs.length]);
           if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
           break;
-        case 'composite':
+        case 'composite': {
           this.setTexture(textureDef.base, key);
-          this.overlay = new TextureSprite();
-          this.overlay.anchor.copy(this.anchor);
-          this.overlay.setTexture(textureDef.overlay, key);
-          this.addChild(this.overlay);
-          break;
+          const overlay = new TextureSprite();
+          overlay.anchor.copy(this.anchor);
+          overlay.setTexture(textureDef.overlay, key);
+          this.overlay = overlay;
+          this.addChild(overlay);
+        } break;
         case 'animation':
           this.frame = -1;
-          this.elapsed = 0;
           this.texture = Texture.EMPTY;
           break;
+        case 'liquid':
+          this.texture = Texture.fromFrame(textureDef.tex);
+          if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
       }
     }
   }
 
   private frame = -1;
-  private elapsed = 0;
-  public update(dt: number) {
-    if (
-      !this.textureDef || this.textureDef.type !== 'animation' ||
-      !(this.animName in this.textureDef.anims)
-    )
+  public update(elapsed: number) {
+    if (!this.textureDef)
       return;
 
-    const animation = this.textureDef.anims[this.animName];
-    if (this.still) {
-      this.frame = -1;
-      this.elapsed = 0;
-    } else {
-      const frameDuration = 1000 / animation.fps;
-      this.elapsed += dt;
-      while (this.elapsed > frameDuration) {
-        this.frame++;
-        this.elapsed -= frameDuration;
+    if (this.textureDef.type === 'animation' && this.animName in this.textureDef.anims) {
+      const animation = this.textureDef.anims[this.animName];
+      if (this.still) {
+        this.frame = -1;
+      } else {
+        const frameDuration = 1000 / animation.fps;
+        this.frame = Math.floor(elapsed / frameDuration) % animation.numFrames;
       }
-      this.frame = this.frame % animation.numFrames;
+      this.texture = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
+    } else if (this.textureDef.type === 'liquid') {
+      let d = (elapsed % this.textureDef.time) / this.textureDef.time;
+      d = Math.sin(d * Math.PI * 2);
+      const offset = this.textureDef.offset * d;
+      this.offset = [offset, offset];
     }
-    this.texture = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
   }
 
   _onAnchorUpdate() {

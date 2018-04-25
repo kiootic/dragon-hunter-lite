@@ -99,9 +99,11 @@ export class ObjectDisplayTask extends Task {
     return updated;
   }
 
+  private elapsed = 0;
   private updateSprites(dt: number) {
+    this.elapsed += dt;
     for (const sprite of this.sprites.values())
-      (sprite as TextureSprite).update(dt);
+      (sprite as TextureSprite).update(this.elapsed);
   }
 
   private updateTransforms() {

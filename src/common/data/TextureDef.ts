@@ -27,4 +27,13 @@ export interface TextureAnimation {
   anims: Record<string, AnimationDef>;
 }
 
-export type TextureDef = string | TextureSingle | TextureRandom | TextureComposite | TextureAnimation;
+export interface TextureTiled {
+  type: 'liquid';
+  tex: string;
+  offset: number;
+  time: number;
+  tint?: string;
+}
+
+export type TextureDef = string |
+  TextureSingle | TextureRandom | TextureComposite | TextureAnimation | TextureTiled;

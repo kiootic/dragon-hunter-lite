@@ -45,9 +45,11 @@ export class EntityDisplayTask extends Task {
     }
   }
 
+  private elapsed = 0;
   private updateSprites(dt: number) {
+    this.elapsed += dt;
     for (const entity of this.visible)
-      entity.traits.get(Spatial).sprite.update(dt);
+      entity.traits.get(Spatial).sprite.update(this.elapsed);
   }
 
   private updateTransforms() {
