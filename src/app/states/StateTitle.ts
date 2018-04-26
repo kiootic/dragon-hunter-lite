@@ -1,5 +1,5 @@
 import { App, TextScaleFactor } from 'app';
-import { Button, Text } from 'app/components';
+import { Text, TextButton } from 'app/components';
 import { Generator } from 'app/game';
 import { GameState } from 'app/states/GameState';
 import { StateMain } from 'app/states/StateMain';
@@ -10,8 +10,7 @@ export class StateTitle extends GameState {
   public get name() { return 'title'; }
 
   private logo = new Sprite(Texture.fromFrame('sprites/ui/title'));
-  private playButton = new Button();
-  private playText = new Text('play');
+  private playButton = new TextButton('play');
   private loadBar = new Sprite(Texture.WHITE);
   private loadMessage = new Text('', { scale: TextScaleFactor });
 
@@ -22,15 +21,27 @@ export class StateTitle extends GameState {
     this.root.addChild(this.playButton);
     this.root.addChild(this.loadBar);
     this.root.addChild(this.loadMessage);
-    this.playButton.content.addChild(this.playText);
-    this.playButton.on(Button.Clicked, this.start.bind(this));
+    this.playButton.on(TextButton.Clicked, this.start.bind(this));
     this.loadBar.tint = 0x404040;
     this.loadBar.width = 0;
   }
 
-  enter() {
+  async enter() {
     this.root.alpha = 0;
-    fadeIn(this.root).subscribe();
+    await fadeIn(this.root).toPromise();
+  }
+
+  async pause() {
+    this.root.alpha = 1;
+    await fadeOut(this.root).toPromise();
+    this.playButton.isEnabled = true;
+    this.loadMessage.text = '';
+    this.loadBar.width = 0;
+  }
+
+  async resume() {
+    this.root.alpha = 0;
+    await fadeIn(this.root).toPromise();
   }
 
   layout() {
@@ -41,9 +52,6 @@ export class StateTitle extends GameState {
     this.playButton.x = (App.instance.screen.width - 150) / 2;
     this.playButton.y = this.logo.y + this.logo.height + 50;
     this.playButton.layout(150, 75);
-    this.playText.x = 0;
-    this.playText.y = 0;
-    this.playText.layout(this.playButton.contentWidth, this.playButton.contentHeight);
     this.loadMessage.x = 0;
     this.loadMessage.y = this.playButton.y + 75 + 20;
     this.loadMessage.layout(App.instance.screen.width, 50);
@@ -60,6 +68,6 @@ export class StateTitle extends GameState {
       this.loadBar.width = (App.instance.screen.width / 2) * progress;
     });
 
-    fadeOut(this.root).subscribe(() => App.instance.topState(new StateMain(map)));
+    await App.instance.pushState(new StateMain(map));
   }
 }

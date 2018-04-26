@@ -10,12 +10,12 @@ export class StateOverlay extends GameState {
   constructor(private readonly overlay: GameOverlay) {
     super();
     this.bg.tint = 0;
-    this.bg.alpha = 0.4;
+    this.bg.alpha = 0.5;
     this.root.addChild(this.bg);
     this.root.addChild(this.overlay);
   }
 
-  enter() {
+  async enter() {
     this.overlay.init();
   }
 
@@ -30,7 +30,7 @@ export class StateOverlay extends GameState {
     this.overlay.layout(width, height);
   }
 
-  leave() {
+  async leave() {
     this.overlay.dispose();
   }
 }

@@ -19,12 +19,12 @@ export class MiniMapPanel extends Panel {
     this.mapSprite.anchor.set(0, 0);
     this.alpha = Opacity;
 
-    this.interactive = true;
-    this.on('pointerover', () => this.isMouseOver = true);
-    this.on('pointerout', () => this.isMouseOver = false);
-    this.on('pointerdown', () => this.isFullscreen = true);
-    this.on('pointerup', () => this.isFullscreen = false);
-    this.on('pointerupoutside', () => this.isFullscreen = false);
+    this.content.interactive = true;
+    this.content.on('pointerover', () => this.isMouseOver = true);
+    this.content.on('pointerout', () => this.isMouseOver = false);
+    this.content.on('pointerdown', () => this.isFullscreen = true);
+    this.content.on('pointerup', () => this.isFullscreen = false);
+    this.content.on('pointerupoutside', () => this.isFullscreen = false);
   }
 
   layout(width: number, height: number) {

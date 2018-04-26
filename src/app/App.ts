@@ -28,27 +28,27 @@ export class App extends Application {
 
   private _states: GameState[] = [];
   public get state(): GameState | null { return this._states[this._states.length - 1] || null; }
-  public pushState(next: GameState) {
+  public async pushState(next: GameState) {
     if (this.state) {
-      this.state.pause();
+      await this.state.pause();
     }
     this._states.push(next);
-    next.enter();
     this.stage.addChild(next.root);
+    await next.enter();
   }
-  public popState() {
+  public async popState() {
     if (this.state) {
-      this.state.leave();
+      await this.state.leave();
       this.stage.removeChild(this.state.root);
       this._states.pop();
     }
     if (this.state) {
-      this.state.resume();
+      await this.state.resume();
     }
   }
-  public topState(next: GameState) {
-    this.popState();
-    this.pushState(next);
+  public async topState(next: GameState) {
+    await this.popState();
+    await this.pushState(next);
   }
 
   private tick() {

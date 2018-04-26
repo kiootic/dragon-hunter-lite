@@ -5,10 +5,10 @@ export abstract class GameState {
 
   public readonly root = new Container();
 
-  public enter() { }
-  public pause()  { }
-  public resume()  { }
-  public leave()  { }
+  public async enter() { }
+  public async pause()  { }
+  public async resume()  { }
+  public async leave()  { }
 
   public update(dt: number) { }
   public layout() { }

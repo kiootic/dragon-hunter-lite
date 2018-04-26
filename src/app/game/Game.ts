@@ -40,7 +40,6 @@ export class Game {
   }
 
   public dispose() {
-    this.keyboard.dispose();
   }
 
   public readonly entities = Object.assign(new Map<number, Entity>(), {

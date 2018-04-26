@@ -1,6 +1,6 @@
 import { Game } from 'app/game';
 import { GameState } from 'app/states/GameState';
-import { fadeIn } from 'app/utils/animations';
+import { fadeIn, fadeOut } from 'app/utils/animations';
 import { GameSave } from 'common/data';
 
 export class StateMain extends GameState {
@@ -14,10 +14,10 @@ export class StateMain extends GameState {
     this.root.addChild(this.game.view);
   }
 
-  enter() {
+  async enter() {
     this.game.init();
     this.root.alpha = 0;
-    fadeIn(this.root).subscribe();
+    await fadeIn(this.root).toPromise();
   }
 
   update(dt: number) {
@@ -28,7 +28,9 @@ export class StateMain extends GameState {
     this.game.layout();
   }
 
-  leave() {
+  async leave() {
     this.game.dispose();
+    this.root.alpha = 1;
+    await fadeOut(this.root).toPromise();
   }
 }

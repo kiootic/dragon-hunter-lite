@@ -19,7 +19,7 @@ export class StatePreload extends GameState {
     this.root.addChild(this.loadingText);
   }
 
-  enter() {
+  async enter() {
     this.run();
   }
 

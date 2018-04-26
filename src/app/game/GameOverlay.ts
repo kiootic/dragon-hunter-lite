@@ -11,7 +11,7 @@ export class GameOverlay extends Panel {
   public dispose() { }
   public update(dt: number) { }
 
-  protected done() {
-    App.instance.popState();
+  protected async done() {
+    await App.instance.popState();
   }
 }
