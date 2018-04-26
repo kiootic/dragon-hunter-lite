@@ -87,6 +87,11 @@ export class ObjectDisplayTask extends Task {
 
         sprite.outline = true;
         sprite.setTexture(obj.texture, x + y * map.width);
+
+        const scale = (DisplayTileSize / ObjectSize) * (obj.scale || 1);
+        sprite.scale.set(scale, scale);
+        sprite.anchor.set(0.5, 1);
+
         if (!sprite.parent)
           this.game.view.camera.add(sprite);
 
@@ -113,11 +118,6 @@ export class ObjectDisplayTask extends Task {
 
     for (const sprite of this.sprites.values()) {
       const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];
-
-      sprite.anchor.set(0.5, 1);
-
-      const scale = (DisplayTileSize / ObjectSize) * (obj.scale || 1);
-      sprite.scale.set(scale, scale);
 
       const tx = (sprite.tileX + 0.5) * DisplayTileSize + sprite.jitter[0];
       const ty = (sprite.tileY + (obj.terrain ? 1 : 0.5)) * DisplayTileSize + sprite.jitter[1];

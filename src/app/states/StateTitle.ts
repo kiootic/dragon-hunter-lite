@@ -57,7 +57,7 @@ export class StateTitle extends GameState {
     this.saveButtons = [];
     for (const name of Object.keys(localStorage).sort()) {
       const btn = new TextButton(name);
-      btn.on('click', () => this.startGame(GameSave.import(localStorage[name])));
+      btn.on(TextButton.Clicked, () => this.startGame(GameSave.import(localStorage[name])));
       this.root.addChild(btn);
       this.saveButtons.push(btn);
     }

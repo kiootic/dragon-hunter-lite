@@ -91,10 +91,12 @@ export class TextureSprite extends Sprite implements MapSprite {
       frame.height -= Math.round(this.clip[1] * frame.height);
       tex.frame = frame;
     }
-    this.texture = tex;
+    if (this._texture !== tex) {
+      this.texture = tex;
+    }
 
-    if (this.overlay instanceof TextureSprite)
-      this.overlay.update(elapsed);
+    if (this.overlay && (this.overlay as TextureSprite).update)
+      (this.overlay as TextureSprite).update(elapsed);
   }
 
   _onAnchorUpdate() {

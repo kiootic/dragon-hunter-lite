@@ -1,5 +1,5 @@
 import { vec2 } from 'gl-matrix';
-import { Container, Graphics, Sprite as PIXISprite, Texture } from 'pixi.js';
+import { Container, Graphics, Sprite as PIXISprite, Texture, TransformStatic } from 'pixi.js';
 
 export class Camera extends Container {
   public offset = vec2.create();
@@ -40,10 +40,12 @@ export class Camera extends Container {
     const children = this.children as Camera.Sprite[];
     children.sort((a, b) => {
       const ao = a.sortOffset || [0, 0], bo = b.sortOffset || [0, 0];
+      const { x: ax, y: ay } = (a.transform as TransformStatic).position;
+      const { x: bx, y: by } = (b.transform as TransformStatic).position;
       let d = 0;
       if (d === 0) d = a.layer - b.layer;
-      if (d === 0) d = (a.y + ao[1]) - (b.y + bo[1]);
-      if (d === 0) d = (a.x + ao[0]) - (b.x + bo[0]);
+      if (d === 0) d = (ay + ao[1]) - (by + bo[1]);
+      if (d === 0) d = (ax + ao[0]) - (bx + bo[0]);
       if (d === 0) d = a.id! - b.id!;
       return d;
     });

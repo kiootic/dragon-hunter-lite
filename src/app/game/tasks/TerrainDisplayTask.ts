@@ -4,7 +4,7 @@ import { Game } from 'app/game/Game';
 import { TextureSprite } from 'app/game/map';
 import { Task } from 'app/game/Task';
 import { vec2 } from 'gl-matrix';
-import { Container, RenderTexture, SCALE_MODES, Sprite } from 'pixi.js';
+import { Container, RenderTexture, SCALE_MODES, Sprite, TransformStatic } from 'pixi.js';
 
 const TileSize = 16;
 
@@ -37,7 +37,8 @@ export class TerrainDisplayTask extends Task {
 
     const removePool: TextureSprite[] = [];
     for (const [key, sprite] of this.sprites) {
-      if (!isVisible(sprite.x, sprite.y)) {
+      const { x, y } = (sprite.transform as TransformStatic).position;
+      if (!isVisible(x, y)) {
         removePool.push(sprite);
         this.sprites.delete(key);
       }
@@ -65,8 +66,7 @@ export class TerrainDisplayTask extends Task {
 
         const sprite = removePool.pop() || new TextureSprite();
         sprite.setTexture(terrain.texture, x + y * map.width);
-        sprite.x = tx;
-        sprite.y = ty;
+        sprite.position.set(tx, ty);
         if (!sprite.parent)
           this.container.addChild(sprite);
         this.sprites.set(key, sprite);
@@ -89,7 +89,7 @@ export class TerrainDisplayTask extends Task {
 
     let minX: number = Number.MAX_VALUE, minY: number = Number.MAX_VALUE;
     for (const sprite of this.sprites.values()) {
-      const { x, y } = (sprite.transform as any).position;
+      const { x, y } = (sprite.transform as TransformStatic).position;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
     }

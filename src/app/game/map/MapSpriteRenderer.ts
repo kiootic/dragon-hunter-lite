@@ -1,5 +1,6 @@
 import {
-  BaseTexture, CanvasRenderer, CanvasSpriteRenderer, glCore, ObjectRenderer, Shader, Sprite, TextureUvs, utils, WebGLRenderer
+  BaseTexture, CanvasRenderer, CanvasSpriteRenderer, glCore,
+  ObjectRenderer, Shader, Sprite, TextureUvs, TransformStatic, utils, WebGLRenderer
 } from 'pixi.js';
 
 export interface MapSprite extends Sprite {
@@ -94,20 +95,22 @@ export class MapSpriteRenderer extends ObjectRenderer {
       const vd = sprite.vertexData;
 
       const alpha = Math.min(sprite.worldAlpha, 1.0);
-      const tint = (sprite.tint >> 16) + (sprite.tint & 0xff00) + ((sprite.tint & 0xff) << 16);
+      let tint = (sprite as any)._tint;
+      tint = (tint >> 16) + (tint & 0xff00) + ((tint & 0xff) << 16);
       const argb = alpha < 1.0 && this.currentTex!.premultipliedAlpha
         ? utils.premultiplyTint(tint, alpha) : tint + (alpha * 255 << 24);
       const offset = sprite.offset || [0, 0];
 
-      var frame = sprite.texture.frame;
+      const frame = sprite.texture.frame;
+      const transform = sprite.transform as TransformStatic;
       const clampX = frame.x / this.currentTex!.width;
       const clampY = frame.y / this.currentTex!.height;
       const clampZ = (frame.x + frame.width) / this.currentTex!.width;
       const clampW = (frame.y + frame.height) / this.currentTex!.height;
       const offsetX = offset[0] / this.currentTex!.width;
       const offsetY = offset[1] / this.currentTex!.height;
-      const thicknessX = sprite.outline ? OutlineWidth / sprite.scale.x / this.currentTex!.realWidth : 0;
-      const thicknessY = sprite.outline ? OutlineWidth / sprite.scale.y / this.currentTex!.realHeight : 0;
+      const thicknessX = sprite.outline ? OutlineWidth / transform.scale.x / this.currentTex!.realWidth : 0;
+      const thicknessY = sprite.outline ? OutlineWidth / transform.scale.y / this.currentTex!.realHeight : 0;
 
       f32[p++] = vd[0]; f32[p++] = vd[1];
       u32[p++] = uvs[0];
@@ -137,7 +140,7 @@ export class MapSpriteRenderer extends ObjectRenderer {
       f32[p++] = offsetX; f32[p++] = offsetY;
       f32[p++] = thicknessX; f32[p++] = thicknessY;
     }
-    this.vb.upload(this.vaoBuf, 0, true);
+    this.vb.upload(this.vaoBuf.slice(0, p * 4 * 2), 0, true);
     const gl = this.renderer.gl;
     gl.drawElements(gl.TRIANGLES, this.batchSize * 6, gl.UNSIGNED_SHORT, 0);
 
