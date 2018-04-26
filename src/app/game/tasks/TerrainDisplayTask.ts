@@ -9,7 +9,7 @@ import { Container, RenderTexture, SCALE_MODES, Sprite } from 'pixi.js';
 const TileSize = 16;
 
 export class TerrainDisplayTask extends Task {
-  private readonly sprites = new Map<string, Sprite>();
+  private readonly sprites = new Map<string, TextureSprite>();
   private readonly container = new Container();
   private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
   private readonly view = Object.assign(new Sprite(this.renderTex), { layer: Camera.Layer.Terrain });
@@ -27,16 +27,18 @@ export class TerrainDisplayTask extends Task {
 
   private updateVisibility() {
     const { offset: [x, y], viewWidth: w, viewHeight: h } = this.game.view.camera;
-    const r = Math.ceil(Math.sqrt(w * w + h * h));
+    const r = Math.ceil(Math.sqrt(w * w + h * h) / 2 + DisplayTileSize);
     const origin = vec2.fromValues(x, y);
     const scale = DisplayTileSize / TileSize;
     function isVisible(x: number, y: number) {
-      return vec2.sqrDist(origin, [x * scale, y * scale]) <= r * r;
+      const dx = x * scale - origin[0], dy = y * scale - origin[1];
+      return (dx * dx + dy * dy) <= r * r;
     }
 
+    const removePool: TextureSprite[] = [];
     for (const [key, sprite] of this.sprites) {
       if (!isVisible(sprite.x, sprite.y)) {
-        this.container.removeChild(sprite);
+        removePool.push(sprite);
         this.sprites.delete(key);
       }
     }
@@ -61,13 +63,17 @@ export class TerrainDisplayTask extends Task {
         const key = `${x}:${y}`;
         if (this.sprites.has(key)) continue;
 
-        const sprite = new TextureSprite();
+        const sprite = removePool.pop() || new TextureSprite();
         sprite.setTexture(terrain.texture, x + y * map.width);
         sprite.x = tx;
         sprite.y = ty;
-        this.container.addChild(sprite);
+        if (!sprite.parent)
+          this.container.addChild(sprite);
         this.sprites.set(key, sprite);
       }
+
+    for (const sprite of removePool)
+      this.container.removeChild(sprite);
   }
 
   private elapsed = 0;
@@ -83,8 +89,9 @@ export class TerrainDisplayTask extends Task {
 
     let minX: number = Number.MAX_VALUE, minY: number = Number.MAX_VALUE;
     for (const sprite of this.sprites.values()) {
-      minX = Math.min(minX, sprite.x);
-      minY = Math.min(minY, sprite.y);
+      const { x, y } = (sprite.transform as any).position;
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
     }
     this.container.setTransform(-minX, -minY);
 

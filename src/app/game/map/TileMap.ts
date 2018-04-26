@@ -43,33 +43,22 @@ export class TileMap {
   }
 
   private toIndex(x: number, y: number): number {
-    x = Math.floor(x);
-    y = Math.floor(y);
-    return x >= 0 && x < this.width && y >= 0 && y < this.height ?
-      (x + this.width * y) : -1;
+    return Math.floor(x) + this.width * Math.floor(y);
   }
 
   public getTerrain(x: number, y: number) {
     const index = this.toIndex(x, y);
-    if (index < 0)
-      return 0;
-    else
-      return this.data[index * 2];
+    return this.data[index * 2] || 0;
   }
 
   public getObject(x: number, y: number) {
     const index = this.toIndex(x, y);
-    if (index < 0)
-      return 0;
-    else
-      return this.data[index * 2 + 1];
+    return this.data[index * 2 + 1] || 0;
   }
 
   public setTile(x: number, y: number, terrain: number, object: number) {
     const index = this.toIndex(x, y);
-    if (index < 0)
-      return;
-
+    if (index < 0 || index >= this.data.length) return;
     this.data[index * 2] = terrain;
     this.data[index * 2 + 1] = object;
     this.changes$.next({ x, y });

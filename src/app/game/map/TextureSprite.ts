@@ -13,7 +13,7 @@ function hashKey(key: number) {
 export class TextureSprite extends Sprite implements MapSprite {
   public outline: boolean = false;
   public offset?: [number, number];
-  public clip: [number, number] = [0, 0];
+  public clip?: [number, number];
 
   public animName: string = '';
   public still: boolean = true;
@@ -83,11 +83,14 @@ export class TextureSprite extends Sprite implements MapSprite {
       }
     }
 
-    const tex = this.currentTex.clone();
-    const frame = tex.frame.clone();
-    frame.width -= Math.round(this.clip[0] * frame.width);
-    frame.height -= Math.round(this.clip[1] * frame.height);
-    tex.frame = frame;
+    let tex = this.currentTex;
+    if (this.clip) {
+      tex = tex.clone();
+      const frame = tex.frame.clone();
+      frame.width -= Math.round(this.clip[0] * frame.width);
+      frame.height -= Math.round(this.clip[1] * frame.height);
+      tex.frame = frame;
+    }
     this.texture = tex;
 
     if (this.overlay instanceof TextureSprite)

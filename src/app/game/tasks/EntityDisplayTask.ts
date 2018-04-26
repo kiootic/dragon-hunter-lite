@@ -62,7 +62,7 @@ export class EntityDisplayTask extends Task {
 
       const terrain = this.game.library.terrains[this.game.map.getTerrain(position[0], position[1])];
       const liquid = terrain && terrain.liquid;
-      sprite.clip = liquid ? [0, 1 / 6] : [0, 0];
+      sprite.clip = liquid ? [0, 1 / 6] : undefined;
 
       const tx = Math.floor(position[0] * DisplayTileSize);
       const ty = Math.floor(position[1] * DisplayTileSize);

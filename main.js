@@ -2,8 +2,7 @@ if (!process.env['ELECTRON_RUN_AS_NODE']) {
   const { app, remote, BrowserWindow } = require('electron');
   let win;
   app.on('ready', () => {
-    win = new BrowserWindow({ show: false, webPreferences: { nodeIntegration: false } });
-    win.setMenu(null);
+    win = new BrowserWindow({ show: false, autoHideMenuBar: true, webPreferences: { nodeIntegration: false } });
     win.loadURL('http://localhost:8080/');
     win.webContents.on('did-finish-load', () => {
       win.webContents.executeJavaScript(`(function() {
@@ -21,7 +20,6 @@ console.log('RENDERER: ' + gl.getParameter(ext.UNMASKED_RENDERER_WEBGL));
       win.reload();
       win.webContents.once('did-finish-load', () => {
         win.webContents.openDevTools();
-        win.setMenu(null);
         win.maximize();
       });
     }

@@ -58,7 +58,7 @@ export class PlayerMovementTask extends Task {
         if (objectDef && objectDef.obstacle)
           yield new intersect.AABB(
             new intersect.Point(x + 0.5, y + 0.5),
-            new intersect.Point(0.4, 0.4)
+            objectDef.terrain ? new intersect.Point(0.5, 0.5) : new intersect.Point(0.4, 0.4)
           );
       }
   }
