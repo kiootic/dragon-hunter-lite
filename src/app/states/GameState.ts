@@ -11,4 +11,5 @@ export abstract class GameState {
   public leave()  { }
 
   public update(dt: number) { }
+  public layout() { }
 }

@@ -24,6 +24,10 @@ export class StateMain extends GameState {
     this.game.update(dt);
   }
 
+  layout() {
+    this.game.layout();
+  }
+
   leave() {
     this.game.dispose();
   }

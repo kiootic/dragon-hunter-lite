@@ -33,7 +33,7 @@ export class StateTitle extends GameState {
     fadeIn(this.root).subscribe();
   }
 
-  update() {
+  layout() {
     const contentHeight = this.logo.height + 50 + 75 + 20 + 50;
 
     this.logo.x = (App.instance.screen.width - this.logo.width) / 2;

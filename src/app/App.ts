@@ -57,6 +57,11 @@ export class App extends Application {
     this.keyboard.update();
   }
 
+  public render() {
+    this.state && this.state.layout();
+    super.render();
+  }
+
   public readonly resources: Record<string, any> = {};
   public readonly keyboard = new Keyboard(this.view);
 }

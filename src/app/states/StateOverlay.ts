@@ -21,6 +21,9 @@ export class StateOverlay extends GameState {
 
   update(dt: number) {
     this.overlay.update(dt);
+  }
+
+  layout() {
     const { width, height } = App.instance.screen;
     this.bg.width = width;
     this.bg.height = height;

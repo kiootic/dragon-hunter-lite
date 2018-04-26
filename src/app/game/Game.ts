@@ -32,7 +32,9 @@ export class Game {
 
   public update(dt: number) {
     this.updateTasks(dt);
+  }
 
+  public layout() {
     const { width, height } = App.instance.screen;
     this.view.layout(width, height);
   }
