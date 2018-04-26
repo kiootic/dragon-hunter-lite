@@ -1,6 +1,7 @@
-import { Trait } from 'app/game';
 import { TextureSprite } from 'app/game/map';
+import { Trait } from 'app/game/Trait';
 import { vec2 } from 'gl-matrix';
+import { defaults } from 'lodash';
 
 export interface Spatial extends Trait {
   readonly type: typeof Spatial.Type;
@@ -25,4 +26,19 @@ export namespace Spatial {
       sprite: new TextureSprite()
     };
   }
+
+  export function serialize(trait: Spatial) {
+    return {
+      pos: [trait.position[0], trait.position[1]],
+      vel: [trait.velocity[0], trait.velocity[1]],
+    };
+  }
+
+  export function deserialize(data: any): Spatial {
+    return defaults({
+      position: data.pos && vec2.fromValues(data.pos[0], data.pos[1]),
+      velocity: data.vel && vec2.fromValues(data.vel[0], data.vel[1])
+    }, make());
+  }
 }
+Trait.types.set(Spatial.Type, Spatial);

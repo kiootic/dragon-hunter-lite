@@ -2,6 +2,7 @@ import { App } from 'app';
 import { TextButton } from 'app/components';
 import { Game } from 'app/game/Game';
 import { GameOverlay } from 'app/game/GameOverlay';
+import * as vex from 'vex-js';
 
 const MenuWidth = 400;
 const MenuHeight = 500;
@@ -14,6 +15,7 @@ export class MenuOverlay extends GameOverlay {
     super(game);
     this.content.addChild(this.saveButton);
     this.content.addChild(this.exitButton);
+    this.saveButton.on(TextButton.Clicked, this.save.bind(this));
     this.exitButton.on(TextButton.Clicked, this.exit.bind(this));
   }
 
@@ -32,6 +34,28 @@ export class MenuOverlay extends GameOverlay {
 
   update(dt: number) {
     if (this.game.keyboard.isDown('Escape')) this.done();
+  }
+
+  private save() {
+    this.game.save();
+    vex.dialog.prompt({
+      label: 'Save name (max 8 char.): ',
+      value: this.game.data.id,
+      callback: (name) => {
+        if (name === false) return;
+
+        if (!name) {
+          vex.dialog.alert('Name is empty!');
+          return;
+        } else if (name.length > 8) {
+          vex.dialog.alert('Name is too long!');
+          return;
+        }
+        this.game.data.id = name;
+        localStorage[name] = this.game.data.export();
+        vex.dialog.alert(`Saved as name '${name}'.`);
+      }
+    });
   }
 
   private async exit() {

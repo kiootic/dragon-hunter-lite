@@ -1,7 +1,7 @@
 import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 import { Keyboard } from 'app/utils/Keyboard';
-import { Application, SCALE_MODES, settings } from 'pixi.js';
+import { Application, Rectangle, SCALE_MODES, settings } from 'pixi.js';
 
 export const UIScaleFactor = 4;
 export const TextScaleFactor = 2;
@@ -31,6 +31,7 @@ export class App extends Application {
   public async pushState(next: GameState) {
     if (this.state) {
       await this.state.pause();
+      this.state.root.hitArea = Rectangle.EMPTY;
     }
     this._states.push(next);
     this.stage.addChild(next.root);
@@ -43,6 +44,7 @@ export class App extends Application {
       this._states.pop();
     }
     if (this.state) {
+      this.state.root.hitArea = null as any;
       await this.state.resume();
     }
   }

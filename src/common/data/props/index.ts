@@ -1,2 +1,2 @@
 export * from './GameProps';
-export * from './PlayerProps';
+export * from './EntityProps';

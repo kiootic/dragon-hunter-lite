@@ -1,5 +1,5 @@
 import { Game } from 'app/game';
-import { Trait } from 'app/game/Trait';
+import { Trait, TraitType } from 'app/game/Trait';
 
 export abstract class Entity {
   private _game: Game | null;
@@ -8,12 +8,14 @@ export abstract class Entity {
   public readonly id: number;
   public abstract get type(): string;
 
-  public static types = new Map<string, typeof Entity>();
+  public static types = new Map<string, EntityType>();
 
-  constructor(game: Game) {
+  constructor(game: Game, id?: number) {
     this._game = game;
-    this.id = game.save.props.nextEntityId++;
-    game.entities.set(this.id, this);
+    this.id = id || (game.data.props.nextEntityId++);
+  }
+
+  public init() {
   }
 
   public delete() {
@@ -24,13 +26,26 @@ export abstract class Entity {
 
   private _traits = new Map<string, Trait>();
   public traits = {
-    get: <T extends Trait>(trait: { _mark: T, Type: string }) => {
+    get: <T extends Trait>(trait: TraitType<T>) => {
       return this._traits.get(trait.Type) as T;
     },
-    make: <T extends Trait>(trait: { _mark: T, make(): T }) => {
-      const t = trait.make();
-      this._traits.set(t.type, t);
+    set: <T extends Trait>(trait: T) => {
+      this._traits.set(trait.type, trait);
+    },
+    list: () => this._traits.values(),
+    make: <T extends Trait>(trait: TraitType<T>) => {
+      let t: T = this._traits.get(trait.Type) as T;
+      if (!t) {
+        t = trait.make();
+        this._traits.set(t.type, t);
+      }
       return t;
     }
   };
+}
+
+export interface EntityType<T extends Entity = Entity> {
+  new(game: Game, id?: number): T;
+  readonly _mark: T;
+  readonly Type: string;
 }

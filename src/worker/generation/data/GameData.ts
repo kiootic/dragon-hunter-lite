@@ -1,5 +1,5 @@
 import { DataLibrary } from 'common/data';
-import { GameProps, PlayerProps } from 'common/data/props';
+import { EntityProps, GameProps } from 'common/data/props';
 import { MapProps } from 'common/map/MapProps';
 import { SerializedMap } from 'common/map/SerializedMap';
 import { VoronoiDiagram } from 'd3-voronoi';
@@ -27,7 +27,7 @@ export class GameData {
 
   public readonly map: MapProps = {} as MapProps;
   public readonly game: GameProps = {} as GameProps;
-  public readonly player: PlayerProps = {} as PlayerProps;
+  public readonly entities: EntityProps[] = [];
 
   constructor(
     public readonly width: number, public readonly height: number,
@@ -37,9 +37,6 @@ export class GameData {
     this.objects = new Uint16Array(width * height);
     this.tileBiomes = new Uint16Array(width * height);
     this.random = createRand(seed);
-
-    this.map.seed = seed;
-    this.game.nextEntityId = 1;
 
     function makeLookup(items: ({ name: string, id: number } | null)[]): Record<string, number> {
       return Object.assign({}, ...items

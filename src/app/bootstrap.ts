@@ -1,6 +1,11 @@
 import { glMatrix } from 'gl-matrix';
 import { Application } from 'pixi.js';
 import * as Stats from 'stats.js';
+import * as vexDialog from 'vex-dialog';
+import * as vex from 'vex-js';
+
+import 'vex-js/dist/css/vex-theme-plain.css';
+import 'vex-js/dist/css/vex.css';
 
 export function bootstrap<App extends Application>(app: App) {
   document.body.appendChild(app.view);
@@ -23,6 +28,9 @@ export function bootstrap<App extends Application>(app: App) {
   };
 
   glMatrix.setMatrixArrayType(Float64Array);
+
+  vex.registerPlugin(vexDialog);
+  vex.defaultOptions.className = 'vex-theme-plain';
 
   return app;
 }

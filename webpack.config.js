@@ -47,6 +47,9 @@ module.exports = {
           loader: 'file-loader',
           options: { name: 'assets/[hash].[ext]' }
         }
+      }, {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
