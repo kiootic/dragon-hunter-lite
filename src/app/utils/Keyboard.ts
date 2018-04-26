@@ -1,5 +1,6 @@
 export class Keyboard {
-  private keys = new Map<string, boolean>();
+  private state = new Set<string>();
+  private newKey = new Map<string, boolean>();
 
   constructor(private readonly elem: HTMLElement) {
     this.keydown = this.keydown.bind(this);
@@ -15,20 +16,38 @@ export class Keyboard {
 
   private keydown(event: KeyboardEvent) {
     event.preventDefault();
-    this.keys.set(event.key, true);
+    if (event.repeat) return;
+    this.state.add(event.key);
+    this.newKey.set(event.key, true);
   }
 
   private keyup(event: KeyboardEvent) {
     event.preventDefault();
-    this.keys.set(event.key, false);
+    if (event.repeat) return;
+    this.state.delete(event.key);
+    this.newKey.set(event.key, false);
   }
 
   private blur() {
-    this.keys.clear();
+    for (const key of this.state)
+      this.newKey.set(key, false);
+    this.state.clear();
   }
 
   public isDown(...keys: string[]) {
-    return keys.some(key => this.keys.has(key) ? this.keys.get(key)! : false);
+    return keys.some(key => this.newKey.get(key) === true);
+  }
+
+  public isUp(...keys: string[]) {
+    return keys.some(key => this.newKey.get(key) === false);
+  }
+
+  public isPressed(...keys: string[]) {
+    return keys.some(key => this.state.has(key));
+  }
+
+  public update() {
+    this.newKey.clear();
   }
 
   public dispose() {

@@ -2,7 +2,6 @@ import { Game } from 'app/game';
 import { GameState } from 'app/states/GameState';
 import { fadeIn } from 'app/utils/animations';
 import { GameSave } from 'common/data';
-import { Container, loaders, Sprite, Texture } from 'pixi.js';
 
 export class StateMain extends GameState {
   public get name() { return 'main'; }

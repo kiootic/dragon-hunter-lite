@@ -13,6 +13,7 @@ export class Player extends Entity {
     const spatial = this.traits.make(Spatial);
     vec2.set(spatial.position, game.save.player.position[0], game.save.player.position[1]);
     vec2.set(spatial.scale, 2, 2);
+    vec2.set(spatial.size, 0.25, 0.25);
     spatial.sprite.setTexture(Animations.Player, this.id);
   }
 }

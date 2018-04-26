@@ -1,5 +1,6 @@
 import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
+import { Keyboard } from 'app/utils/Keyboard';
 import { Application, SCALE_MODES, settings } from 'pixi.js';
 
 export const UIScaleFactor = 4;
@@ -53,7 +54,9 @@ export class App extends Application {
   private tick() {
     this.state && this.state.update(this.ticker.elapsedMS);
     TWEEN.update();
+    this.keyboard.update();
   }
 
   public readonly resources: Record<string, any> = {};
+  public readonly keyboard = new Keyboard(this.view);
 }

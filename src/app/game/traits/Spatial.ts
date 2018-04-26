@@ -7,6 +7,7 @@ export interface Spatial extends Trait {
   readonly position: vec2;
   readonly velocity: vec2;
   readonly scale: vec2;
+  readonly size: vec2;
   readonly sprite: TextureSprite;
 }
 
@@ -20,6 +21,7 @@ export namespace Spatial {
       position: vec2.fromValues(0, 0),
       velocity: vec2.fromValues(0, 0),
       scale: vec2.fromValues(1, 1),
+      size: vec2.fromValues(0.5, 0.5),
       sprite: new TextureSprite()
     };
   }

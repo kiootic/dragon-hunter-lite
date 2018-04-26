@@ -4,11 +4,8 @@ import { Entity } from 'app/game/Entity';
 import { GameView } from 'app/game/GameView';
 import { TileMap } from 'app/game/map';
 import { Task } from 'app/game/Task';
-import {
-  EntityDisplayTask, MiniMapTask, ObjectDisplayTask, PlayerMovementTask, TerrainDisplayTask
-} from 'app/game/tasks';
+import * as tasks from 'app/game/tasks';
 import { Trait } from 'app/game/Trait';
-import { Keyboard } from 'app/utils/Keyboard';
 import { GameSave } from 'common/data';
 
 export class Game {
@@ -17,17 +14,20 @@ export class Game {
   }
 
   public readonly view = new GameView(this);
-  public readonly keyboard = new Keyboard(App.instance.view);
+  public readonly keyboard = App.instance.keyboard;
   public readonly map: TileMap;
   public get library() { return this.save.library; }
 
   public init() {
     new Player(this);
-    this.addTask(PlayerMovementTask);
-    this.addTask(TerrainDisplayTask);
-    this.addTask(ObjectDisplayTask);
-    this.addTask(EntityDisplayTask);
-    this.addTask(MiniMapTask);
+    this.addTask(tasks.PlayerInputTask);
+    this.addTask(tasks.EntityMovementTask);
+
+    this.addTask(tasks.CameraUpdateTask);
+    this.addTask(tasks.TerrainDisplayTask);
+    this.addTask(tasks.ObjectDisplayTask);
+    this.addTask(tasks.EntityDisplayTask);
+    this.addTask(tasks.MiniMapTask);
   }
 
   public update(dt: number) {
