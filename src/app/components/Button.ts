@@ -1,7 +1,8 @@
 import { UIScaleFactor } from 'app';
+import { LayoutView } from 'app/components';
 import { mesh, Container, Point, Texture } from 'pixi.js';
 
-export class Button extends Container {
+export class Button extends Container implements LayoutView {
   public static readonly Clicked = 'button.clicked';
 
   public readonly content = new Container();

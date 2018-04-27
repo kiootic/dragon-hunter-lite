@@ -1,8 +1,10 @@
 export * from './Task';
+
+export * from './PlayerInputTask';
+export * from './EntityMovementTask';
+
+export * from './CameraUpdateTask';
 export * from './TerrainDisplayTask';
 export * from './ObjectDisplayTask';
-export * from './MiniMapTask';
-export * from './EntityMovementTask';
 export * from './EntityDisplayTask';
-export * from './PlayerInputTask';
-export * from './CameraUpdateTask';
+export * from './HUDTask';

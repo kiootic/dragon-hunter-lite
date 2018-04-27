@@ -1,7 +1,8 @@
 import { UIScaleFactor } from 'app';
+import { LayoutView } from 'app/components';
 import { Container, Point, Text as PixiText, TextStyleOptions } from 'pixi.js';
 
-export class Text extends Container {
+export class Text extends Container implements LayoutView {
   private _text: PixiText;
 
   public set text(value: string) { this._text.text = value; }

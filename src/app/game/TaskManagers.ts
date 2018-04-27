@@ -17,7 +17,7 @@ export class TaskManager {
     this.add(tasks.TerrainDisplayTask);
     this.add(tasks.ObjectDisplayTask);
     this.add(tasks.EntityDisplayTask);
-    this.add(tasks.MiniMapTask);
+    this.add(tasks.HUDTask);
   }
 
   public dispose() {

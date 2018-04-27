@@ -1,7 +1,8 @@
 import { App, UIScaleFactor } from 'app';
+import { LayoutView } from 'app/components';
 import { mesh, Container, DisplayObject, Point, RenderTexture, Sprite, Texture } from 'pixi.js';
 
-export class Panel extends Container {
+export class Panel extends Container implements LayoutView {
   public readonly content = new Container();
 
   private panelBg = new Sprite(Texture.WHITE);

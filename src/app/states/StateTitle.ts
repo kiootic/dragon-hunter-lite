@@ -77,12 +77,12 @@ export class StateTitle extends GameState {
     this.loadBar.position.set(width / 4, this.newButton.y + 64 + 20);
     this.loadBar.height = 50;
 
-    this.saveLabel.position.set(width - 320, 64);
-    this.saveLabel.layout(128, 48);
+    this.saveLabel.position.set(width - 256, 64);
+    this.saveLabel.layout(192, 48);
     let y = this.saveLabel.y + 48 + 16;
     for (const button of this.saveButtons) {
-      button.position.set(width - 320, y);
-      button.layout(128, 48);
+      button.position.set(width - 256, y);
+      button.layout(192, 48);
       y += 48 + 16;
     }
   }

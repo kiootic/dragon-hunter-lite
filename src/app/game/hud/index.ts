@@ -1,1 +1,2 @@
-export * from './MiniMapPanel';
+export * from './HUDElement';
+export * from './MiniMap';
