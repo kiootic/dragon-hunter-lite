@@ -1,13 +1,14 @@
 import { Game } from 'app/game';
-import { HUDElement, HUDElementType, MiniMap } from 'app/game/hud';
+import * as hud from 'app/game/hud';
 import { Task } from 'app/game/tasks';
 
-const HUDElements: HUDElementType[] = [
-  MiniMap
+const HUDElements: hud.HUDElementType[] = [
+  hud.DebugConsole,
+  hud.MiniMap
 ];
 
 export class HUDTask extends Task {
-  private readonly elements: HUDElement[] = [];
+  private readonly elements: hud.HUDElement[] = [];
 
   constructor(game: Game) {
     super(game);
@@ -22,5 +23,10 @@ export class HUDTask extends Task {
   update(dt: number) {
     for (const elem of this.elements)
       elem.update(dt);
+  }
+
+  dispose() {
+    for (const elem of this.elements)
+      elem.dispose && elem.dispose();
   }
 }
