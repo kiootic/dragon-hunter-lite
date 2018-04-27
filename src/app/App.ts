@@ -1,11 +1,7 @@
 import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 import { Keyboard } from 'app/utils/Keyboard';
-import { Application, Rectangle, SCALE_MODES, settings } from 'pixi.js';
-
-export const UIScaleFactor = 4;
-export const TextScaleFactor = 2;
-export const DisplayTileSize = 64;
+import { settings, Application, Rectangle, SCALE_MODES } from 'pixi.js';
 
 export class App extends Application {
   private constructor() {

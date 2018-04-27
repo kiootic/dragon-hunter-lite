@@ -1,7 +1,7 @@
 import { App } from 'app';
-import { Game } from 'app/game/Game';
+import { Game } from 'app/game';
 import { MenuOverlay } from 'app/game/overlays/MenuOverlay';
-import { Task } from 'app/game/Task';
+import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { StateOverlay } from 'app/states';
 import { vec2 } from 'gl-matrix';

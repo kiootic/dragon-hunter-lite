@@ -1,7 +1,7 @@
-import { Game } from 'app/game/Game';
-import { MapChange } from 'app/game/map';
-import { Task } from 'app/game/Task';
+import { Game } from 'app/game';
+import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
+import { MapChange } from 'app/game/TileMap';
 import { vec2 } from 'gl-matrix';
 import { Texture } from 'pixi.js';
 

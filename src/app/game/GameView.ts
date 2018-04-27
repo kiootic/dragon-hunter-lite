@@ -1,6 +1,6 @@
+import { Game } from 'app/game';
+import { MiniMapPanel } from 'app/game/hud';
 import { Camera } from 'app/game/Camera';
-import { Game } from 'app/game/Game';
-import { MiniMapPanel } from 'app/game/map';
 import { Container } from 'pixi.js';
 
 export class GameView extends Container {

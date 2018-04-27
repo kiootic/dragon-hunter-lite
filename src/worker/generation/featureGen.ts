@@ -1,8 +1,8 @@
 import { Noise } from 'common/noise';
 import { vec2 } from 'gl-matrix';
 import { Biome, GameData } from 'worker/generation/data';
-import { ProgressReporter } from 'worker/generation/ProgressReporter';
 import { poissonDisk, rasterizeLine, withProgress } from 'worker/generation/utils';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const FeatureSize = 128;
 const EdgeJitter = 4;

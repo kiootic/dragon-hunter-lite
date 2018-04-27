@@ -14,8 +14,9 @@ export class StatePreload extends GameState {
     lineHeight: 20,
     align: 'center',
   });
-  constructor() {
-    super();
+
+  constructor(app: App) {
+    super(app);
     this.root.addChild(this.loadingText);
   }
 
@@ -60,7 +61,7 @@ export class StatePreload extends GameState {
 
     const fontLoad = new FontFaceObserver('Unibody8Pro').load();
 
-    loader.load((_: any, resources: Record<string, loaders.Resource>) => {
+    loader.load(async (_: any, resources: Record<string, loaders.Resource>) => {
       loader.onProgress.detach(progressHandler);
 
       for (const name of Object.keys(resources)) {
@@ -71,7 +72,9 @@ export class StatePreload extends GameState {
         }
       }
 
-      fontLoad.then(() => fadeOut(this.root).subscribe(() => App.instance.topState(new StateTitle())));
+      await fontLoad;
+      await fadeOut(this.root).toPromise();
+      await App.instance.topState(new StateTitle(this.app));
     });
   }
 }

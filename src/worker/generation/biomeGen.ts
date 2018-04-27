@@ -2,8 +2,8 @@ import { Noise } from 'common/noise';
 import { voronoi } from 'd3-voronoi';
 import { vec2 } from 'gl-matrix';
 import { Biome, GameData, RiverSegment } from 'worker/generation/data';
-import { ProgressReporter } from 'worker/generation/ProgressReporter';
 import { poissonDisk } from 'worker/generation/utils';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const BiomeSize = 32;
 const EdgeRoughness = 16;

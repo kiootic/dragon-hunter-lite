@@ -1,5 +1,5 @@
-import { TextureSprite } from 'app/game/map';
-import { Trait } from 'app/game/Trait';
+import { TextureSprite } from 'app/components';
+import { Trait } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
 import { defaults } from 'lodash';
 

@@ -1,3 +1,4 @@
+import { App } from 'app';
 import { Game } from 'app/game';
 import { GameState } from 'app/states/GameState';
 import { fadeIn, fadeOut } from 'app/utils/animations';
@@ -8,9 +9,9 @@ export class StateMain extends GameState {
 
   private readonly game: Game;
 
-  constructor(gameSave: GameSave) {
-    super();
-    this.game = new Game(gameSave);
+  constructor(app: App, data: GameSave) {
+    super(app);
+    this.game = new Game(app, data);
     this.root.addChild(this.game.view);
   }
 

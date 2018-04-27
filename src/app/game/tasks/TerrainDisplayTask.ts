@@ -1,10 +1,10 @@
 import { App, DisplayTileSize } from 'app';
+import { TextureSprite } from 'app/components';
+import { Game } from 'app/game';
+import { Task } from 'app/game/tasks';
 import { Camera } from 'app/game/Camera';
-import { Game } from 'app/game/Game';
-import { TextureSprite } from 'app/game/map';
-import { Task } from 'app/game/Task';
 import { vec2 } from 'gl-matrix';
-import { Container, RenderTexture, SCALE_MODES, Sprite, TransformStatic } from 'pixi.js';
+import { Container, RenderTexture, Sprite, SCALE_MODES, TransformStatic } from 'pixi.js';
 
 const TileSize = 16;
 

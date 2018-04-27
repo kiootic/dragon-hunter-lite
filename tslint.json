@@ -3,12 +3,25 @@
     "extends": [],
     "jsRules": {},
     "rules": {
-        "quotemark": [true, "single"],
-        "semicolon": [true, "always", "ignore-interfaces"],
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "semicolon": [
+            true,
+            "always",
+            "ignore-interfaces"
+        ],
         "triple-equals": true,
         "no-irregular-whitespace": true,
         "no-trailing-whitespace": true,
-        "ordered-imports": true,
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "lowercase-first",
+                "named-imports-order": "lowercase-first"
+            }
+        ],
         "whitespace": true,
         "no-unused-variable": true
     },

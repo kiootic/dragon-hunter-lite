@@ -1,7 +1,7 @@
 import { App } from 'app';
 import { TextButton } from 'app/components';
-import { Game } from 'app/game/Game';
-import { GameOverlay } from 'app/game/GameOverlay';
+import { Game } from 'app/game';
+import { GameOverlay } from 'app/game/overlays';
 import * as vex from 'vex-js';
 
 const MenuWidth = 400;

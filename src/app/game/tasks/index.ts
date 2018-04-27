@@ -1,3 +1,4 @@
+export * from './Task';
 export * from './TerrainDisplayTask';
 export * from './ObjectDisplayTask';
 export * from './MiniMapTask';

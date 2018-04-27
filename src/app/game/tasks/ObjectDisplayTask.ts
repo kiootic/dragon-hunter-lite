@@ -1,8 +1,8 @@
 import { DisplayTileSize } from 'app';
+import { TextureSprite } from 'app/components';
+import { Game } from 'app/game';
+import { Task } from 'app/game/tasks';
 import { Camera } from 'app/game/Camera';
-import { Game } from 'app/game/Game';
-import { TextureSprite } from 'app/game/map';
-import { Task } from 'app/game/Task';
 import { Noise } from 'common/noise';
 import { create as createRand } from 'random-seed';
 

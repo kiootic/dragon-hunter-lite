@@ -3,7 +3,7 @@ import { Panel } from 'app/components';
 import { Game } from 'app/game';
 
 export class GameOverlay extends Panel {
-  constructor(protected readonly game: Game) {
+  constructor(public readonly game: Game) {
     super();
   }
 

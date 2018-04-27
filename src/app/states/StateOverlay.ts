@@ -1,5 +1,5 @@
 import { App } from 'app';
-import { GameOverlay } from 'app/game';
+import { GameOverlay } from 'app/game/overlays';
 import { GameState } from 'app/states/GameState';
 import { Sprite, Texture } from 'pixi.js';
 
@@ -8,7 +8,7 @@ export class StateOverlay extends GameState {
 
   private readonly bg = new Sprite(Texture.WHITE);
   constructor(private readonly overlay: GameOverlay) {
-    super();
+    super(overlay.game.app);
     this.bg.tint = 0;
     this.bg.alpha = 0.5;
     this.root.addChild(this.bg);

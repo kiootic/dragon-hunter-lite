@@ -1,9 +1,9 @@
 import {
-  BaseTexture, CanvasRenderer, CanvasSpriteRenderer, glCore,
-  ObjectRenderer, Shader, Sprite, TextureUvs, TransformStatic, utils, WebGLRenderer
+  glCore, utils, BaseTexture, CanvasRenderer, CanvasSpriteRenderer, ObjectRenderer,
+  Shader, Sprite, TextureUvs, TransformStatic, WebGLRenderer
 } from 'pixi.js';
 
-export interface MapSprite extends Sprite {
+export interface TextureSprite extends Sprite {
   outline: boolean;
   offset?: [number, number];
 }
@@ -22,15 +22,15 @@ for (let i = 0; i < BatchSize; i++) {
   indices[i * 6 + 5] = i * 4 + 3;
 }
 
-export class MapSpriteRenderer extends ObjectRenderer {
-  public static readonly Name = 'map-sprite';
+export class TextureSpriteRenderer extends ObjectRenderer {
+  public static readonly Name = 'tex-sprite';
 
   private shader!: Shader;
 
   private currentTex: BaseTexture | null = null;
   private currentBlendMode: number = -1;
   private batchSize = 0;
-  private batch: MapSprite[] = [];
+  private batch: TextureSprite[] = [];
   private vao!: glCore.VertexArrayObject;
   private vb!: glCore.GLBuffer;
   private ib!: glCore.GLBuffer;
@@ -56,7 +56,7 @@ export class MapSpriteRenderer extends ObjectRenderer {
       .addAttribute(this.vb, this.shader.attributes.aThickness, gl.FLOAT, true, vaoSize, 10 * 4);
   }
 
-  render(sprite: MapSprite) {
+  render(sprite: TextureSprite) {
     if (!sprite.texture.valid) return;
 
     if (this.batchSize >= BatchSize ||
@@ -209,5 +209,5 @@ void main(void)
   }
 }
 
-WebGLRenderer.registerPlugin(MapSpriteRenderer.Name, MapSpriteRenderer);
-CanvasRenderer.registerPlugin(MapSpriteRenderer.Name, CanvasSpriteRenderer as any);
+WebGLRenderer.registerPlugin(TextureSpriteRenderer.Name, TextureSpriteRenderer);
+CanvasRenderer.registerPlugin(TextureSpriteRenderer.Name, CanvasSpriteRenderer as any);

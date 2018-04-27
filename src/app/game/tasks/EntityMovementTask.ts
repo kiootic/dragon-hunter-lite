@@ -1,6 +1,5 @@
-import { Game } from 'app/game/Game';
-import { TextureSprite } from 'app/game/map';
-import { Task } from 'app/game/Task';
+import { TextureSprite } from 'app/components';
+import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import * as intersect from 'app/utils/intersect';
 import { vec2 } from 'gl-matrix';
@@ -9,12 +8,8 @@ import { clamp } from 'lodash';
 export class EntityMovementTask extends Task {
   private readonly vel = vec2.create();
 
-  constructor(game: Game) {
-    super(game);
-  }
-
   public update(dt: number) {
-    for (const entity of this.game.entities.findTrait(Spatial)) {
+    for (const entity of this.game.entities.withTrait(Spatial)) {
       const { position, size, sprite, velocity } = entity.traits.get(Spatial);
       vec2.copy(this.vel, velocity);
 

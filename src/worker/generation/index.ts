@@ -4,8 +4,8 @@ import { GameData } from 'worker/generation/data';
 import { decorateMap } from 'worker/generation/decoration';
 import { generateFeatures } from 'worker/generation/featureGen';
 import { generateLibrary } from 'worker/generation/libraryGen';
-import { ProgressReporter } from 'worker/generation/ProgressReporter';
 import { generateProps } from 'worker/generation/propsGen';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 export function generate(
   width: number, height: number, seed: string,

@@ -1,6 +1,6 @@
 import { DisplayTileSize } from 'app';
-import { Game } from 'app/game/Game';
-import { Task } from 'app/game/Task';
+import { Game } from 'app/game';
+import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
 

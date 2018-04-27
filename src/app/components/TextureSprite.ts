@@ -1,4 +1,4 @@
-import { MapSprite, MapSpriteRenderer } from 'app/game/map/MapSpriteRenderer';
+import { TextureSprite as TexSprite, TextureSpriteRenderer } from 'app/components/TextureSpriteRenderer';
 import { TextureDef } from 'common/data';
 import { Sprite, Texture } from 'pixi.js';
 
@@ -10,7 +10,7 @@ function hashKey(key: number) {
   return key;
 }
 
-export class TextureSprite extends Sprite implements MapSprite {
+export class TextureSprite extends Sprite implements TexSprite {
   public outline: boolean = false;
   public offset?: [number, number];
   public clip?: [number, number];
@@ -28,7 +28,7 @@ export class TextureSprite extends Sprite implements MapSprite {
     this.tint = 0xffffff;
     this.removeChildren();
     this.overlay = undefined;
-    this.pluginName = MapSpriteRenderer.Name;
+    this.pluginName = TextureSpriteRenderer.Name;
 
     if (typeof textureDef === 'string') {
       this.textureDef = undefined;

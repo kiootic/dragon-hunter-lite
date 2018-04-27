@@ -1,4 +1,4 @@
-import { Game } from 'app/game/Game';
+import { Game } from 'app/game';
 
 export class Task {
   private _active = true;

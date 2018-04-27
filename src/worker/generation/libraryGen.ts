@@ -3,8 +3,8 @@ import { makeObjects } from 'data/objects';
 import { makeBerryBush, makeBush, makeFlower } from 'data/template';
 import { makeTerrains } from 'data/terrains';
 import { create as createRand } from 'random-seed';
-import { ProgressReporter } from 'worker/generation/ProgressReporter';
 import { randomColors } from 'worker/generation/utils';
+import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const NumFlowers = 16;
 const NumBerries = 16;

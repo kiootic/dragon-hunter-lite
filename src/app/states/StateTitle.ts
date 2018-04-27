@@ -1,6 +1,6 @@
-import { App, TextScaleFactor } from 'app';
+import { App } from 'app';
 import { Text, TextButton } from 'app/components';
-import { Generator } from 'app/game';
+import { Generator } from 'app/game/Generator';
 import { GameState } from 'app/states/GameState';
 import { StateMain } from 'app/states/StateMain';
 import { fadeIn, fadeOut } from 'app/utils/animations';
@@ -13,12 +13,12 @@ export class StateTitle extends GameState {
   private logo = new Sprite(Texture.fromFrame('sprites/ui/title'));
   private newButton = new TextButton('new game');
   private loadBar = new Sprite(Texture.WHITE);
-  private loadMessage = new Text('', { scale: TextScaleFactor });
+  private loadMessage = new Text('');
   private saveLabel = new Text('saves');
   private saveButtons: TextButton[] = [];
 
-  constructor() {
-    super();
+  constructor(app: App) {
+    super(app);
 
     this.root.addChild(this.logo);
     this.root.addChild(this.newButton);
@@ -70,20 +70,20 @@ export class StateTitle extends GameState {
     const { width, height } = App.instance.screen;
 
     this.logo.position.set((width - this.logo.width) / 2, (height - contentHeight) / 2);
-    this.newButton.position.set((width - 256) / 2, this.logo.y + this.logo.height + 50);
-    this.newButton.layout(256, 75);
-    this.loadMessage.position.set(0, this.newButton.y + 75 + 20);
+    this.newButton.position.set((width - 160) / 2, this.logo.y + this.logo.height + 50);
+    this.newButton.layout(160, 64);
+    this.loadMessage.position.set(0, this.newButton.y + 64 + 20);
     this.loadMessage.layout(width, 50);
-    this.loadBar.position.set(width / 4, this.newButton.y + 75 + 20);
+    this.loadBar.position.set(width / 4, this.newButton.y + 64 + 20);
     this.loadBar.height = 50;
 
     this.saveLabel.position.set(width - 320, 64);
-    this.saveLabel.layout(256, 64);
-    let y = this.saveLabel.y + 64 + 32;
+    this.saveLabel.layout(128, 48);
+    let y = this.saveLabel.y + 48 + 16;
     for (const button of this.saveButtons) {
       button.position.set(width - 320, y);
-      button.layout(256, 64);
-      y += 64 + 32;
+      button.layout(128, 48);
+      y += 48 + 16;
     }
   }
 
@@ -102,6 +102,6 @@ export class StateTitle extends GameState {
   private async startGame(data: GameSave) {
     this.newButton.isEnabled = false;
     this.saveButtons.forEach(btn => btn.isEnabled = false);
-    await App.instance.pushState(new StateMain(data));
+    await App.instance.pushState(new StateMain(this.app, data));
   }
 }

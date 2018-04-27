@@ -1,5 +1,5 @@
 import { App, UIScaleFactor } from 'app';
-import { Container, DisplayObject, mesh, Point, RenderTexture, Sprite, Texture } from 'pixi.js';
+import { mesh, Container, DisplayObject, Point, RenderTexture, Sprite, Texture } from 'pixi.js';
 
 export class Panel extends Container {
   public readonly content = new Container();

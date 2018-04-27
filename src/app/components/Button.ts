@@ -1,5 +1,5 @@
 import { UIScaleFactor } from 'app';
-import { Container, mesh, Point, Texture } from 'pixi.js';
+import { mesh, Container, Point, Texture } from 'pixi.js';
 
 export class Button extends Container {
   public static readonly Clicked = 'button.clicked';

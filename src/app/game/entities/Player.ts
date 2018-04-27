@@ -1,4 +1,4 @@
-import { Entity } from 'app/game/Entity';
+import { Entity } from 'app/game/entities';
 import { Spatial } from 'app/game/traits';
 import { Animations } from 'data/animations';
 import { vec2 } from 'gl-matrix';

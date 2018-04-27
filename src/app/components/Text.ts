@@ -18,7 +18,7 @@ export class Text extends Container {
     } as TextStyleOptions);
     this.addChild(this._text);
 
-    const scale = style && style.scale || UIScaleFactor;
+    const scale = (style && style.scale || 1) * UIScaleFactor;
     this._text.scale = new Point(scale, scale);
   }
 

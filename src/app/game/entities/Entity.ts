@@ -1,5 +1,5 @@
 import { Game } from 'app/game';
-import { Trait, TraitType } from 'app/game/Trait';
+import { Trait, TraitType } from 'app/game/traits';
 
 export abstract class Entity {
   private _game: Game | null;
@@ -20,7 +20,7 @@ export abstract class Entity {
 
   public delete() {
     if (!this._game) return;
-    this._game.entities.delete(this.id);
+    this._game.entities.delete(this);
     this._game = null;
   }
 

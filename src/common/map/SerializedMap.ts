@@ -1,4 +1,4 @@
-import { MapProps } from './MapProps';
+import { MapProps } from 'common/map/MapProps';
 export interface SerializedMap {
   width: number;
   height: number;

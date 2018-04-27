@@ -1,6 +1,6 @@
+import { Button } from 'app/components/Button';
+import { Text } from 'app/components/Text';
 import { TextStyleOptions } from 'pixi.js';
-import { Button } from './Button';
-import { Text } from './Text';
 
 export class TextButton extends Button {
   private readonly text: Text;
