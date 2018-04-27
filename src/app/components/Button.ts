@@ -45,9 +45,9 @@ export class Button extends Container implements LayoutView {
     this.on('pointerdown', () => this.updateState(true));
     this.on('pointerupoutside', () => this.updateState(false));
     this.on('pointerup', () => {
-      this.updateState(false);
-      if (this._isEnabled)
+      if (this._isEnabled && this.isPressed)
         this.emit(Button.Clicked);
+      this.updateState(false);
     });
   }
 
