@@ -1,24 +1,24 @@
 import { App } from 'app';
-import { interaction, Container, DisplayObject, Point } from 'pixi.js';
+import { interaction, Container, DisplayObject, Point, RendererPlugins } from 'pixi.js';
 import { first } from 'rxjs/operators/first';
 import { Subject } from 'rxjs/Subject';
 
 type InteractionEvent = interaction.InteractionEvent;
 
 export class DragDrop {
+  private interaction: interaction.InteractionManager;
   private readonly overlay = new Container();
   private readonly pointerPos = new Point();
   private activeObj?: DisplayObject;
   private endDrag$ = new Subject<DisplayObject | null>();
 
-  constructor(app: App) {
+  constructor(private readonly app: App) {
+    this.interaction = (app.renderer.plugins as RendererPlugins).interaction;
     app.stage.addChild(this.overlay);
-    this.overlay.interactive = true;
-    this.overlay.on('pointermove', (e: InteractionEvent) =>
+    this.interaction.on('pointermove', (e: InteractionEvent) =>
       e.data.getLocalPosition(this.overlay, this.pointerPos)
     );
-    this.overlay.on('pointerup', this.end);
-    this.overlay.on('pointerupoutside', this.end);
+    this.interaction.on('pointerup', this.end);
   }
 
   public begin(object: DisplayObject) {
@@ -30,12 +30,13 @@ export class DragDrop {
     object.parent && object.parent.removeChild(object);
     this.overlay.addChild(object);
     this.activeObj = object;
-    return this.endDrag$.lift<DisplayObject>(first).toPromise();
+    return this.endDrag$.pipe(first()).toPromise();
   }
 
   private end = (e: InteractionEvent) => {
     if (this.activeObj) {
-      this.endDrag$.next(null);
+      const target = this.interaction.hitTest(e.data.global, this.app.root);
+      this.endDrag$.next(target);
 
       this.overlay.removeChild(this.activeObj);
       this.activeObj = undefined;

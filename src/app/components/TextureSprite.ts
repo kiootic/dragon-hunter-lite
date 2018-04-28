@@ -22,6 +22,29 @@ export class TextureSprite extends Sprite implements TexSprite {
   private textureDef?: Exclude<TextureDef, string>;
   private currentTex = Texture.EMPTY;
 
+  private updateTex() {
+    let tex = this.currentTex;
+    if (this.clip) {
+      tex = tex.clone();
+      const frame = tex.frame.clone();
+      frame.width -= Math.round(this.clip[0] * frame.width);
+      frame.height -= Math.round(this.clip[1] * frame.height);
+      tex.frame = frame;
+    }
+    if (this._texture !== tex) {
+      this.texture = tex;
+    }
+  }
+
+  public clearTexture() {
+    this.tint = 0xffffff;
+    this.removeChildren();
+    this.overlay = undefined;
+    this.currentTex = Texture.EMPTY;
+    this.textureDef = undefined;
+    this.updateTex();
+  }
+
   public setTexture(textureDef: TextureDef, key: number = 0) {
     key = hashKey(key);
 
@@ -61,6 +84,7 @@ export class TextureSprite extends Sprite implements TexSprite {
           if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
       }
     }
+    this.updateTex();
   }
 
   private frame = -1;
@@ -83,17 +107,7 @@ export class TextureSprite extends Sprite implements TexSprite {
       }
     }
 
-    let tex = this.currentTex;
-    if (this.clip) {
-      tex = tex.clone();
-      const frame = tex.frame.clone();
-      frame.width -= Math.round(this.clip[0] * frame.width);
-      frame.height -= Math.round(this.clip[1] * frame.height);
-      tex.frame = frame;
-    }
-    if (this._texture !== tex) {
-      this.texture = tex;
-    }
+    this.updateTex();
 
     if (this.overlay && (this.overlay as TextureSprite).update)
       (this.overlay as TextureSprite).update(elapsed);

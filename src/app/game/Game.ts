@@ -51,8 +51,8 @@ export class Game {
 
   private _message$ = new Subject<Message>();
   public readonly messages$ = Object.assign(this._message$ as Observable<Message>, {
-    ofType: <Msg extends Message, T extends Function & { prototype: Msg }>(Type: T) => {
-      return this.messages$.pipe(filter(msg => msg instanceof Type)) as Observable<Msg>;
+    ofType: <T extends { new(...args: any[]): Message }>(Type: T) => {
+      return this.messages$.pipe(filter(msg => msg instanceof Type)) as Observable<InstanceType<T>>;
     }
   });
 

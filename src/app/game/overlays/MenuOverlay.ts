@@ -18,8 +18,7 @@ export class MenuOverlay extends GameOverlay {
 
     const slots = game.player.traits.get(Inventory).slots;
     for (const slot of slots) {
-      const view = new SlotView(this.game);
-      view.setSlot(slot);
+      const view = new SlotView(this.game, slot);
       this.slotViews.push(view);
       this.content.addChild(view);
     }
@@ -45,7 +44,7 @@ export class MenuOverlay extends GameOverlay {
     const slotLeft = 24, slotTop = 176;
     let x = 0, y = 0;
     for (const view of this.slotViews) {
-      view.position.set(slotLeft + x * view.width, slotTop + y * view.height + (y > 0 ? 16 : 0));
+      view.position.set(slotLeft + x * SlotView.Size, slotTop + y * SlotView.Size + (y > 0 ? 16 : 0));
       view.layout();
       if (++x === SlotsPerRow) {
         x = 0;

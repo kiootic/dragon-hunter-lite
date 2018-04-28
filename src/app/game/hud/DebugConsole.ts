@@ -3,7 +3,7 @@ import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
 import { Inventory } from 'app/game/traits';
 import { Item } from 'common/data';
-import { Wood } from 'data/items';
+import { Bone, Wood } from 'data/items';
 import { compact } from 'lodash';
 
 const ConsoleHTML = `
@@ -79,7 +79,8 @@ export class DebugConsole implements HUDElement {
       case '/give': {
         let item: Item | undefined;
         switch (args[0]) {
-          case 'wood': item = Wood();
+          case 'wood': item = Wood(); break;
+          case 'bone': item = Bone(); break;
         }
         if (!item)
           this.addLog('unknown item: ' + args[0]);

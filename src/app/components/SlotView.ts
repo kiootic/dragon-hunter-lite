@@ -1,39 +1,27 @@
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
+import { InventorySwap } from 'app/game/messages';
 import { ItemSlot } from 'common/data';
 import { Container, DisplayObject, Sprite, Texture } from 'pixi.js';
 
 export class SlotView extends Container {
   public static Size = 64;
 
-  private bg = new Sprite(Texture.fromFrame('sprites/ui/inv-slot'));
-  private obj?: TextureSprite;
+  private readonly bg = new Sprite(Texture.fromFrame('sprites/ui/inv-slot'));
+
+  private readonly obj: TextureSprite;
   private dragging = false;
 
-  constructor(private readonly game: Game) {
+  constructor(private readonly game: Game, private readonly slot: ItemSlot) {
     super();
     this.bg.scale.set(2, 2);
     this.addChild(this.bg);
-    this.width = SlotView.Size;
-    this.height = SlotView.Size;
-  }
 
-  public setSlot(slot: ItemSlot) {
-    if (this.obj)
-      this.removeChild(this.obj);
-
-    if (!slot.item) {
-      this.obj = undefined;
-      return;
-    }
-
-    const obj = new TextureSprite();
-    obj.setTexture(slot.item.texture);
-    obj.scale.set(2, 2);
-    obj.anchor.set(0.5, 0.5);
-    obj.outline = true;
-    this.addChild(obj);
-    this.obj = obj;
+    this.obj = new TextureSprite();
+    this.obj.scale.set(2, 2);
+    this.obj.anchor.set(0.5, 0.5);
+    this.obj.outline = true;
+    this.addChild(this.obj);
 
     this.interactive = true;
     this.on('pointerdown', () => {
@@ -42,22 +30,37 @@ export class SlotView extends Container {
         this.game.app.dragDrop.begin(this.obj).then(this.endDrag);
       }
     });
-    this.layout();
+  }
+
+  public updateSlot() {
+    if (!this.slot.item && this.obj) {
+      this.obj.alpha = 0;
+    }
+    if (this.slot.item) {
+      this.obj.setTexture(this.slot.item.texture);
+      this.obj.alpha = 1;
+    } else {
+      this.obj.clearTexture();
+      this.obj.alpha = 0;
+    }
   }
 
   public layout() {
-    if (this.obj) {
-      if (!this.dragging) {
-        this.obj.position.set(this.width / 2, this.height / 2);
-      }
+    this.updateSlot();
+    if (!this.dragging) {
+      this.obj.position.set(SlotView.Size / 2, SlotView.Size / 2);
     }
   }
 
   public update(dt: number) {
-    this.obj && this.obj.update(dt);
+    this.obj.update(dt);
   }
 
-  private endDrag = (obj: DisplayObject) => {
-
+  private endDrag = (target: DisplayObject | null) => {
+    this.dragging = false;
+    this.addChild(this.obj);
+    if (target instanceof SlotView && target !== this) {
+      this.game.dispatch(new InventorySwap(this.slot, target.slot));
+    }
   }
 }
