@@ -1,16 +1,19 @@
 import { App } from 'app';
+import { Message } from 'app/game/messages';
 import { EntityManager } from 'app/game/EntityManager';
 import { GameView } from 'app/game/GameView';
 import { TaskManager } from 'app/game/TaskManagers';
 import { TileMap } from 'app/game/TileMap';
 import { DataLibrary, GameSave } from 'common/data';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 export class Game {
   constructor(public readonly app: App, public readonly data: GameSave) {
     this.library = data.library;
   }
 
-  public readonly view = new GameView(this);
+  public readonly view = new GameView();
   public readonly keyboard = App.instance.keyboard;
   public map!: TileMap;
   public readonly library: DataLibrary;
@@ -39,7 +42,16 @@ export class Game {
   }
 
   public dispose() {
+    this.tasks.dispose();
+    this.entities.dispose();
   }
 
   public get player() { return this.entities.get(1)!; }
+
+  private _message$ = new Subject<Message>();
+  public readonly messages$: Observable<Message> = this._message$;
+
+  public dispatch(message: Message) {
+    this._message$.next(message);
+  }
 }
