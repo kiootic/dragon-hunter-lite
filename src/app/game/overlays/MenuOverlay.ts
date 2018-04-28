@@ -18,9 +18,9 @@ export class MenuOverlay extends GameOverlay {
     super(game);
 
     const items = game.player.traits.get(Inventory).content;
-    for (const item of items) {
+    for (let i = 0; i < items.length; i++) {
       const slot = new SlotView();
-      slot.setItem(item);
+      slot.setItem(items, i);
       this.slots.push(slot);
       this.content.addChild(slot);
     }

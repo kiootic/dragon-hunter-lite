@@ -28,9 +28,17 @@ export class DebugConsole implements HUDElement {
   }
 
   private onKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'F3' || (event.key === 'Escape' && this.root.classList.contains('active')))
+    const isActive = this.root.classList.contains('active');
+    if (isActive && event.key === 'Escape') {
       this.toggleInput();
-    else if (event.key === 'Enter' && event.target === this.input) {
+    } else if (event.key.toLowerCase() === 't' || event.key === '/') {
+      if (isActive)
+        this.input.focus();
+      else
+        this.toggleInput();
+      if (event.key === '/' && event.target !== this.input)
+        this.input.value = '/';
+    } else if (event.key === 'Enter' && event.target === this.input) {
       this.processInput(this.input.value);
       this.input.value = '';
     }

@@ -17,15 +17,15 @@ export class Keyboard {
   private keydown(event: KeyboardEvent) {
     event.preventDefault();
     if (event.repeat) return;
-    this.state.add(event.key);
-    this.newKey.set(event.key, true);
+    this.state.add(event.key.toLowerCase());
+    this.newKey.set(event.key.toLowerCase(), true);
   }
 
   private keyup(event: KeyboardEvent) {
     event.preventDefault();
     if (event.repeat) return;
-    this.state.delete(event.key);
-    this.newKey.set(event.key, false);
+    this.state.delete(event.key.toLowerCase());
+    this.newKey.set(event.key.toLowerCase(), false);
   }
 
   private blur() {
@@ -35,15 +35,15 @@ export class Keyboard {
   }
 
   public isDown(...keys: string[]) {
-    return keys.some(key => this.newKey.get(key) === true);
+    return keys.some(key => this.newKey.get(key.toLowerCase()) === true);
   }
 
   public isUp(...keys: string[]) {
-    return keys.some(key => this.newKey.get(key) === false);
+    return keys.some(key => this.newKey.get(key.toLowerCase()) === false);
   }
 
   public isPressed(...keys: string[]) {
-    return keys.some(key => this.state.has(key));
+    return keys.some(key => this.state.has(key.toLowerCase()));
   }
 
   public update() {

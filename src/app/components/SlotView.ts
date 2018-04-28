@@ -16,10 +16,14 @@ export class SlotView extends Container {
     this.height = SlotView.Size;
   }
 
-  public setItem(item: Item | null) {
+  public setItem(items: (Item | null)[], index: number): void;
+  public setItem<T, _K extends keyof T, K extends T[_K] extends (Item | null) ? _K : never>(items: T, index: K): void;
+  public setItem(items: any, index: string | number) {
     if (this.obj)
       this.removeChild(this.obj);
-    if (!item) {
+
+    const item = items[index];
+    if (!items[index]) {
       this.obj = undefined;
       return;
     }
