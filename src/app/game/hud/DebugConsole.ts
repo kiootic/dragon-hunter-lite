@@ -84,7 +84,7 @@ export class DebugConsole implements HUDElement {
         if (!item)
           this.addLog('unknown item: ' + args[0]);
         else {
-          this.game.player.traits.get(Inventory).content[0] = item;
+          this.game.player.traits.get(Inventory).slots[0].item = item;
           this.addLog('given item ' + item.name);
         }
       } break;

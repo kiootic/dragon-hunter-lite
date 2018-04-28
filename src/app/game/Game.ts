@@ -5,6 +5,7 @@ import { GameView } from 'app/game/GameView';
 import { TaskManager } from 'app/game/TaskManagers';
 import { TileMap } from 'app/game/TileMap';
 import { DataLibrary, GameSave } from 'common/data';
+import { filter } from 'rxjs/operators/filter';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -49,7 +50,11 @@ export class Game {
   public get player() { return this.entities.get(1)!; }
 
   private _message$ = new Subject<Message>();
-  public readonly messages$: Observable<Message> = this._message$;
+  public readonly messages$ = Object.assign(this._message$ as Observable<Message>, {
+    ofType: <Msg extends Message, T extends Function & { prototype: Msg }>(Type: T) => {
+      return this.messages$.pipe(filter(msg => msg instanceof Type)) as Observable<Msg>;
+    }
+  });
 
   public dispatch(message: Message) {
     this._message$.next(message);

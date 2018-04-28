@@ -11,17 +11,17 @@ const SlotsPerRow = 10;
 export class MenuOverlay extends GameOverlay {
   private readonly saveButton = new TextButton('save');
   private readonly exitButton = new TextButton('exit');
-  private readonly slots: SlotView[] = [];
+  private readonly slotViews: SlotView[] = [];
 
   constructor(game: Game) {
     super(game);
 
-    const items = game.player.traits.get(Inventory).content;
-    for (let i = 0; i < items.length; i++) {
-      const slot = new SlotView();
-      slot.setItem(items, i);
-      this.slots.push(slot);
-      this.content.addChild(slot);
+    const slots = game.player.traits.get(Inventory).slots;
+    for (const slot of slots) {
+      const view = new SlotView(this.game);
+      view.setSlot(slot);
+      this.slotViews.push(view);
+      this.content.addChild(view);
     }
 
     this.content.addChild(this.saveButton);
@@ -44,9 +44,9 @@ export class MenuOverlay extends GameOverlay {
 
     const slotLeft = 24, slotTop = 176;
     let x = 0, y = 0;
-    for (const slot of this.slots) {
-      slot.position.set(slotLeft + x * slot.width, slotTop + y * slot.height + (y > 0 ? 16 : 0));
-      slot.layout();
+    for (const view of this.slotViews) {
+      view.position.set(slotLeft + x * view.width, slotTop + y * view.height + (y > 0 ? 16 : 0));
+      view.layout();
       if (++x === SlotsPerRow) {
         x = 0;
         y++;
@@ -56,8 +56,8 @@ export class MenuOverlay extends GameOverlay {
 
   update(dt: number) {
     if (this.game.keyboard.isDown('Escape')) this.done();
-    for (const slot of this.slots)
-      slot.update(dt);
+    for (const view of this.slotViews)
+    view.update(dt);
   }
 
   private save() {

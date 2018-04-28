@@ -1,10 +1,11 @@
 import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 import { Keyboard } from 'app/utils/Keyboard';
+import { DragDrop } from 'app/DragDrop';
 import { settings, Application, Container, Rectangle, SCALE_MODES } from 'pixi.js';
 
 export class App extends Application {
-  private root = new Container();
+  public readonly root = this.stage.addChild(new Container());
 
   constructor() {
     super({
@@ -16,7 +17,6 @@ export class App extends Application {
 
     settings.SCALE_MODE = SCALE_MODES.NEAREST;
     this.ticker.add(this.tick.bind(this));
-    this.stage.addChild(this.root);
   }
 
   private _states: GameState[] = [];
@@ -27,13 +27,13 @@ export class App extends Application {
       this.state.root.hitArea = Rectangle.EMPTY;
     }
     this._states.push(next);
-    this.stage.addChild(next.root);
+    this.root.addChild(next.root);
     await next.enter();
   }
   public async popState() {
     if (this.state) {
       await this.state.leave();
-      this.stage.removeChild(this.state.root);
+      this.root.removeChild(this.state.root);
       this._states.pop();
     }
     if (this.state) {
@@ -54,9 +54,11 @@ export class App extends Application {
 
   public render() {
     this.state && this.state.layout();
+    this.dragDrop.layout();
     super.render();
   }
 
   public readonly resources: Record<string, any> = {};
   public readonly keyboard = new Keyboard(this.view);
+  public readonly dragDrop = new DragDrop(this);
 }
