@@ -1,12 +1,12 @@
 import { TextureDef } from 'common/data/TextureDef';
 
 export interface TileObject {
-  id: number;
-  name: string;
-  texture: TextureDef;
-  color: string;
-  scale?: number;
-  jitter?: boolean;
-  terrain?: boolean;
-  obstacle?: boolean;
+  readonly id: number;
+  readonly name: string;
+  readonly texture: TextureDef;
+  readonly color: string;
+  readonly scale?: number;
+  readonly jitter?: boolean;
+  readonly terrain?: boolean;
+  readonly obstacle?: boolean;
 }

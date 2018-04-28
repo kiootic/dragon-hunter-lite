@@ -1,5 +1,5 @@
 import { Entity } from 'app/game/entities';
-import { Spatial } from 'app/game/traits';
+import { Inventory, Spatial } from 'app/game/traits';
 import { Animations } from 'data/animations';
 import { vec2 } from 'gl-matrix';
 
@@ -13,6 +13,8 @@ export class Player extends Entity {
     vec2.set(spatial.scale, 2, 2);
     vec2.set(spatial.size, 0.25, 0.25);
     spatial.sprite.setTexture(Animations.Player, this.id);
+
+    this.traits.make(Inventory, 60);
   }
 }
 Entity.types.set(Player.Type, Player);

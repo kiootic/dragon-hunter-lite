@@ -4,3 +4,4 @@ export * from './Text';
 export * from './Panel';
 export * from './TextButton';
 export * from './TextureSprite';
+export * from './SlotView';

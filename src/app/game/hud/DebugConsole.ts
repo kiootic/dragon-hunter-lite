@@ -1,6 +1,10 @@
 import { Game } from 'app/game';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
+import { Inventory } from 'app/game/traits';
+import { Item } from 'common/data';
+import { Wood } from 'data/items';
+import { compact } from 'lodash';
 
 const ConsoleHTML = `
 <div class="debug-console">
@@ -27,7 +31,7 @@ export class DebugConsole implements HUDElement {
     if (event.key === 'F3' || (event.key === 'Escape' && this.root.classList.contains('active')))
       this.toggleInput();
     else if (event.key === 'Enter' && event.target === this.input) {
-      this.processCommand(this.input.value);
+      this.processInput(this.input.value);
       this.input.value = '';
     }
   }
@@ -56,7 +60,29 @@ export class DebugConsole implements HUDElement {
       this.log.removeChild(this.log.firstChild!);
   }
 
-  private processCommand(cmd: string) {
-    this.addLog('unknown command: ' + cmd);
+  private processInput(input: string) {
+    if (!input) return;
+    if (!input.startsWith('/')) {
+      this.addLog(input);
+      return;
+    }
+    const [cmd, ...args] = compact(input.split(' ').map(part => part.trim()));
+    switch (cmd) {
+      case '/give': {
+        let item: Item | undefined;
+        switch (args[0]) {
+          case 'wood': item = Wood();
+        }
+        if (!item)
+          this.addLog('unknown item: ' + args[0]);
+        else {
+          this.game.player.traits.get(Inventory).content[0] = item;
+          this.addLog('given item ' + item.name);
+        }
+      } break;
+      default:
+        this.addLog('unknown command: ' + cmd[0]);
+        break;
+    }
   }
 }

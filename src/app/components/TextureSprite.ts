@@ -22,7 +22,7 @@ export class TextureSprite extends Sprite implements TexSprite {
   private textureDef?: Exclude<TextureDef, string>;
   private currentTex = Texture.EMPTY;
 
-  public setTexture(textureDef: TextureDef, key: number) {
+  public setTexture(textureDef: TextureDef, key: number = 0) {
     key = hashKey(key);
 
     this.tint = 0xffffff;

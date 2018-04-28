@@ -2,10 +2,10 @@ export interface Trait {
   readonly type: string;
 }
 
-export interface TraitType<T extends Trait = Trait> {
+export interface TraitType<T extends Trait = Trait, Arg = any> {
   readonly _mark: T;
   readonly Type: string;
-  make(): T;
+  make(arg?: Arg): T;
   deserialize(data: any): T;
   serialize(trait: T): any;
 }

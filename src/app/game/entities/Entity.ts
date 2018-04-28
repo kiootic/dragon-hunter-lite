@@ -33,10 +33,10 @@ export abstract class Entity {
       this._traits.set(trait.type, trait);
     },
     list: () => this._traits.values(),
-    make: <T extends Trait>(trait: TraitType<T>) => {
+    make: <T extends Trait, Arg>(trait: TraitType<T, Arg>, arg?: Arg) => {
       let t: T = this._traits.get(trait.Type) as T;
       if (!t) {
-        t = trait.make();
+        t = trait.make(arg);
         this._traits.set(t.type, t);
       }
       return t;
