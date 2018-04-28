@@ -1,10 +1,12 @@
 import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 import { Keyboard } from 'app/utils/Keyboard';
-import { settings, Application, Rectangle, SCALE_MODES } from 'pixi.js';
+import { settings, Application, Container, Rectangle, SCALE_MODES } from 'pixi.js';
 
 export class App extends Application {
-  private constructor() {
+  private root = new Container();
+
+  constructor() {
     super({
       autoResize: true,
       antialias: true,
@@ -14,12 +16,7 @@ export class App extends Application {
 
     settings.SCALE_MODE = SCALE_MODES.NEAREST;
     this.ticker.add(this.tick.bind(this));
-  }
-
-  private static _instance: App;
-  public static get instance() {
-    if (!App._instance) App._instance = new App();
-    return App._instance;
+    this.stage.addChild(this.root);
   }
 
   private _states: GameState[] = [];

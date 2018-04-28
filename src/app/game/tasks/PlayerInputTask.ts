@@ -1,4 +1,3 @@
-import { App } from 'app';
 import { Game } from 'app/game';
 import { MenuOverlay } from 'app/game/overlays/MenuOverlay';
 import { Task } from 'app/game/tasks';
@@ -28,7 +27,7 @@ export class PlayerInputTask extends Task {
     vec2.scale(this.vel, this.direction, dt / 1000 * Speed);
 
     if (this.game.keyboard.isDown('Escape')) {
-      App.instance.pushState(new StateOverlay(new MenuOverlay(this.game)));
+      this.game.app.pushState(new StateOverlay(new MenuOverlay(this.game)));
     }
   }
 }

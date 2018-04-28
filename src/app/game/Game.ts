@@ -14,7 +14,7 @@ export class Game {
   }
 
   public readonly view = new GameView();
-  public readonly keyboard = App.instance.keyboard;
+  public readonly keyboard = this.app.keyboard;
   public map!: TileMap;
   public readonly library: DataLibrary;
 
@@ -37,7 +37,7 @@ export class Game {
   }
 
   public layout() {
-    const { width, height } = App.instance.screen;
+    const { width, height } = this.app.screen;
     this.view.layout(width, height);
   }
 

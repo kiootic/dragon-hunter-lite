@@ -1,4 +1,3 @@
-import { App } from 'app';
 import { SlotView, TextButton } from 'app/components';
 import { Game } from 'app/game';
 import { GameOverlay } from 'app/game/overlays';
@@ -85,6 +84,6 @@ export class MenuOverlay extends GameOverlay {
 
   private async exit() {
     await this.done();
-    await App.instance.popState();
+    await this.game.app.popState();
   }
 }

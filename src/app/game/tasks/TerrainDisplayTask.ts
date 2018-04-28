@@ -1,4 +1,4 @@
-import { App, DisplayTileSize } from 'app';
+import { DisplayTileSize } from 'app';
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
 import { Task } from 'app/game/tasks';
@@ -98,7 +98,7 @@ export class TerrainDisplayTask extends Task {
     const length = Math.ceil(r / DisplayTileSize) * TileSize * 2;
     const texSize = 1 << (32 - Math.clz32(length - 1));
     this.renderTex.resize(texSize, texSize);
-    App.instance.renderer.render(this.container, this.renderTex);
+    this.game.app.renderer.render(this.container, this.renderTex);
     const scale = DisplayTileSize / TileSize;
     this.view.setTransform(
       (minX * scale - x + w / 2), (minY * scale - y + h / 2),

@@ -1,4 +1,3 @@
-import { App } from 'app';
 import { GameOverlay } from 'app/game/overlays';
 import { GameState } from 'app/states/GameState';
 import { Sprite, Texture } from 'pixi.js';
@@ -24,7 +23,7 @@ export class StateOverlay extends GameState {
   }
 
   layout() {
-    const { width, height } = App.instance.screen;
+    const { width, height } = this.app.screen;
     this.bg.width = width;
     this.bg.height = height;
     this.overlay.layout(width, height);

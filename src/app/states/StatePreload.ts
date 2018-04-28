@@ -25,12 +25,12 @@ export class StatePreload extends GameState {
   }
 
   layout() {
-    this.loadingText.x = (App.instance.screen.width - this.loadingText.width) / 2;
-    this.loadingText.y = (App.instance.screen.height - this.loadingText.height) / 2;
+    this.loadingText.x = (this.app.screen.width - this.loadingText.width) / 2;
+    this.loadingText.y = (this.app.screen.height - this.loadingText.height) / 2;
   }
 
   private run() {
-    const loader = App.instance.loader;
+    const loader = this.app.loader;
     const progressHandler = loader.onProgress.add(() => {
       this.loadingText.text = `loading...\n${Math.round(loader.progress)}%`;
     });
@@ -68,13 +68,13 @@ export class StatePreload extends GameState {
         const resource = resources[name];
         if (resource.type === loaders.Resource.TYPE.JSON &&
           !(resource as any)['spritesheet']) {
-          App.instance.resources[name] = resource.data;
+            this.app.resources[name] = resource.data;
         }
       }
 
       await fontLoad;
       await fadeOut(this.root).toPromise();
-      await App.instance.topState(new StateTitle(this.app));
+      await this.app.topState(new StateTitle(this.app));
     });
   }
 }

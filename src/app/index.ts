@@ -4,6 +4,6 @@ import { App } from 'app/App';
 export * from 'app/App';
 export * from 'app/settings';
 
-const app = bootstrap(App.instance);
+const app = bootstrap(new App());
 app.pushState(new StatePreload(app));
 Object.assign(window, { app });

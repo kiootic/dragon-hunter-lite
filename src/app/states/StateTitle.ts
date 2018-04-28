@@ -67,7 +67,7 @@ export class StateTitle extends GameState {
 
   layout() {
     const contentHeight = this.logo.height + 50 + 75 + 20 + 50;
-    const { width, height } = App.instance.screen;
+    const { width, height } = this.app.screen;
 
     this.logo.position.set((width - this.logo.width) / 2, (height - contentHeight) / 2);
     this.newButton.position.set((width - 160) / 2, this.logo.y + this.logo.height + 50);
@@ -93,7 +93,7 @@ export class StateTitle extends GameState {
     const data = await new Generator(2048, 2048, '1').generate((message, progress) => {
       if (message)
         this.loadMessage.text = message;
-      this.loadBar.width = (App.instance.screen.width / 2) * progress;
+      this.loadBar.width = (this.app.screen.width / 2) * progress;
     });
 
     await this.startGame(data);
@@ -102,6 +102,6 @@ export class StateTitle extends GameState {
   private async startGame(data: GameSave) {
     this.newButton.isEnabled = false;
     this.saveButtons.forEach(btn => btn.isEnabled = false);
-    await App.instance.pushState(new StateMain(this.app, data));
+    await this.app.pushState(new StateMain(this.app, data));
   }
 }

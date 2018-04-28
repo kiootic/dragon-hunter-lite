@@ -15,7 +15,7 @@ export class Panel extends Container implements LayoutView {
   public get contentWidth() { return this._contentWidth; }
   public get contentHeight() { return this._contentHeight; }
 
-  constructor() {
+  constructor(private readonly app: App) {
     super();
     this.panelMask.scale = new Point(UIScaleFactor, UIScaleFactor);
     this.panelBorder.scale = new Point(UIScaleFactor, UIScaleFactor);
@@ -63,7 +63,7 @@ export class Panel extends Container implements LayoutView {
       this._contentHeight = height;
 
       this.maskTex.resize(width, height);
-      App.instance.renderer.render(this.panelMask, this.maskTex);
+      this.app.renderer.render(this.panelMask, this.maskTex);
     }
   }
 }

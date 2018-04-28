@@ -21,7 +21,7 @@ export class MiniMap extends Panel implements HUDElement {
   private readonly mapData: Uint8ClampedArray;
 
   constructor(private readonly game: Game) {
-    super();
+    super(game.app);
     this.offset = this.game.player.traits.get(Spatial).position;
 
     this.content.addChild(this.mapSprite);
