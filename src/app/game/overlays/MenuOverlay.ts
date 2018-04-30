@@ -12,6 +12,7 @@ export class MenuOverlay extends GameOverlay {
   private readonly saveButton = new TextButton('save');
   private readonly exitButton = new TextButton('exit');
   private readonly slotViews: SlotView[] = [];
+  private readonly trash = new SlotView(this.game, { item: null, accepts: null });
 
   constructor(game: Game) {
     super(game);
@@ -22,6 +23,12 @@ export class MenuOverlay extends GameOverlay {
       this.slotViews.push(view);
       this.content.addChild(view);
     }
+    this.slotViews[40].overlay.setTexture('sprites/ui/inv-slot-chestplates');
+    this.slotViews[41].overlay.setTexture('sprites/ui/inv-slot-leggings');
+    this.slotViews[42].overlay.setTexture('sprites/ui/inv-slot-boots');
+
+    this.content.addChild(this.trash);
+    this.trash.overlay.setTexture('sprites/ui/inv-slot-trash');
 
     this.content.addChild(this.saveButton);
     this.content.addChild(this.exitButton);
@@ -43,6 +50,8 @@ export class MenuOverlay extends GameOverlay {
       view.layout();
       x++;
     }
+    this.trash.position.set(slotLeft + (SlotsPerRow + 4) * SlotView.Size + 16, slotTop);
+    this.trash.layout();
 
     x = y = 0;
     for (const view of this.slotViews.slice(0, -3)) {
@@ -62,8 +71,12 @@ export class MenuOverlay extends GameOverlay {
 
   update(dt: number) {
     if (this.game.keyboard.isDown('Escape')) this.done();
+
     for (const view of this.slotViews)
       view.update(dt);
+
+    this.trash.slot.item = null;
+    this.trash.update(dt);
   }
 
   private save() {

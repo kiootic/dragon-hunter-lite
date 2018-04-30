@@ -1,36 +1,24 @@
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
 import { InventorySwap } from 'app/game/messages';
-import { Item, ItemSlot } from 'common/data';
+import { ItemSlot } from 'common/data';
 import { Container, DisplayObject } from 'pixi.js';
 
 export class SlotView extends Container {
   public static Size = 56;
 
   private readonly bg = new TextureSprite();
+  public readonly overlay = new TextureSprite();
 
   private readonly obj: TextureSprite;
   private dragging = false;
 
-  constructor(private readonly game: Game, private readonly slot: ItemSlot) {
+  constructor(private readonly game: Game, public readonly slot: ItemSlot) {
     super();
-    if (!slot.accepts || slot.accepts.length !== 1) {
-      this.bg.setTexture('sprites/ui/inv-slot');
-    } else {
-      let overlay = '';
-      switch (slot.accepts[0]) {
-        case Item.Type.Chestplate: overlay = 'sprites/ui/inv-slot-chestplates'; break;
-        case Item.Type.Leggings: overlay = 'sprites/ui/inv-slot-leggings'; break;
-        case Item.Type.Boots: overlay = 'sprites/ui/inv-slot-boots'; break;
-        case Item.Type.Weapon: overlay = 'sprites/ui/inv-slot-weapons'; break;
-      }
-      this.bg.setTexture(overlay ? {
-        type: 'composite',
-        base: 'sprites/ui/inv-slot',
-        overlay
-      } : 'sprites/ui/inv-slot');
-    }
+
+    this.bg.setTexture('sprites/ui/inv-slot');
     this.addChild(this.bg);
+    this.addChild(this.overlay);
 
     this.obj = new TextureSprite();
     this.obj.scale.set(2, 2);
