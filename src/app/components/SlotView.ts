@@ -5,7 +5,7 @@ import { Item, ItemSlot } from 'common/data';
 import { Container, DisplayObject } from 'pixi.js';
 
 export class SlotView extends Container {
-  public static Size = 64;
+  public static Size = 56;
 
   private readonly bg = new TextureSprite();
 
@@ -30,7 +30,6 @@ export class SlotView extends Container {
         overlay
       } : 'sprites/ui/inv-slot');
     }
-    this.bg.scale.set(2, 2);
     this.addChild(this.bg);
 
     this.obj = new TextureSprite();
@@ -41,7 +40,7 @@ export class SlotView extends Container {
 
     this.interactive = true;
     this.on('pointerdown', () => {
-      if (this.obj && !this.dragging) {
+      if (this.slot.item && !this.game.app.dragDrop.active) {
         this.dragging = true;
         this.game.app.dragDrop.begin(this.obj).then(this.endDrag);
       }
