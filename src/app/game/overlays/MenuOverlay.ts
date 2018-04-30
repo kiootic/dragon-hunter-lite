@@ -6,7 +6,7 @@ import * as vex from 'vex-js';
 
 const MenuWidth = 800;
 const MenuHeight = 600;
-const SlotsPerRow = 10;
+const SlotsPerRow = 8;
 
 export class MenuOverlay extends GameOverlay {
   private readonly saveButton = new TextButton('save');
@@ -36,14 +36,16 @@ export class MenuOverlay extends GameOverlay {
     );
     super.layout(MenuWidth, MenuHeight);
 
-    this.saveButton.position.set(this.contentWidth - 24 - 96, 24);
-    this.saveButton.layout(96, 48);
-    this.exitButton.position.set(this.contentWidth - 24 - 96, this.saveButton.y + 64);
-    this.exitButton.layout(96, 48);
-
-    const slotLeft = 24, slotTop = 176;
+    const slotLeft = 24, slotTop = 24;
     let x = 0, y = 0;
-    for (const view of this.slotViews) {
+    for (const view of this.slotViews.slice(-3)) {
+      view.position.set(slotLeft + (x + SlotsPerRow) * SlotView.Size + 16, slotTop);
+      view.layout();
+      x++;
+    }
+
+    x = y = 0;
+    for (const view of this.slotViews.slice(0, -3)) {
       view.position.set(slotLeft + x * SlotView.Size, slotTop + y * SlotView.Size + (y > 0 ? 16 : 0));
       view.layout();
       if (++x === SlotsPerRow) {
@@ -51,12 +53,17 @@ export class MenuOverlay extends GameOverlay {
         y++;
       }
     }
+
+    this.saveButton.position.set(24, 384);
+    this.saveButton.layout(96, 48);
+    this.exitButton.position.set(this.saveButton.x + 16 + 96, 384);
+    this.exitButton.layout(96, 48);
   }
 
   update(dt: number) {
     if (this.game.keyboard.isDown('Escape')) this.done();
     for (const view of this.slotViews)
-    view.update(dt);
+      view.update(dt);
   }
 
   private save() {

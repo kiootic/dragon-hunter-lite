@@ -1,5 +1,6 @@
 import { Entity } from 'app/game/entities';
 import { Inventory, Spatial } from 'app/game/traits';
+import { Item } from 'common/data';
 import { Animations } from 'data/animations';
 import { vec2 } from 'gl-matrix';
 
@@ -14,7 +15,10 @@ export class Player extends Entity {
     vec2.set(spatial.size, 0.25, 0.25);
     spatial.sprite.setTexture(Animations.Player, this.id);
 
-    this.traits.make(Inventory, 60);
+    const inventory = this.traits.make(Inventory, 43);
+    inventory.slots[40].accepts = [Item.Type.Chestplate];
+    inventory.slots[41].accepts = [Item.Type.Leggings];
+    inventory.slots[42].accepts = [Item.Type.Boots];
   }
 }
 Entity.types.set(Player.Type, Player);

@@ -24,6 +24,7 @@
 }
 
 .debug-console * {
+  cursor: default;
   font-family: Unibody8Pro;
   font-size: 8px;
   box-sizing: border-box;

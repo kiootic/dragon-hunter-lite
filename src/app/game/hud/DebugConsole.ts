@@ -11,7 +11,9 @@ const ConsoleHTML = `
   <div class="debug-log-box">
     <div class="debug-log"></div>
   </div>
-  <input class="debug-input">
+  <div>
+    <input class="debug-input">
+  </div>
 </div>
 `;
 
