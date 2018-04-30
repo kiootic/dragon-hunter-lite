@@ -10,12 +10,12 @@ export class Player extends Entity {
   public get type() { return Player.Type; }
 
   init() {
-    const spatial = this.traits.make(Spatial);
+    const spatial = this.traits(Spatial);
     vec2.set(spatial.scale, 2, 2);
     vec2.set(spatial.size, 0.25, 0.25);
     spatial.sprite.setTexture(Animations.Player, this.id);
 
-    const inventory = this.traits.make(Inventory, 43);
+    const inventory = this.traits(Inventory, 43);
     inventory.slots[40].accepts = [Item.Type.Chestplate];
     inventory.slots[41].accepts = [Item.Type.Leggings];
     inventory.slots[42].accepts = [Item.Type.Boots];

@@ -25,23 +25,22 @@ export abstract class Entity {
   }
 
   private _traits = new Map<string, Trait>();
-  public traits = {
-    get: <T extends Trait>(trait: TraitType<T>) => {
-      return this._traits.get(trait.Type) as T;
-    },
-    set: <T extends Trait>(trait: T) => {
-      this._traits.set(trait.type, trait);
-    },
-    list: () => this._traits.values(),
-    make: <T extends Trait, Arg>(trait: TraitType<T, Arg>, arg?: Arg) => {
-      let t: T = this._traits.get(trait.Type) as T;
-      if (!t) {
-        t = trait.make(arg);
-        this._traits.set(t.type, t);
-      }
-      return t;
+  public traits = Object.assign(<T extends Trait, Arg>(trait: TraitType<T, Arg>, arg?: Arg) => {
+    let t: T = this._traits.get(trait.Type) as T;
+    if (!t) {
+      t = trait.make(arg);
+      this._traits.set(t.type, t);
     }
-  };
+    return t;
+  }, {
+      get: <T extends Trait>(trait: TraitType<T>) => {
+        return this._traits.get(trait.Type) as T;
+      },
+      set: <T extends Trait>(trait: T) => {
+        this._traits.set(trait.type, trait);
+      },
+      list: () => this._traits.values()
+    });
 }
 
 export interface EntityType<T extends Entity = Entity> {
