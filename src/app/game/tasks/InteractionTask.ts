@@ -1,10 +1,12 @@
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
+import { ItemDrop } from 'app/game/entities';
 import { TileObjectSprite } from 'app/game/interfaces';
 import { PlayEffect } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
+import { generateDrops } from 'app/utils/drops';
 import { TileObject } from 'common/data';
 import { vec2 } from 'gl-matrix';
 import { interaction, DisplayObject, Point, RendererPlugins } from 'pixi.js';
@@ -67,7 +69,7 @@ export class InteractionTask extends Task {
       this.interactAnimName = `interact-${dir}`;
       this.sprite.animName = dir;
       this.sprite.playActionAnim(this.interactAnimName);
-      this.interacting(dt, this.targetTile[0], this.targetTile[1], this.targetSprite!);
+      this.interacting(dt, this.targetSprite!);
     } else {
       this.sprite.stopActionAnim(this.interactAnimName);
     }
@@ -81,22 +83,26 @@ export class InteractionTask extends Task {
     if (this.obj.drops) {
       this.objHp = this.obj.drops.hp;
     }
+    this.cooldown = 0;
   }
 
   private endInteract(x: number, y: number, sprite: TileObjectSprite) {
   }
 
-  private interacting(dt: number, x: number, y: number, sprite: TileObjectSprite) {
+  private interacting(dt: number, sprite: TileObjectSprite) {
     this.cooldown -= dt;
     if (this.cooldown < 0) {
-      console.log(this.objHp);
       this.cooldown = InteractionCooldown;
       this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
       this.objHp--;
     }
 
-    if (this.objHp <= 0) {
-      this.game.map.setObject(x, y, 0);
+    if (this.obj.drops && this.objHp <= 0) {
+      for (const drop of generateDrops(this.obj.drops.table)) {
+        const itemDrop = ItemDrop.make(this.game, drop, this.targetTile);
+        this.game.entities.add(itemDrop);
+      }
+      this.game.map.setObject(this.targetTile[0], this.targetTile[1], this.obj.drops.replaceWith);
     }
   }
 }

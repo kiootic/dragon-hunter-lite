@@ -1,9 +1,11 @@
+import { DropTable, Item } from 'common/data';
 import { TextureDef } from 'common/data/TextureDef';
+import { RandomTemplate } from 'common/random';
 
 export interface TileObjectDrops {
   readonly replaceWith: number;
   readonly hp: number;
-  readonly table: { id: number, prob: number }[];
+  readonly table: DropTable;
 }
 
 export interface TileObject {

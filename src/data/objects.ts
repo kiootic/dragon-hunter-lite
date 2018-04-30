@@ -1,6 +1,14 @@
-import { TileObject } from 'common/data';
+import { DropTable, Item, TileObject } from 'common/data';
+import { RandomTemplate } from 'common/random';
 
 export type ObjectDef = Pick<TileObject, Exclude<keyof TileObject, 'id' | 'name'>>;
+
+function simpleDrops(min: number, max: number, rate: number, template: RandomTemplate<Item>): DropTable {
+  return {
+    numDrops: { type: 'exponential', min, max, rate },
+    items: [{ prob: 1, item: template }]
+  };
+}
 
 export const makeObjects = (): Record<string, ObjectDef> => ({
   // trees
@@ -21,7 +29,14 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 5,
       replaceWith: 0,
-      table: []
+      table: simpleDrops(1, 3, 1, {
+        template: {
+          name: 'Oak Wood',
+          type: Item.Type.Material,
+          texture: 'sprites/items/wood'
+        },
+        substs: []
+      })
     }
   },
   'tree-spruce': {

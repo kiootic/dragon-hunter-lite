@@ -19,8 +19,18 @@ export class InventoryTask extends Task {
 
   update(dt: number) {
     for (const itemDrop of this.game.entities.ofType(ItemDrop)) {
-      if (itemDrop.age < 1000) continue;
-      if (vec2.dist(itemDrop.traits(Spatial).position, this.playerPos) > 1) continue;
+      const spatial = itemDrop.traits(Spatial);
+      const d = vec2.dist(spatial.position, this.playerPos);
+
+      if (itemDrop.age < 300 || d > 2.5) continue;
+
+      if (d > 0.5) {
+        // magnet
+        vec2.sub(spatial.velocity, this.playerPos, spatial.position);
+        vec2.scale(spatial.velocity, spatial.velocity, 1.5);
+        continue;
+      } else if (itemDrop.age < 750)
+        continue;
 
       if (this.pickUp(itemDrop.traits(Inventory).slots[0].item!))
         itemDrop.delete();
