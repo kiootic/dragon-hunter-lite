@@ -19,3 +19,22 @@ export function fadeIn(obj: DisplayObject) {
     .start()
   )();
 }
+
+function dir(dy: number, dx: number, left: number, right: number) {
+  const angle = Math.atan2(dy, dx);
+  if (Math.abs(angle) > Math.PI * left)
+    return 'left';
+  else if (Math.abs(angle) < Math.PI * right)
+    return 'right';
+  else if (angle < 0)
+    return 'up';
+  else
+    return 'down';
+}
+
+export function direction(dy: number, dx: number, type: 'movement' | 'interact') {
+  switch (type) {
+    case 'movement': return dir(dy, dx, 3 / 5, 2 / 5);
+    case 'interact': return dir(dy, dx, 3 / 4, 1 / 4);
+  }
+}

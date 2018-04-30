@@ -1,15 +1,25 @@
+import { DisplayTileSize } from 'app';
 import { vec2 } from 'gl-matrix';
-import { Container, Graphics, Sprite as PIXISprite, Texture, TransformStatic } from 'pixi.js';
+import { Container, Graphics, Point, Sprite as PIXISprite, Texture, TransformStatic } from 'pixi.js';
 
 export class Camera extends Container {
   public offset = vec2.create();
   public viewWidth = 0;
   public viewHeight = 0;
 
+  public translateMapCoords(pt: Point, coords: vec2) {
+    vec2.scaleAndAdd(coords, [
+      (pt.x - this.viewWidth / 2) / DisplayTileSize,
+      (pt.y - this.viewHeight / 2) / DisplayTileSize
+    ], this.offset, 1 / DisplayTileSize);
+    return coords;
+  }
+
   private bg = Object.assign(new PIXISprite(Texture.WHITE), {
     layer: Camera.Layer.Background,
     sortOffset: vec2.fromValues(0, 0)
   });
+
   constructor() {
     super();
     this.bg.tint = 0x202020;

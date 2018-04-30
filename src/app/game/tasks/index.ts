@@ -3,6 +3,7 @@ export * from './Task';
 export * from './PlayerInputTask';
 export * from './EntityMovementTask';
 
+export * from './InteractionTask';
 export * from './InventoryTask';
 
 export * from './CameraUpdateTask';

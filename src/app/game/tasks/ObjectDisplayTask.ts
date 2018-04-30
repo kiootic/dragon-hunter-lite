@@ -1,7 +1,7 @@
 import { DisplayTileSize } from 'app';
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
-import { InteractObject } from 'app/game/messages';
+import { TileObjectSprite } from 'app/game/interfaces';
 import { Task } from 'app/game/tasks';
 import { Camera } from 'app/game/Camera';
 import { TileObject } from 'common/data';
@@ -13,26 +13,20 @@ import { create as createRand } from 'random-seed';
 const ObjectSize = 32;
 const MarginSize = 5;
 
-class TileObjectSprite extends TextureSprite implements Camera.Sprite {
+class ObjectSprite extends TextureSprite implements Camera.Sprite, TileObjectSprite {
   public readonly jitter: [number, number] = [0, 0];
   public readonly sortOffset = vec2.fromValues(0, 0);
   public layer = Camera.Layer.Objects;
-  public tileX = 0;
-  public tileY = 0;
+  public readonly coords = vec2.fromValues(-1, -1);
 
   constructor(public readonly game: Game) {
     super();
     this.outline = true;
     this.anchor.set(0.5, 1);
-
-    this.on('pointerdown', () => this.interact(true));
-    this.on('pointerup', () => this.interact(false));
-    this.on('pointerupoutside', () => this.interact(false));
   }
 
   public setTile(x: number, y: number, obj: TileObject) {
-    this.tileX = x;
-    this.tileY = y;
+    vec2.set(this.coords, x, y);
 
     this.layer = obj.terrain ? Camera.Layer.Terrain : Camera.Layer.Objects;
     this.setTexture(obj.texture, x + y * this.game.map.width);
@@ -40,24 +34,16 @@ class TileObjectSprite extends TextureSprite implements Camera.Sprite {
     const scale = obj.scale || 1;
 
     const sw = this.width / scale, sh = this.height / scale;
-    this.hitArea = new Rectangle(-sw / scale / 2, -sh / scale, sw / scale, sh / scale);
+    this.hitArea = new Rectangle(-sw / 2, -sh, sw, sh);
     this.interactive = !!obj.drops;
 
     const displayScale = scale * DisplayTileSize / ObjectSize;
     this.scale.set(displayScale, displayScale);
   }
-
-  private interacting = false;
-  private interact = (interacting: boolean) => {
-    if (this.interacting !== interacting) {
-      this.interacting = interacting;
-      this.game.dispatch(new InteractObject(this.tileX, this.tileY, interacting));
-    }
-  }
 }
 
 export class ObjectDisplayTask extends Task {
-  private readonly sprites = new Map<string, TileObjectSprite>();
+  private readonly sprites = new Map<string, ObjectSprite>();
   private readonly jitterNoiseX: Noise;
   private readonly jitterNoiseY: Noise;
 
@@ -84,11 +70,11 @@ export class ObjectDisplayTask extends Task {
         y >= offsetY - halfH && y <= offsetY + halfH;
     }
 
-    const removePool: TileObjectSprite[] = [];
+    const removePool: ObjectSprite[] = [];
     let updated = false;
 
     for (const [key, sprite] of this.sprites) {
-      if (!isVisible(sprite.tileX * DisplayTileSize, sprite.tileY * DisplayTileSize)) {
+      if (!isVisible(sprite.coords[0] * DisplayTileSize, sprite.coords[1] * DisplayTileSize)) {
         removePool.push(sprite);
         this.sprites.delete(key);
         updated = true;
@@ -115,7 +101,7 @@ export class ObjectDisplayTask extends Task {
         const key = `${x}:${y}`;
         if (this.sprites.has(key)) continue;
 
-        const sprite = removePool.pop() || new TileObjectSprite(this.game);
+        const sprite = removePool.pop() || new ObjectSprite(this.game);
         sprite.setTile(x, y, obj);
         if (obj.jitter) {
           sprite.jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
@@ -147,10 +133,10 @@ export class ObjectDisplayTask extends Task {
     const objectData = this.game.library.objects;
 
     for (const sprite of this.sprites.values()) {
-      const obj = objectData[map.getObject(sprite.tileX, sprite.tileY)];
+      const obj = objectData[map.getObject(sprite.coords[0], sprite.coords[1])];
 
-      const tx = (sprite.tileX + 0.5) * DisplayTileSize + sprite.jitter[0];
-      const ty = (sprite.tileY + (obj.terrain ? 1 : 0.5)) * DisplayTileSize + sprite.jitter[1];
+      const tx = (sprite.coords[0] + 0.5) * DisplayTileSize + sprite.jitter[0];
+      const ty = (sprite.coords[1] + (obj.terrain ? 1 : 0.5)) * DisplayTileSize + sprite.jitter[1];
       sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));
     }
   }

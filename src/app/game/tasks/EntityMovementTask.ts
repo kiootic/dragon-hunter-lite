@@ -1,6 +1,7 @@
 import { TextureSprite } from 'app/components';
 import { Task } from 'app/game/tasks';
 import { Float, Spatial } from 'app/game/traits';
+import { direction } from 'app/utils/animations';
 import * as intersect from 'app/utils/intersect';
 import { vec2 } from 'gl-matrix';
 import { clamp } from 'lodash';
@@ -94,15 +95,7 @@ export class EntityMovementTask extends Task {
     sprite.still = actualVel[0] === 0 && actualVel[1] === 0;
 
     if (intendedVel[0] !== 0 || intendedVel[1] !== 0) {
-      const angle = Math.atan2(intendedVel[1], intendedVel[0]);
-      if (Math.abs(angle) > Math.PI * 3 / 5)
-        sprite.animName = 'left';
-      else if (Math.abs(angle) < Math.PI * 2 / 5)
-        sprite.animName = 'right';
-      else if (angle < 0)
-        sprite.animName = 'up';
-      else
-        sprite.animName = 'down';
+      sprite.animName = direction(intendedVel[1], intendedVel[0], 'movement');
     }
   }
 }

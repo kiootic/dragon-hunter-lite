@@ -8,6 +8,7 @@ export class GameView extends Container {
   constructor() {
     super();
     this.add(this.camera);
+    this.interactive = true;
   }
 
   public add(view: LayoutView) {

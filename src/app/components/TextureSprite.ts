@@ -18,6 +18,9 @@ export class TextureSprite extends Sprite implements TexSprite {
   public animName: string = '';
   public still: boolean = true;
 
+  private actionAnimName: string = '';
+  private actionEndTime = -1;
+
   private overlay?: TextureSprite;
   private textureDef?: Exclude<TextureDef, string>;
   private currentTex = Texture.EMPTY;
@@ -87,18 +90,49 @@ export class TextureSprite extends Sprite implements TexSprite {
     this.updateTex();
   }
 
+  public playActionAnim(name: string) {
+    if (!this.textureDef || this.textureDef.type !== 'animation' || !(name in this.textureDef.anims)) {
+      console.log('animation: no such name: ' + name);
+      return;
+    }
+    if (this.actionAnimName !== name) {
+      const animation = this.textureDef.anims[name];
+      this.frame = 0;
+      this.actionAnimName = name;
+      this.actionEndTime = this.elapsed + 1000 / animation.fps * animation.numFrames;
+    }
+  }
+
+  public stopActionAnim(name: string) {
+    if (this.actionAnimName === name) {
+      this.frame = 0;
+      this.actionAnimName = '';
+      this.actionEndTime = -1;
+    }
+  }
+
   private frame = -1;
+  private elapsed = 0;
   public update(elapsed: number) {
+    this.elapsed = elapsed;
     if (this.textureDef) {
-      if (this.textureDef.type === 'animation' && this.animName in this.textureDef.anims) {
-        const animation = this.textureDef.anims[this.animName];
-        if (this.still) {
-          this.frame = -1;
+      if (this.textureDef.type === 'animation' && (this.animName || this.actionAnimName)) {
+        const animation = this.textureDef.anims[this.actionAnimName || this.animName];
+        if (animation) {
+          if (this.still && !this.actionAnimName) {
+            this.frame = -1;
+          } else {
+            const frameDuration = 1000 / animation.fps;
+            this.frame = Math.floor(elapsed / frameDuration) % animation.numFrames;
+          }
+          this.currentTex = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
         } else {
-          const frameDuration = 1000 / animation.fps;
-          this.frame = Math.floor(elapsed / frameDuration) % animation.numFrames;
+          console.log('animation: no such name: ' + (this.actionAnimName || this.animName));
         }
-        this.currentTex = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
+        if (this.actionEndTime < elapsed) {
+          this.actionAnimName = '';
+          this.actionEndTime = -1;
+        }
       } else if (this.textureDef.type === 'liquid') {
         let d = (elapsed % this.textureDef.time) / this.textureDef.time;
         d = Math.sin(d * Math.PI * 2);
