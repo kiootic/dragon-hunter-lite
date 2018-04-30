@@ -18,7 +18,7 @@ export class TextureSprite extends Sprite implements TexSprite {
   public animName: string = '';
   public still: boolean = true;
 
-  public overlay?: TextureSprite;
+  private overlay?: TextureSprite;
   private textureDef?: Exclude<TextureDef, string>;
   private currentTex = Texture.EMPTY;
 
@@ -38,7 +38,7 @@ export class TextureSprite extends Sprite implements TexSprite {
 
   public clearTexture() {
     this.tint = 0xffffff;
-    this.removeChildren();
+    this.overlay && this.removeChild(this.overlay);
     this.overlay = undefined;
     this.currentTex = Texture.EMPTY;
     this.textureDef = undefined;
@@ -49,7 +49,7 @@ export class TextureSprite extends Sprite implements TexSprite {
     key = hashKey(key);
 
     this.tint = 0xffffff;
-    this.removeChildren();
+    this.overlay && this.removeChild(this.overlay);
     this.overlay = undefined;
     this.pluginName = TextureSpriteRenderer.Name;
 

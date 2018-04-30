@@ -1,5 +1,11 @@
 import { TextureDef } from 'common/data/TextureDef';
 
+export interface TileObjectDrops {
+  readonly replaceWith: number;
+  readonly hp: number;
+  readonly table: { id: number, prob: number }[];
+}
+
 export interface TileObject {
   readonly id: number;
   readonly name: string;
@@ -9,4 +15,5 @@ export interface TileObject {
   readonly jitter?: boolean;
   readonly terrain?: boolean;
   readonly obstacle?: boolean;
+  readonly drops?: TileObjectDrops;
 }

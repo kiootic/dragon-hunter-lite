@@ -1,19 +1,55 @@
 import { DisplayTileSize } from 'app';
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
+import { InteractObject } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Camera } from 'app/game/Camera';
+import { TileObject } from 'common/data';
 import { Noise } from 'common/noise';
 import { vec2 } from 'gl-matrix';
+import { Rectangle } from 'pixi.js';
 import { create as createRand } from 'random-seed';
 
 const ObjectSize = 32;
 const MarginSize = 5;
 
-interface TileObjectSprite extends TextureSprite, Camera.Sprite {
-  tileX: number;
-  tileY: number;
-  jitter: [number, number];
+class TileObjectSprite extends TextureSprite implements Camera.Sprite {
+  public readonly jitter: [number, number] = [0, 0];
+  public readonly sortOffset = vec2.fromValues(0, 0);
+  public layer = Camera.Layer.Objects;
+  public tileX = 0;
+  public tileY = 0;
+
+  constructor(public readonly game: Game) {
+    super();
+    this.outline = true;
+    this.anchor.set(0.5, 1);
+
+    this.on('pointerdown', this.interact);
+    this.on('pointerup', this.interact);
+  }
+
+  public setTile(x: number, y: number, obj: TileObject) {
+    this.tileX = x;
+    this.tileY = y;
+
+    this.layer = obj.terrain ? Camera.Layer.Terrain : Camera.Layer.Objects;
+    this.setTexture(obj.texture, x + y * this.game.map.width);
+
+    const scale = obj.scale || 1;
+
+    const sw = this.width / scale, sh = this.height / scale;
+    this.hitArea = new Rectangle(-sw / scale / 2, -sh / scale, sw / scale, sh / scale);
+    this.interactive = !!obj.drops;
+
+    const displayScale = scale * DisplayTileSize / ObjectSize;
+    this.scale.set(displayScale, displayScale);
+  }
+
+  private interact = () => {
+    console.log(this.tileX, this.tileY);
+    this.game.dispatch(new InteractObject(this.tileX, this.tileY));
+  }
 }
 
 export class ObjectDisplayTask extends Task {
@@ -75,24 +111,12 @@ export class ObjectDisplayTask extends Task {
         const key = `${x}:${y}`;
         if (this.sprites.has(key)) continue;
 
-        const jitter: [number, number] = [0, 0];
+        const sprite = removePool.pop() || new TileObjectSprite(this.game);
+        sprite.setTile(x, y, obj);
         if (obj.jitter) {
-          jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
-          jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
+          sprite.jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
+          sprite.jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
         }
-        const sprite = Object.assign(removePool.pop() || new TextureSprite(), {
-          tileX: x, tileY: y,
-          jitter,
-          layer: obj.terrain ? Camera.Layer.Terrain : Camera.Layer.Objects,
-          sortOffset: vec2.fromValues(0, 0)
-        });
-
-        sprite.outline = true;
-        sprite.setTexture(obj.texture, x + y * map.width);
-
-        const scale = (DisplayTileSize / ObjectSize) * (obj.scale || 1);
-        sprite.scale.set(scale, scale);
-        sprite.anchor.set(0.5, 1);
 
         if (!sprite.parent)
           this.game.view.camera.add(sprite);

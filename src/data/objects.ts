@@ -17,6 +17,11 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     scale: 3,
     jitter: true,
     obstacle: true,
+    drops: {
+      hp: 5,
+      replaceWith: 0,
+      table: []
+    }
   },
   'tree-spruce': {
     texture: 'sprites/objects/tree-spruce',
