@@ -11,7 +11,7 @@ import { TileObject } from 'common/data';
 import { vec2 } from 'gl-matrix';
 import { interaction, DisplayObject, Point, RendererPlugins } from 'pixi.js';
 
-const InteractionRadius = 3;
+const InteractionRadius = 2;
 const InteractionCooldown = 500;
 
 export class InteractionTask extends Task {
@@ -46,7 +46,10 @@ export class InteractionTask extends Task {
   update(dt: number) {
     const obj = this.interaction.hitTest(this.cursorPos, this.game.view);
 
-    if (!this.isTileObject(obj) || !vec2.equals(this.targetTile, obj.coords) || !this.pressing) {
+    if (
+      !this.isTileObject(obj) || !vec2.equals(this.targetTile, obj.coords) ||
+      !this.pressing || vec2.dist(this.position, this.targetTileCenter) >= InteractionRadius
+    ) {
       if (this.targetTile[0] >= 0)
         this.endInteract(this.targetTile[0], this.targetTile[1], this.targetSprite!);
       vec2.set(this.targetTile, -1, -1);
