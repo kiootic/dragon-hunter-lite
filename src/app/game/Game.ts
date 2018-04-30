@@ -34,6 +34,7 @@ export class Game {
   }
 
   public update(dt: number) {
+    this.entities.update(dt);
     this.tasks.update(dt);
   }
 

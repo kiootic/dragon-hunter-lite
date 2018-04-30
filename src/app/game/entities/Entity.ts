@@ -24,6 +24,8 @@ export abstract class Entity {
     this._game = null;
   }
 
+  public age: number = 0;
+
   private _traits = new Map<string, Trait>();
   public traits = Object.assign(<T extends Trait, Arg>(trait: TraitType<T, Arg>, arg?: Arg) => {
     let t: T = this._traits.get(trait.Type) as T;

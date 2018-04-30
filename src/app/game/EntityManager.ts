@@ -13,6 +13,7 @@ export class EntityManager {
     for (const entityProps of this.game.data.entities) {
       const EntityType = Entity.types.get(entityProps.type)!;
       const entity = new EntityType(this.game, entityProps.id);
+      entity.age = entityProps.age;
       for (const traitType of Object.keys(entityProps.traits)) {
         const TraitType = Trait.types.get(traitType)!;
         const trait = TraitType.deserialize(entityProps.traits[traitType]);
@@ -30,6 +31,7 @@ export class EntityManager {
       const props: EntityProps = {
         id: entity.id,
         type: entity.type,
+        age: entity.age,
         traits: {}
       };
       for (const trait of entity.traits.list())
@@ -57,5 +59,10 @@ export class EntityManager {
 
   public delete(entity: Entity) {
     this.entities.delete(entity.id);
+  }
+
+  public update(dt: number) {
+    for (const entity of this.entities.values())
+      entity.age += dt;
   }
 }

@@ -13,7 +13,7 @@ export class ItemDrop extends Entity {
     const entity = new ItemDrop(game).item(item);
     const spatial = entity.traits(Spatial);
     vec2.copy(spatial.position, position);
-    vec2.set(spatial.velocity, (Math.random() * 2 - 1) * 2, (Math.random() * 2 - 1) * 2);
+    vec2.random(spatial.velocity);
     const float = entity.traits(Float);
     float.z[0] = Math.random() * 0.5 + 0.5;
     return entity;
