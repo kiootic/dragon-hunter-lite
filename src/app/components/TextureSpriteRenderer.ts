@@ -1,6 +1,6 @@
 import {
   glCore, utils, BaseTexture, CanvasRenderer, CanvasSpriteRenderer, ObjectRenderer,
-  Shader, Sprite, TextureUvs, TransformStatic, WebGLRenderer
+  Shader, Sprite, TextureUvs, WebGLRenderer
 } from 'pixi.js';
 
 export interface TextureSprite extends Sprite {
@@ -102,15 +102,15 @@ export class TextureSpriteRenderer extends ObjectRenderer {
       const offset = sprite.offset || [0, 0];
 
       const frame = sprite.texture.frame;
-      const transform = sprite.transform as TransformStatic;
+      const tr = sprite.transform.worldTransform;
       const clampX = frame.x / this.currentTex!.width;
       const clampY = frame.y / this.currentTex!.height;
       const clampZ = (frame.x + frame.width) / this.currentTex!.width;
       const clampW = (frame.y + frame.height) / this.currentTex!.height;
       const offsetX = offset[0] / this.currentTex!.width;
       const offsetY = offset[1] / this.currentTex!.height;
-      const thicknessX = sprite.outline ? OutlineWidth / transform.scale.x / this.currentTex!.realWidth : 0;
-      const thicknessY = sprite.outline ? OutlineWidth / transform.scale.y / this.currentTex!.realHeight : 0;
+      const thicknessX = sprite.outline ? OutlineWidth / Math.sqrt(tr.a * tr.a + tr.c * tr.c) / this.currentTex!.realWidth : 0;
+      const thicknessY = sprite.outline ? OutlineWidth / Math.sqrt(tr.b * tr.b + tr.d * tr.d) / this.currentTex!.realHeight : 0;
 
       f32[p++] = vd[0]; f32[p++] = vd[1];
       u32[p++] = uvs[0];

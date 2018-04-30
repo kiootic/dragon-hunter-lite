@@ -18,7 +18,7 @@ export class TextureSprite extends Sprite implements TexSprite {
   public animName: string = '';
   public still: boolean = true;
 
-  private overlay?: Sprite;
+  public overlay?: TextureSprite;
   private textureDef?: Exclude<TextureDef, string>;
   private currentTex = Texture.EMPTY;
 
@@ -109,8 +109,8 @@ export class TextureSprite extends Sprite implements TexSprite {
 
     this.updateTex();
 
-    if (this.overlay && (this.overlay as TextureSprite).update)
-      (this.overlay as TextureSprite).update(elapsed);
+    if (this.overlay)
+      this.overlay.update(elapsed);
   }
 
   _onAnchorUpdate() {

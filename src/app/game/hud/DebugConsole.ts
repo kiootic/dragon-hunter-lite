@@ -1,7 +1,8 @@
 import { Game } from 'app/game';
+import { ItemDrop } from 'app/game/entities';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
-import { Inventory } from 'app/game/traits';
+import { Spatial } from 'app/game/traits';
 import { Item } from 'common/data';
 import { Bone, Wood } from 'data/items';
 import { compact } from 'lodash';
@@ -87,7 +88,8 @@ export class DebugConsole implements HUDElement {
         if (!item)
           this.addLog('unknown item: ' + args[0]);
         else {
-          this.game.player.traits.get(Inventory).slots[0].item = item;
+          const itemDrop = ItemDrop.make(this.game, item, this.game.player.traits.get(Spatial).position);
+          this.game.entities.add(itemDrop);
           this.addLog('given item ' + item.name);
         }
       } break;
