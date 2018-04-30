@@ -85,18 +85,21 @@ export class MenuOverlay extends GameOverlay {
       label: 'Save name (max 8 char.): ',
       value: this.game.data.id,
       callback: (name) => {
-        if (name === false) return;
+        if (name === false) {
+          this.game.app.view.focus();
+          return;
+        }
 
         if (!name) {
-          vex.dialog.alert('Name is empty!');
+          vex.dialog.alert({ content: 'Name is empty!', callback: () => this.game.app.view.focus() });
           return;
         } else if (name.length > 8) {
-          vex.dialog.alert('Name is too long!');
+          vex.dialog.alert({ content: 'Name is too long!', callback: () => this.game.app.view.focus() });
           return;
         }
         this.game.data.id = name;
         localStorage[name] = this.game.data.export();
-        vex.dialog.alert(`Saved as name '${name}'.`);
+        vex.dialog.alert({ content: `Saved as name '${name}'.`, callback: () => this.game.app.view.focus() });
       }
     });
   }

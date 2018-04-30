@@ -37,8 +37,9 @@ export class DebugConsole implements HUDElement {
     } else if (event.key.toLowerCase() === 't' || event.key === '/') {
       if (isActive)
         this.input.focus();
-      else
+      else if (document.activeElement === this.game.app.view)
         this.toggleInput();
+
       if (event.key === '/' && event.target !== this.input)
         this.input.value = '/';
     } else if (event.key === 'Enter' && event.target === this.input) {
