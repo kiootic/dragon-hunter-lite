@@ -5,10 +5,12 @@ import { PlayEffect } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
+import { TileObject } from 'common/data';
 import { vec2 } from 'gl-matrix';
 import { interaction, DisplayObject, Point, RendererPlugins } from 'pixi.js';
 
 const InteractionRadius = 3;
+const InteractionCooldown = 500;
 
 export class InteractionTask extends Task {
   private readonly position: vec2;
@@ -53,7 +55,7 @@ export class InteractionTask extends Task {
       vec2.add(this.targetTileCenter, obj.coords, [0.5, 0.5]);
       if (vec2.dist(this.position, this.targetTileCenter) < InteractionRadius) {
         if (this.targetTile[0] < 0)
-          this.beginInteract(this.targetTile[0], this.targetTile[1], obj);
+          this.beginInteract(obj.coords[0], obj.coords[1], obj);
         vec2.copy(this.targetTile, obj.coords);
         this.targetSprite = obj;
       }
@@ -65,19 +67,36 @@ export class InteractionTask extends Task {
       this.interactAnimName = `interact-${dir}`;
       this.sprite.animName = dir;
       this.sprite.playActionAnim(this.interactAnimName);
-      this.interacting(this.targetTile[0], this.targetTile[1], this.targetSprite!);
+      this.interacting(dt, this.targetTile[0], this.targetTile[1], this.targetSprite!);
     } else {
       this.sprite.stopActionAnim(this.interactAnimName);
     }
   }
 
+  private objHp = 0;
+  private obj!: TileObject;
+  private cooldown = 0;
   private beginInteract(x: number, y: number, sprite: TileObjectSprite) {
+    this.obj = this.game.library.objects[this.game.map.getObject(x, y)];
+    if (this.obj.drops) {
+      this.objHp = this.obj.drops.hp;
+    }
   }
 
   private endInteract(x: number, y: number, sprite: TileObjectSprite) {
   }
 
-  private interacting(x: number, y: number, sprite: TileObjectSprite) {
-    this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
+  private interacting(dt: number, x: number, y: number, sprite: TileObjectSprite) {
+    this.cooldown -= dt;
+    if (this.cooldown < 0) {
+      console.log(this.objHp);
+      this.cooldown = InteractionCooldown;
+      this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
+      this.objHp--;
+    }
+
+    if (this.objHp <= 0) {
+      this.game.map.setObject(x, y, 0);
+    }
   }
 }

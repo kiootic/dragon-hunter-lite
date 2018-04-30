@@ -15,5 +15,6 @@ export interface TileObject {
   readonly jitter?: boolean;
   readonly terrain?: boolean;
   readonly obstacle?: boolean;
+  readonly interactive?: boolean;
   readonly drops?: TileObjectDrops;
 }

@@ -56,10 +56,16 @@ export class TileMap {
     return this.data[index * 2 + 1] || 0;
   }
 
-  public setTile(x: number, y: number, terrain: number, object: number) {
+  public setTerrain(x: number, y: number, terrain: number) {
     const index = this.toIndex(x, y);
     if (index < 0 || index >= this.data.length) return;
     this.data[index * 2] = terrain;
+    this.changes$.next({ x, y });
+  }
+
+  public setObject(x: number, y: number, object: number) {
+    const index = this.toIndex(x, y);
+    if (index < 0 || index >= this.data.length) return;
     this.data[index * 2 + 1] = object;
     this.changes$.next({ x, y });
   }

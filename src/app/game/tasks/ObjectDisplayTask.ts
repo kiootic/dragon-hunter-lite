@@ -35,11 +35,15 @@ class ObjectSprite extends TextureSprite implements Camera.Sprite, TileObjectSpr
 
     const sw = this.width / scale, sh = this.height / scale;
     this.hitArea = new Rectangle(-sw / 2, -sh, sw, sh);
-    this.interactive = !!obj.drops;
+    this.interactive = obj.interactive || false;
 
     const displayScale = scale * DisplayTileSize / ObjectSize;
     this.scale.set(displayScale, displayScale);
   }
+}
+
+function tileKey(x: number, y: number) {
+  return `${x}:${y}`;
 }
 
 export class ObjectDisplayTask extends Task {
@@ -53,6 +57,14 @@ export class ObjectDisplayTask extends Task {
     const rand = createRand(this.game.map.props.seed);
     this.jitterNoiseX = new Noise(rand, 1, 1);
     this.jitterNoiseY = new Noise(rand, 1, 1);
+    this.game.map.changes$.subscribe(({ x, y }) => {
+      const key = tileKey(x, y);
+      const sprite = this.sprites.get(key);
+      if (sprite) {
+        this.game.view.camera.removeChild(sprite);
+        this.sprites.delete(key);
+      }
+    });
   }
 
   public update(dt: number) {
@@ -98,7 +110,7 @@ export class ObjectDisplayTask extends Task {
         if (!isVisible(tx, ty))
           continue;
 
-        const key = `${x}:${y}`;
+        const key = tileKey(x, y);
         if (this.sprites.has(key)) continue;
 
         const sprite = removePool.pop() || new ObjectSprite(this.game);

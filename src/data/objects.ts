@@ -17,6 +17,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     scale: 3,
     jitter: true,
     obstacle: true,
+    interactive: true,
     drops: {
       hp: 5,
       replaceWith: 0,

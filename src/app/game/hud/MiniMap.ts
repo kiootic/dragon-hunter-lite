@@ -40,6 +40,7 @@ export class MiniMap extends Panel implements HUDElement {
     this.canvas.width = map.width;
     this.canvas.height = map.height;
     this.mapData = new Uint8ClampedArray(map.width * map.height * 4);
+    this.mapSprite.texture = Texture.fromCanvas(this.canvas);
 
     this.game.map.changes$.subscribe(({ x, y }) => this.renderTile(x, y));
     for (let y = 0; y < map.height; y++) {
@@ -47,8 +48,6 @@ export class MiniMap extends Panel implements HUDElement {
         this.renderTile(x, y);
     }
     this.update();
-
-    this.mapSprite.texture = Texture.fromCanvas(this.canvas);
   }
 
   private renderTile(x: number, y: number) {
@@ -89,6 +88,7 @@ export class MiniMap extends Panel implements HUDElement {
     const img = ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     img.data.set(this.mapData);
     ctx.putImageData(img, 0, 0);
+    this.mapSprite.texture.update();
     this.mapDirty = false;
   }
 
