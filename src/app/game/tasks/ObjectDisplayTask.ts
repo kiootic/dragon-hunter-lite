@@ -14,7 +14,7 @@ const ObjectSize = 32;
 const MarginSize = 5;
 
 class ObjectSprite extends TextureSprite implements Camera.Sprite, TileObjectSprite {
-  public readonly jitter: [number, number] = [0, 0];
+  public readonly jitter = vec2.fromValues(0, 0);
   public readonly sortOffset = vec2.fromValues(0, 0);
   public layer = Camera.Layer.Objects;
   public readonly coords = vec2.fromValues(-1, -1);

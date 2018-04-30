@@ -1,6 +1,7 @@
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
 import { TileObjectSprite } from 'app/game/interfaces';
+import { PlayEffect } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
@@ -20,6 +21,7 @@ export class InteractionTask extends Task {
   private readonly targetTile = vec2.fromValues(-1, -1);
   private readonly targetTileCenter = vec2.create();
   private readonly dir = vec2.create();
+  private targetSprite?: TileObjectSprite;
 
   constructor(game: Game) {
     super(game);
@@ -42,16 +44,18 @@ export class InteractionTask extends Task {
 
     if (!this.isTileObject(obj) || !vec2.equals(this.targetTile, obj.coords) || !this.pressing) {
       if (this.targetTile[0] >= 0)
-        this.endInteract(this.targetTile[0], this.targetTile[1]);
+        this.endInteract(this.targetTile[0], this.targetTile[1], this.targetSprite!);
       vec2.set(this.targetTile, -1, -1);
+      this.targetSprite = undefined;
     }
 
     if (this.pressing && this.isTileObject(obj) && this.targetTile[0] < 0) {
       vec2.add(this.targetTileCenter, obj.coords, [0.5, 0.5]);
       if (vec2.dist(this.position, this.targetTileCenter) < InteractionRadius) {
-        vec2.copy(this.targetTile, obj.coords);
         if (this.targetTile[0] < 0)
-          this.beginInteract(this.targetTile[0], this.targetTile[1]);
+          this.beginInteract(this.targetTile[0], this.targetTile[1], obj);
+        vec2.copy(this.targetTile, obj.coords);
+        this.targetSprite = obj;
       }
     }
 
@@ -61,16 +65,19 @@ export class InteractionTask extends Task {
       this.interactAnimName = `interact-${dir}`;
       this.sprite.animName = dir;
       this.sprite.playActionAnim(this.interactAnimName);
+      this.interacting(this.targetTile[0], this.targetTile[1], this.targetSprite!);
     } else {
       this.sprite.stopActionAnim(this.interactAnimName);
     }
   }
 
-  private beginInteract(x: number, y: number) {
-
+  private beginInteract(x: number, y: number, sprite: TileObjectSprite) {
   }
 
-  private endInteract(x: number, y: number) {
+  private endInteract(x: number, y: number, sprite: TileObjectSprite) {
+  }
 
+  private interacting(x: number, y: number, sprite: TileObjectSprite) {
+    this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
   }
 }

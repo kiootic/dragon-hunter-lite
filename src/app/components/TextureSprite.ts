@@ -13,6 +13,7 @@ function hashKey(key: number) {
 export class TextureSprite extends Sprite implements TexSprite {
   public outline: boolean = false;
   public offset?: [number, number];
+  public renderTranslation?: [number, number];
   public clip?: [number, number];
 
   public animName: string = '';

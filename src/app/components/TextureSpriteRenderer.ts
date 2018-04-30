@@ -6,6 +6,7 @@ import {
 export interface TextureSprite extends Sprite {
   outline: boolean;
   offset?: [number, number];
+  renderTranslation?: [number, number];
 }
 
 const OutlineWidth = 2;
@@ -111,29 +112,31 @@ export class TextureSpriteRenderer extends ObjectRenderer {
       const offsetY = offset[1] / this.currentTex!.height;
       const thicknessX = sprite.outline ? OutlineWidth / Math.sqrt(tr.a * tr.a + tr.c * tr.c) / this.currentTex!.realWidth : 0;
       const thicknessY = sprite.outline ? OutlineWidth / Math.sqrt(tr.b * tr.b + tr.d * tr.d) / this.currentTex!.realHeight : 0;
+      const trX = sprite.renderTranslation ? sprite.renderTranslation[0] : 0;
+      const trY = sprite.renderTranslation ? sprite.renderTranslation[1] : 0;
 
-      f32[p++] = vd[0]; f32[p++] = vd[1];
+      f32[p++] = vd[0] + trX; f32[p++] = vd[1] + trY;
       u32[p++] = uvs[0];
       u32[p++] = argb;
       f32[p++] = clampX; f32[p++] = clampY; f32[p++] = clampZ; f32[p++] = clampW;
       f32[p++] = offsetX; f32[p++] = offsetY;
       f32[p++] = thicknessX; f32[p++] = thicknessY;
 
-      f32[p++] = vd[2]; f32[p++] = vd[3];
+      f32[p++] = vd[2] + trX; f32[p++] = vd[3] + trY;
       u32[p++] = uvs[1];
       u32[p++] = argb;
       f32[p++] = clampX; f32[p++] = clampY; f32[p++] = clampZ; f32[p++] = clampW;
       f32[p++] = offsetX; f32[p++] = offsetY;
       f32[p++] = thicknessX; f32[p++] = thicknessY;
 
-      f32[p++] = vd[4]; f32[p++] = vd[5];
+      f32[p++] = vd[4] + trX; f32[p++] = vd[5] + trY;
       u32[p++] = uvs[2];
       u32[p++] = argb;
       f32[p++] = clampX; f32[p++] = clampY; f32[p++] = clampZ; f32[p++] = clampW;
       f32[p++] = offsetX; f32[p++] = offsetY;
       f32[p++] = thicknessX; f32[p++] = thicknessY;
 
-      f32[p++] = vd[6]; f32[p++] = vd[7];
+      f32[p++] = vd[6] + trX; f32[p++] = vd[7] + trY;
       u32[p++] = uvs[3];
       u32[p++] = argb;
       f32[p++] = clampX; f32[p++] = clampY; f32[p++] = clampZ; f32[p++] = clampW;

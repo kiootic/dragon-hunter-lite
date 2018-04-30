@@ -1,6 +1,7 @@
+import { TextureSprite } from 'app/components';
 import { vec2 } from 'gl-matrix';
-import { DisplayObject } from 'pixi.js';
 
-export interface TileObjectSprite extends DisplayObject {
+export interface TileObjectSprite extends TextureSprite {
   readonly coords: vec2;
+  readonly jitter: vec2;
 }
