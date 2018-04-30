@@ -1,7 +1,7 @@
 import { DisplayTileSize } from 'app';
 import { Entity } from 'app/game/entities';
 import { Task } from 'app/game/tasks';
-import { Spatial } from 'app/game/traits';
+import { Float, Spatial } from 'app/game/traits';
 import { Camera } from 'app/game/Camera';
 import { vec2 } from 'gl-matrix';
 
@@ -57,6 +57,7 @@ export class EntityDisplayTask extends Task {
 
     for (const entity of this.visible) {
       const { position, sprite, scale } = entity.traits.get(Spatial);
+      const float = entity.traits.get(Float);
       sprite.anchor.set(0.5, 1);
       sprite.scale.set(scale[0], scale[1]);
 
@@ -66,7 +67,9 @@ export class EntityDisplayTask extends Task {
 
       const tx = Math.floor(position[0] * DisplayTileSize);
       const ty = Math.floor(position[1] * DisplayTileSize);
-      sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));
+      const tz = float ? Math.floor(float.z[0] * DisplayTileSize) : 0;
+      vec2.set(sprite.sortOffset, 0, tz);
+      sprite.position.set(tx - dx + Math.floor(w / 2), ty - tz - dy + Math.floor(h / 2));
     }
   }
 }

@@ -12,7 +12,10 @@ export class TerrainDisplayTask extends Task {
   private readonly sprites = new Map<string, TextureSprite>();
   private readonly container = new Container();
   private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);
-  private readonly view = Object.assign(new Sprite(this.renderTex), { layer: Camera.Layer.Terrain });
+  private readonly view = Object.assign(new Sprite(this.renderTex), {
+    layer: Camera.Layer.Terrain,
+    sortOffset: vec2.fromValues(0, 0)
+  });
 
   constructor(game: Game) {
     super(game);

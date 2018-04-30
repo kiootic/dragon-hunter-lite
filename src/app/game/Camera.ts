@@ -6,7 +6,10 @@ export class Camera extends Container {
   public viewWidth = 0;
   public viewHeight = 0;
 
-  private bg = Object.assign(new PIXISprite(Texture.WHITE), { layer: Camera.Layer.Background });
+  private bg = Object.assign(new PIXISprite(Texture.WHITE), {
+    layer: Camera.Layer.Background,
+    sortOffset: vec2.fromValues(0, 0)
+  });
   constructor() {
     super();
     this.bg.tint = 0x202020;
@@ -39,7 +42,7 @@ export class Camera extends Container {
   private sortLayers() {
     const children = this.children as Camera.Sprite[];
     children.sort((a, b) => {
-      const ao = a.sortOffset || [0, 0], bo = b.sortOffset || [0, 0];
+      const ao = a.sortOffset, bo = b.sortOffset;
       const { x: ax, y: ay } = (a.transform as TransformStatic).position;
       const { x: bx, y: by } = (b.transform as TransformStatic).position;
       let d = 0;
@@ -61,6 +64,6 @@ export namespace Camera {
   export interface Sprite extends PIXISprite {
     id?: number
     layer: Camera.Layer;
-    sortOffset?: vec2;
+    sortOffset: vec2;
   }
 }

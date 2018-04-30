@@ -1,6 +1,6 @@
 import { Game } from 'app/game';
 import { Entity } from 'app/game/entities';
-import { Inventory, Spatial } from 'app/game/traits';
+import { Float, Inventory, Spatial } from 'app/game/traits';
 import { Item } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
@@ -13,6 +13,9 @@ export class ItemDrop extends Entity {
     const entity = new ItemDrop(game).item(item);
     const spatial = entity.traits(Spatial);
     vec2.copy(spatial.position, position);
+    vec2.set(spatial.velocity, (Math.random() * 2 - 1) * 2, (Math.random() * 2 - 1) * 2);
+    const float = entity.traits(Float);
+    float.z[0] = Math.random() * 0.5 + 0.5;
     return entity;
   }
 

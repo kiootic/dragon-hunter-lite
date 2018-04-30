@@ -24,7 +24,7 @@ export class PlayerInputTask extends Task {
     if (this.game.keyboard.isPressed('s')) this.direction[1]++;
     vec2.normalize(this.direction, this.direction);
     if (this.game.keyboard.isPressed('Control')) vec2.scale(this.direction, this.direction, 10);
-    vec2.scale(this.vel, this.direction, dt / 1000 * Speed);
+    vec2.scale(this.vel, this.direction, Speed);
 
     if (this.game.keyboard.isDown('Escape')) {
       this.game.app.pushState(new StateOverlay(new MenuOverlay(this.game)));

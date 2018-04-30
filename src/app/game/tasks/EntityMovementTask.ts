@@ -1,17 +1,21 @@
 import { TextureSprite } from 'app/components';
 import { Task } from 'app/game/tasks';
-import { Spatial } from 'app/game/traits';
+import { Float, Spatial } from 'app/game/traits';
 import * as intersect from 'app/utils/intersect';
 import { vec2 } from 'gl-matrix';
 import { clamp } from 'lodash';
+
+const Gravity = -10;
+const StaticThreshold = 0.5;
 
 export class EntityMovementTask extends Task {
   private readonly vel = vec2.create();
 
   public update(dt: number) {
+    const t = dt / 1000;
     for (const entity of this.game.entities.withTrait(Spatial)) {
       const { position, size, sprite, velocity } = entity.traits.get(Spatial);
-      vec2.copy(this.vel, velocity);
+      vec2.scale(this.vel, velocity, dt / 1000);
 
       const obstacles = this.game.keyboard.isPressed('Alt') ? [] : Array.from(this.getObstacles(position));
       const shape = new intersect.AABB(
@@ -21,7 +25,22 @@ export class EntityMovementTask extends Task {
       vec2.set(position, shape.pos.x, shape.pos.y);
 
       this.updateDisplay(velocity, this.vel, sprite);
-      vec2.copy(velocity, this.vel);
+
+      const float = entity.traits.get(Float);
+      if (float && float.gravity) {
+        float.z[0] += float.z[1] * t + 0.5 * Gravity * t * t;
+        float.z[1] += Gravity * t;
+        if (float.z[0] < StaticThreshold * 0.1) {
+          vec2.set(float.z, 0, 0);
+          vec2.set(velocity, 0, 0);
+        }
+      } else {
+        if (this.vel[0] === 0) velocity[0] = 0;
+        if (this.vel[1] === 0) velocity[1] = 0;
+        vec2.scale(velocity, velocity, Math.pow(0.5, t));
+        if (Math.abs(velocity[0]) < StaticThreshold) velocity[0] = 0;
+        if (Math.abs(velocity[1]) < StaticThreshold) velocity[1] = 0;
+      }
     }
   }
 

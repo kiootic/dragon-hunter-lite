@@ -1,5 +1,6 @@
 import { TextureSprite } from 'app/components';
 import { Trait } from 'app/game/traits';
+import { Camera } from 'app/game/Camera';
 import { vec2 } from 'gl-matrix';
 import { defaults } from 'lodash';
 
@@ -9,7 +10,7 @@ export interface Spatial extends Trait {
   readonly velocity: vec2;
   readonly scale: vec2;
   readonly size: vec2;
-  readonly sprite: TextureSprite;
+  readonly sprite: Camera.Sprite & TextureSprite;
 }
 
 export namespace Spatial {
@@ -23,7 +24,10 @@ export namespace Spatial {
       velocity: vec2.fromValues(0, 0),
       scale: vec2.fromValues(1, 1),
       size: vec2.fromValues(0.5, 0.5),
-      sprite: new TextureSprite()
+      sprite: Object.assign(new TextureSprite(), {
+        layer: Camera.Layer.Objects,
+        sortOffset: vec2.fromValues(0, 0)
+      })
     };
   }
 

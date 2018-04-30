@@ -4,6 +4,7 @@ import { Game } from 'app/game';
 import { Task } from 'app/game/tasks';
 import { Camera } from 'app/game/Camera';
 import { Noise } from 'common/noise';
+import { vec2 } from 'gl-matrix';
 import { create as createRand } from 'random-seed';
 
 const ObjectSize = 32;
@@ -82,7 +83,8 @@ export class ObjectDisplayTask extends Task {
         const sprite = Object.assign(removePool.pop() || new TextureSprite(), {
           tileX: x, tileY: y,
           jitter,
-          layer: obj.terrain ? Camera.Layer.Terrain : Camera.Layer.Objects
+          layer: obj.terrain ? Camera.Layer.Terrain : Camera.Layer.Objects,
+          sortOffset: vec2.fromValues(0, 0)
         });
 
         sprite.outline = true;
