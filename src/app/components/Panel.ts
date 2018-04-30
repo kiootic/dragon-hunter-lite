@@ -1,6 +1,6 @@
 import { App, UIScaleFactor } from 'app';
 import { LayoutView } from 'app/components';
-import { mesh, Container, DisplayObject, Point, RenderTexture, Sprite, Texture } from 'pixi.js';
+import { mesh, Container, Point, RenderTexture, Sprite, Texture } from 'pixi.js';
 
 export class Panel extends Container implements LayoutView {
   public readonly content = new Container();
@@ -27,25 +27,6 @@ export class Panel extends Container implements LayoutView {
     this.content.mask = mask;
     this.addChild(this.panelBorder);
     this.addChild(mask);
-
-    // Workaround for outside events not firing due to pixi.js#4608
-    // Passes outside events to children
-    this.interactive = true;
-    this.emit = (event, ...args) => {
-      if (event.toString().endsWith('upoutside')) {
-        function triggerEvent(obj: DisplayObject) {
-          args[0].currentTarget = obj;
-          obj.emit(event, ...args);
-          if (obj.interactiveChildren && (obj as Container).children) {
-            for (const child of (obj as Container).children)
-              triggerEvent(child);
-          }
-        }
-        triggerEvent(this.content);
-      }
-      return super.emit(event, ...args);
-    };
-    (this as any).containsPoint = mask.containsPoint.bind(mask);
   }
 
   public layout(width: number, height: number) {

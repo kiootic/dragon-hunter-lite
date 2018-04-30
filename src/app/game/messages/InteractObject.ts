@@ -5,6 +5,7 @@ export class InteractObject implements Message {
 
   constructor(
     public readonly tileX: number,
-    public readonly tileY: number
+    public readonly tileY: number,
+    public readonly interacting: boolean,
   ) { }
 }

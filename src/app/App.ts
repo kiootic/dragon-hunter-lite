@@ -2,7 +2,10 @@ import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 import { Keyboard } from 'app/utils/Keyboard';
 import { DragDrop } from 'app/DragDrop';
-import { settings, Application, Container, Rectangle, SCALE_MODES } from 'pixi.js';
+import {
+  interaction, settings, Application, Container, DisplayObject,
+  Rectangle, RendererPlugins, SCALE_MODES
+} from 'pixi.js';
 
 export class App extends Application {
   public readonly root = this.stage.addChild(new Container());
@@ -17,6 +20,24 @@ export class App extends Application {
 
     settings.SCALE_MODE = SCALE_MODES.NEAREST;
     this.ticker.add(this.tick.bind(this));
+
+    // Workaround for outside events not firing due to pixi.js#4608
+    // Passes outside events to children
+    const interaction = (this.renderer.plugins as RendererPlugins).interaction;
+    interaction.on('pointerup', (e: interaction.InteractionEvent) => {
+      function passEvent(obj: DisplayObject, trigger: boolean) {
+        if (trigger && obj.interactive) {
+          e.currentTarget = obj;
+          obj.emit('pointerupoutside', e);
+        }
+        if (obj.interactiveChildren && (obj as Container).children) {
+          const doTrigger = trigger || !!obj.mask || !!obj.hitArea;
+          for (const child of (obj as Container).children)
+            passEvent(child, doTrigger);
+        }
+      }
+      passEvent(this.stage, false);
+    });
   }
 
   private _states: GameState[] = [];

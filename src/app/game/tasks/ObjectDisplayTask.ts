@@ -25,8 +25,9 @@ class TileObjectSprite extends TextureSprite implements Camera.Sprite {
     this.outline = true;
     this.anchor.set(0.5, 1);
 
-    this.on('pointerdown', this.interact);
-    this.on('pointerup', this.interact);
+    this.on('pointerdown', () => this.interact(true));
+    this.on('pointerup', () => this.interact(false));
+    this.on('pointerupoutside', () => this.interact(false));
   }
 
   public setTile(x: number, y: number, obj: TileObject) {
@@ -46,9 +47,12 @@ class TileObjectSprite extends TextureSprite implements Camera.Sprite {
     this.scale.set(displayScale, displayScale);
   }
 
-  private interact = () => {
-    console.log(this.tileX, this.tileY);
-    this.game.dispatch(new InteractObject(this.tileX, this.tileY));
+  private interacting = false;
+  private interact = (interacting: boolean) => {
+    if (this.interacting !== interacting) {
+      this.interacting = interacting;
+      this.game.dispatch(new InteractObject(this.tileX, this.tileY, interacting));
+    }
   }
 }
 
