@@ -102,12 +102,16 @@ export class InteractionTask extends Task {
       this.objHp--;
     }
 
-    if (this.obj.drops && this.objHp <= 0) {
+    if (this.obj.drops && this.objHp < 0) {
       for (const drop of generateDrops(this.obj.drops.table)) {
         const itemDrop = ItemDrop.make(this.game, drop, this.displayCenter);
         this.game.entities.add(itemDrop);
       }
-      this.game.map.setObject(this.targetTile[0], this.targetTile[1], this.obj.drops.replaceWith);
+      const replacement = this.obj.drops.replaceWith;
+      const id = replacement ?
+        this.game.library.objects.find(obj => obj && obj.name === replacement)!.id :
+        0;
+      this.game.map.setObject(this.targetTile[0], this.targetTile[1], id);
     }
   }
 }

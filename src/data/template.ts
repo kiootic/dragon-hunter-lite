@@ -15,7 +15,7 @@ export function makeFlower(name: string, type: number, color: string): ObjectDef
     interactive: true,
     drops: {
       hp: 0,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
           name,
@@ -42,7 +42,8 @@ export function makeBush(): ObjectDef {
   };
 }
 
-export function makeBerryBush(color: string): ObjectDef {
+export const NumBerryTypes = 4;
+export function makeBerryBush(name: string, depleted: string, type: number, color: string): ObjectDef {
   return {
     texture: {
       type: 'composite',
@@ -53,5 +54,18 @@ export function makeBerryBush(color: string): ObjectDef {
     scale: 1.5,
     jitter: true,
     obstacle: true,
+    interactive: true,
+    drops: {
+      hp: 1,
+      replaceWith: depleted,
+      table: simpleDrops(2, 4, 1, {
+        template: {
+          name: `${name} Berries`,
+          type: Item.Type.Material,
+          texture: { type: 'single', tex: `sprites/items/berries-${type}`, tint: color }
+        },
+        substs: []
+      })
+    }
   };
 }

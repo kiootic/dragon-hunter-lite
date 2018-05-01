@@ -14,7 +14,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 5,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
           name: 'Palm Wood',
@@ -34,7 +34,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 5,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
           name: 'Oak Wood',
@@ -58,7 +58,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 5,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
           name: 'Spruce Wood',
@@ -84,7 +84,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 3,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(0, 1, 0.5, {
         template: {
           name: 'Bone',
@@ -123,7 +123,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 0,
-      replaceWith: 0,
+      replaceWith: null,
       table: {
         numDrops: { type: 'constant', value: 0 },
         items: []
@@ -152,7 +152,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 8,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(2, 4, 0.5, {
         template: {
           name: 'Stone',
@@ -174,7 +174,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     interactive: true,
     drops: {
       hp: 2,
-      replaceWith: 0,
+      replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
           name: 'Stone',

@@ -3,7 +3,7 @@ import { TextureDef } from 'common/data/TextureDef';
 import { RandomTemplate } from 'common/random';
 
 export interface TileObjectDrops {
-  readonly replaceWith: number;
+  readonly replaceWith: string | null;
   readonly hp: number;
   readonly table: DropTable;
 }
