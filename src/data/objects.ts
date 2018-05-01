@@ -18,6 +18,19 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     scale: 3,
     jitter: true,
     obstacle: true,
+    interactive: true,
+    drops: {
+      hp: 5,
+      replaceWith: 0,
+      table: simpleDrops(1, 2, 1, {
+        template: {
+          name: 'Palm Wood',
+          type: Item.Type.Material,
+          texture: 'sprites/items/wood'
+        },
+        substs: []
+      })
+    }
   },
   'tree-oak': {
     texture: 'sprites/objects/tree-oak',
@@ -29,11 +42,15 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 5,
       replaceWith: 0,
-      table: simpleDrops(1, 3, 1, {
+      table: simpleDrops(1, 2, 1, {
         template: {
           name: 'Oak Wood',
           type: Item.Type.Material,
-          texture: 'sprites/items/wood'
+          texture: {
+            type: 'single',
+            tex: 'sprites/items/wood',
+            tint: 'a0a0a0'
+          }
         },
         substs: []
       })
@@ -45,6 +62,23 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     scale: 3,
     jitter: true,
     obstacle: true,
+    interactive: true,
+    drops: {
+      hp: 5,
+      replaceWith: 0,
+      table: simpleDrops(1, 2, 1, {
+        template: {
+          name: 'Spruce Wood',
+          type: Item.Type.Material,
+          texture: {
+            type: 'single',
+            tex: 'sprites/items/wood',
+            tint: '808080'
+          }
+        },
+        substs: []
+      })
+    }
   },
 
   // structures
@@ -54,6 +88,19 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     jitter: true,
     terrain: true,
     obstacle: true,
+    interactive: true,
+    drops: {
+      hp: 3,
+      replaceWith: 0,
+      table: simpleDrops(0, 1, 0.5, {
+        template: {
+          name: 'Bone',
+          type: Item.Type.Material,
+          texture: 'sprites/items/bone'
+        },
+        substs: []
+      })
+    }
   },
   'cross': {
     texture: 'sprites/objects/cross',
@@ -80,6 +127,15 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     },
     color: '416652',
     jitter: true,
+    interactive: true,
+    drops: {
+      hp: 0,
+      replaceWith: 0,
+      table: {
+        numDrops: { type: 'constant', value: 0 },
+        items: []
+      }
+    }
   },
   'cactus': {
     texture: 'sprites/objects/cactus',
@@ -100,6 +156,19 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '505050',
     jitter: true,
     obstacle: true,
+    interactive: true,
+    drops: {
+      hp: 8,
+      replaceWith: 0,
+      table: simpleDrops(2, 4, 0.5, {
+        template: {
+          name: 'Stone',
+          type: Item.Type.Material,
+          texture: 'sprites/items/stone'
+        },
+        substs: []
+      })
+    }
   },
   'rocks': {
     texture: {
@@ -109,5 +178,18 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '505050',
     jitter: true,
     terrain: true,
+    interactive: true,
+    drops: {
+      hp: 2,
+      replaceWith: 0,
+      table: simpleDrops(1, 2, 1, {
+        template: {
+          name: 'Stone',
+          type: Item.Type.Material,
+          texture: 'sprites/items/stone'
+        },
+        substs: []
+      })
+    }
   },
 });

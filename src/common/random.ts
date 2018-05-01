@@ -1,5 +1,10 @@
 import { cloneDeep, set } from 'lodash';
 
+export interface Constant {
+  type: 'constant';
+  value: number;
+}
+
 export interface UniformRandom {
   type: 'uniform';
   min: number;
@@ -21,7 +26,7 @@ export interface GaussianRandom {
   max?: number;
 }
 
-export type RandomValue = UniformRandom | ExponentialRandom | GaussianRandom;
+export type RandomValue = Constant | UniformRandom | ExponentialRandom | GaussianRandom;
 export type RandomSubst = { path: string } & RandomValue;
 
 export interface RandomTemplate<T> {
@@ -31,6 +36,7 @@ export interface RandomTemplate<T> {
 
 export function randomValue(value: RandomValue, random = Math.random) {
   switch (value.type) {
+    case 'constant': return value.value;
     case 'uniform': return value.min + random() * (value.max - value.min);
     case 'exponential': return exponentialRandom(value.rate, value.min, value.max, random);
     case 'gaussian': return gaussianRandom(value.mean, value.sd, value.min, value.max, random);
