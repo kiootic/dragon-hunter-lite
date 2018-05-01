@@ -33,7 +33,7 @@ class ObjectSprite extends TextureSprite implements Camera.Sprite, TileObjectSpr
 
     const scale = obj.scale || 1;
 
-    const sw = this.width / scale, sh = this.height / scale;
+    const sw = ObjectSize / scale, sh = ObjectSize / scale;
     this.hitArea = new Rectangle(-sw / 2, -sh, sw, sh);
     this.interactive = obj.interactive || false;
 
