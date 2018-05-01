@@ -112,8 +112,8 @@ export class TextureSpriteRenderer extends ObjectRenderer {
       const offsetY = offset[1] / this.currentTex!.height;
       const thicknessX = sprite.outline ? OutlineWidth / Math.sqrt(tr.a * tr.a + tr.c * tr.c) / this.currentTex!.realWidth : 0;
       const thicknessY = sprite.outline ? OutlineWidth / Math.sqrt(tr.b * tr.b + tr.d * tr.d) / this.currentTex!.realHeight : 0;
-      const trX = sprite.renderTranslation ? sprite.renderTranslation[0] : 0;
-      const trY = sprite.renderTranslation ? sprite.renderTranslation[1] : 0;
+      const trX = sprite.renderTranslation ? Math.round(sprite.renderTranslation[0]) : 0;
+      const trY = sprite.renderTranslation ? Math.round(sprite.renderTranslation[1]) : 0;
 
       f32[p++] = vd[0] + trX; f32[p++] = vd[1] + trY;
       u32[p++] = uvs[0];

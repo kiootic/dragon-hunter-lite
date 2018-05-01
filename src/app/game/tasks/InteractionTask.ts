@@ -73,8 +73,6 @@ export class InteractionTask extends Task {
       this.sprite.animName = dir;
       this.sprite.playActionAnim(this.interactAnimName);
       this.interacting(dt, this.targetSprite!);
-    } else {
-      this.sprite.stopActionAnim(this.interactAnimName);
     }
   }
 

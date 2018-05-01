@@ -24,10 +24,10 @@ export class EffectTask extends Task {
         return;
       this.animTargets.add(target);
       target.renderTranslation = target.renderTranslation || [0, 0];
-      const offsets = [8, -8, 6, -6, 4, -4, 2, -2, 0];
+      const offsets = [4, -4, 3, -3, 2, -2, 1, -1, 0];
       new Tween(target.renderTranslation, this.tween)
-        .to({ [0]: offsets.slice(0, 4) }, 500)
-        .chain(new Tween(target.renderTranslation, this.tween).to({ [0]: offsets.slice(4) }, 500))
+        .to({ [0]: offsets.slice(0, 4) }, 300)
+        .chain(new Tween(target.renderTranslation, this.tween).to({ [0]: offsets.slice(4) }, 300))
         .onComplete(() => this.animTargets.delete(target))
         .start(this.elapsed);
     }
