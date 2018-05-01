@@ -98,7 +98,7 @@ export class InteractionTask extends Task {
     if (this.cooldown < 0) {
       this.cooldown = InteractionCooldown;
       this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
-      this.game.dispatch(new ShowParticles(this.displayCenter, 10, parseInt(this.obj.color, 16), 0));
+      this.game.dispatch(new ShowParticles(this.displayCenter, 20, parseInt(this.obj.color, 16), 0));
       this.objHp--;
     }
 
