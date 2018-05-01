@@ -2,6 +2,7 @@ import * as TWEEN from '@tweenjs/tween.js';
 import { GameState } from 'app/states';
 import { Keyboard } from 'app/utils/Keyboard';
 import { DragDrop } from 'app/DragDrop';
+import { ToolTip } from 'app/ToolTip';
 import {
   interaction, settings, Application, Container, DisplayObject,
   Rectangle, RendererPlugins, SCALE_MODES
@@ -71,15 +72,18 @@ export class App extends Application {
     this.state && this.state.update(this.ticker.elapsedMS);
     TWEEN.update();
     this.keyboard.update();
+    this.toolTip.update();
   }
 
   public render() {
     this.state && this.state.layout();
+    this.toolTip.layout();
     this.dragDrop.layout();
     super.render();
   }
 
   public readonly resources: Record<string, any> = {};
   public readonly keyboard = new Keyboard(this.view);
+  public readonly toolTip = new ToolTip(this);
   public readonly dragDrop = new DragDrop(this);
 }

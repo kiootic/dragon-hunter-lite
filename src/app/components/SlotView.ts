@@ -1,4 +1,5 @@
 import { TextureSprite } from 'app/components';
+import { ItemToolTip } from 'app/components/ItemToolTip';
 import { Game } from 'app/game';
 import { InventorySwap } from 'app/game/messages';
 import { ItemSlot } from 'common/data';
@@ -26,11 +27,26 @@ export class SlotView extends Container {
     this.obj.outline = true;
     this.addChild(this.obj);
 
+    let toolTip: ItemToolTip;
     this.interactive = true;
+
+    const showToolTip = () => {
+      if (this.slot.item && !this.dragging)
+        this.game.app.toolTip.show(
+          toolTip || (toolTip = new ItemToolTip(this.game.app, this.slot.item)),
+          this
+        );
+    };
+
+    this.on('pointerover', showToolTip);
+    this.on('pointermove', showToolTip);
+
     this.on('pointerdown', () => {
       if (this.slot.item && !this.game.app.dragDrop.active) {
         this.dragging = true;
         this.game.app.dragDrop.begin(this.obj).then(this.endDrag);
+        if (toolTip)
+          this.game.app.toolTip.hide(toolTip);
       }
     });
   }
