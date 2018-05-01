@@ -1,14 +1,7 @@
-import { DropTable, Item, TileObject } from 'common/data';
-import { RandomTemplate } from 'common/random';
+import { Item, TileObject } from 'common/data';
+import { simpleDrops } from 'data/drops';
 
 export type ObjectDef = Pick<TileObject, Exclude<keyof TileObject, 'id' | 'name'>>;
-
-function simpleDrops(min: number, max: number, rate: number, template: RandomTemplate<Item>): DropTable {
-  return {
-    numDrops: { type: 'exponential', min, max, rate },
-    items: [{ prob: 1, item: template }]
-  };
-}
 
 export const makeObjects = (): Record<string, ObjectDef> => ({
   // trees

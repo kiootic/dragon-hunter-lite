@@ -1,3 +1,4 @@
+import { randomValue, RandomValue } from 'common/random';
 import { RandomSeed } from 'random-seed';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
@@ -76,14 +77,20 @@ export function hsl2rgb(h: number, s: number, l: number) {
   return [r, g, b];
 }
 
-export function randomColors(rand: RandomSeed, n: number, saturation = 1, lightness = 0.5) {
+export function randomColors(
+  rand: RandomSeed, n: number,
+  saturation: RandomValue = { type: 'constant', value: 1 },
+  lightness: RandomValue = { type: 'constant', value: 0.5 }
+) {
   const interval = 1 / n;
-  const begin = rand.random();
+  const begin = rand.random() / n;
 
   const result = [];
   for (let i = 0; i < n; i++) {
     const h = (begin + interval * i) % 1;
-    const [r, g, b] = hsl2rgb(h, saturation, lightness).map(value => Math.floor(value * 255));
+    const [r, g, b] = hsl2rgb(
+      h, randomValue(saturation, rand.random), randomValue(lightness, rand.random)
+    ).map(value => Math.floor(value * 255));
     result.push(r * 0x10000 + g * 0x100 + b * 0x1);
   }
   return result;

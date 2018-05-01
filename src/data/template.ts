@@ -1,7 +1,9 @@
+import { Item } from 'common/data';
+import { simpleDrops } from 'data/drops';
 import { ObjectDef } from 'data/objects';
 
-export function makeFlower(rand: number, color: string): ObjectDef {
-  const type = Math.floor(rand * 4) + 1;
+export const NumFlowerTypes = 4;
+export function makeFlower(name: string, type: number, color: string): ObjectDef {
   return {
     texture: {
       type: 'composite',
@@ -10,6 +12,23 @@ export function makeFlower(rand: number, color: string): ObjectDef {
     },
     color,
     jitter: true,
+    interactive: true,
+    drops: {
+      hp: 0,
+      replaceWith: 0,
+      table: simpleDrops(1, 2, 1, {
+        template: {
+          name,
+          type: Item.Type.Material,
+          texture: {
+            type: 'composite',
+            overlay: { type: 'single', tex: `sprites/items/flower-petal-${type}`, tint: color },
+            base: { type: 'single', tex: `sprites/items/flower-stem-${type}` }
+          }
+        },
+        substs: []
+      })
+    }
   };
 }
 
