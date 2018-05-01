@@ -25,6 +25,7 @@ const decorationProps: { [type: number]: [string, number][] } = {
     ['fern', 0.05],
   ],
   [Biome.Type.Savanna]: [
+    ['rocks', 0.004],
     ['berries', 0.004],
     ['flower', 0.005],
     ['tree-oak', 0.005],
