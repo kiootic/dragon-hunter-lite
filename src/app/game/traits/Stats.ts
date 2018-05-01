@@ -3,6 +3,7 @@ import { defaults } from 'lodash';
 
 export interface StatList {
   hp: number;
+  maxHp: number;
   str: number;
   def: number;
   spd: number;
@@ -22,8 +23,8 @@ export namespace Stats {
   export function make(): Stats {
     return {
       type: Stats.Type,
-      base: { hp: 100, str: 10, def: 0, spd: 10, vit: 10 },
-      bonus: { hp: 0, str: 0, def: 0, spd: 0, vit: 0 }
+      base: { hp: 100, maxHp: 100, str: 10, def: 0, spd: 10, vit: 10 },
+      bonus: { hp: 0, maxHp: 0, str: 0, def: 0, spd: 0, vit: 0 }
     };
   }
 
@@ -41,6 +42,7 @@ export namespace Stats {
   export function compute(stats: Stats): StatList {
     return {
       get hp() { return stats.base.hp + stats.bonus.hp; },
+      get maxHp() { return stats.base.maxHp + stats.bonus.maxHp; },
       get str() { return stats.base.str + stats.bonus.str; },
       get def() { return stats.base.def + stats.bonus.def; },
       get spd() { return stats.base.spd + stats.bonus.spd; },

@@ -1,7 +1,8 @@
 import { SlotView, TextButton } from 'app/components';
+import { StyledText } from 'app/components/StyledText';
 import { Game } from 'app/game';
 import { GameOverlay } from 'app/game/overlays';
-import { Inventory } from 'app/game/traits';
+import { Inventory, Stats, StatList } from 'app/game/traits';
 import * as vex from 'vex-js';
 
 const MenuWidth = 800;
@@ -11,8 +12,22 @@ const SlotsPerRow = 8;
 export class MenuOverlay extends GameOverlay {
   private readonly saveButton = new TextButton('save');
   private readonly exitButton = new TextButton('exit');
+
   private readonly slotViews: SlotView[] = [];
   private readonly trash = new SlotView(this.game, { item: null, accepts: null });
+
+  private readonly stats: StatList;
+  private readonly base: StatList;
+  private readonly statNames = new StyledText('', {
+    default: { align: 'right', fontWeight: 'bold' },
+    s: { fontSize: 12 }
+  });
+  private readonly statValues = new StyledText('', {
+    default: { align: 'left' },
+    s: { fontSize: 12 },
+    incr: { fill: '#d0d000' },
+    decr: { fill: '#d00000' }
+  });
 
   constructor(game: Game) {
     super(game);
@@ -29,6 +44,12 @@ export class MenuOverlay extends GameOverlay {
 
     this.content.addChild(this.trash);
     this.trash.overlay.setTexture('sprites/ui/inv-slot-trash');
+
+    const stats = this.game.player.traits(Stats);
+    this.stats = Stats.compute(stats);
+    this.base = stats.base;
+    this.content.addChild(this.statNames);
+    this.content.addChild(this.statValues);
 
     this.content.addChild(this.saveButton);
     this.content.addChild(this.exitButton);
@@ -63,6 +84,17 @@ export class MenuOverlay extends GameOverlay {
       }
     }
 
+    this.statNames.position.set(
+      slotLeft + SlotsPerRow * SlotView.Size + 16,
+      slotTop + SlotView.Size + 16
+    );
+    this.statNames.layout(this.statNames.contentWidth, this.statNames.contentHeight);
+    this.statValues.position.set(
+      slotLeft + SlotsPerRow * SlotView.Size + 16 + this.statNames.contentWidth,
+      slotTop + SlotView.Size + 16
+    );
+    this.statValues.layout(this.statValues.contentWidth, this.statValues.contentHeight);
+
     this.saveButton.position.set(24, 384);
     this.saveButton.layout(96, 48);
     this.exitButton.position.set(this.saveButton.x + 16 + 96, 384);
@@ -77,6 +109,32 @@ export class MenuOverlay extends GameOverlay {
 
     this.trash.slot.item = null;
     this.trash.update(dt);
+
+    this.updateStats();
+  }
+
+  private updateStats() {
+    function makeBonusText(base: number, computed: number) {
+      const diff = computed - base;
+      if (diff < 0) return `(<decr>${computed - base}</decr>)`;
+      else if (diff > 0) return `(<incr>+${computed - base}</incr>)`;
+      else return '';
+    }
+
+    this.statNames.text = `
+hp<s> </s>
+str<s> </s>
+def<s> </s>
+spd<s> </s>
+vit<s> </s>
+`.trim();
+    this.statValues.text = `
+<s> </s>${this.stats.hp} / ${this.stats.maxHp} ${makeBonusText(this.base.maxHp, this.stats.maxHp)}
+<s> </s>${this.stats.str} ${makeBonusText(this.base.str, this.stats.str)}
+<s> </s>${this.stats.def} ${makeBonusText(this.base.def, this.stats.def)}
+<s> </s>${this.stats.spd} ${makeBonusText(this.base.spd, this.stats.spd)}
+<s> </s>${this.stats.vit} ${makeBonusText(this.base.vit, this.stats.vit)}
+`.trim();
   }
 
   private save() {
