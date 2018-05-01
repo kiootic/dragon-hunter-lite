@@ -116,8 +116,8 @@ export class ObjectDisplayTask extends Task {
         const sprite = removePool.pop() || new ObjectSprite(this.game);
         sprite.setTile(x, y, obj);
         if (obj.jitter) {
-          sprite.jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
-          sprite.jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (DisplayTileSize / 3));
+          sprite.jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (1 / 3));
+          sprite.jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (1 / 3));
         }
 
         if (!sprite.parent)
@@ -139,17 +139,18 @@ export class ObjectDisplayTask extends Task {
       (sprite as TextureSprite).update(this.elapsed);
   }
 
+  private readonly spriteCoords = vec2.create();
   private updateTransforms() {
-    const { offset: [dx, dy], viewWidth: w, viewHeight: h } = this.game.view.camera;
     const map = this.game.map;
     const objectData = this.game.library.objects;
 
     for (const sprite of this.sprites.values()) {
       const obj = objectData[map.getObject(sprite.coords[0], sprite.coords[1])];
 
-      const tx = (sprite.coords[0] + 0.5) * DisplayTileSize + sprite.jitter[0];
-      const ty = (sprite.coords[1] + (obj.terrain ? 1 : 0.5)) * DisplayTileSize + sprite.jitter[1];
-      sprite.position.set(tx - dx + Math.floor(w / 2), ty - dy + Math.floor(h / 2));
+      vec2.add(this.spriteCoords, sprite.coords, sprite.jitter);
+      this.spriteCoords[0] += 0.5;
+      this.spriteCoords[1] += obj.terrain ? 1 : 0.5;
+      this.game.view.camera.toCameraPoint(this.spriteCoords, sprite.position);
     }
   }
 }

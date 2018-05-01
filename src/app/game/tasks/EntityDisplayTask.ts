@@ -53,8 +53,6 @@ export class EntityDisplayTask extends Task {
   }
 
   private updateTransforms() {
-    const { offset: [dx, dy], viewWidth: w, viewHeight: h } = this.game.view.camera;
-
     for (const entity of this.visible) {
       const { position, sprite, scale } = entity.traits.get(Spatial);
       const float = entity.traits.get(Float);
@@ -65,11 +63,9 @@ export class EntityDisplayTask extends Task {
       const liquid = terrain && terrain.liquid;
       sprite.clip = liquid ? [0, 1 / 6] : undefined;
 
-      const tx = Math.floor(position[0] * DisplayTileSize);
-      const ty = Math.floor(position[1] * DisplayTileSize);
-      const tz = float ? Math.floor(float.z[0] * DisplayTileSize) : 0;
-      vec2.set(sprite.sortOffset, 0, tz);
-      sprite.position.set(tx - dx + Math.floor(w / 2), ty - tz - dy + Math.floor(h / 2));
+      const z = float ? float.z[0] : 0;
+      this.game.view.camera.toCameraPoint(position, sprite.position, z);
+      vec2.set(sprite.sortOffset, 0, z);
     }
   }
 }

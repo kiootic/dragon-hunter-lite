@@ -2,7 +2,7 @@ import { TileObjectSprite } from 'app/game/interfaces';
 import { Message } from 'app/game/messages';
 
 export abstract class PlayEffect<Effect extends PlayEffect.Type, Target> implements Message {
-  public readonly type = 'inventory-updated';
+  public readonly type = 'play-effect';
 
   constructor(
     public readonly effect: PlayEffect.Type,

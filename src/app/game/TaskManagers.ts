@@ -20,7 +20,9 @@ export class TaskManager {
     this.add(tasks.TerrainDisplayTask);
     this.add(tasks.ObjectDisplayTask);
     this.add(tasks.EntityDisplayTask);
+
     this.add(tasks.EffectTask);
+    this.add(tasks.ParticleTask);
     this.add(tasks.HUDTask);
   }
 

@@ -2,7 +2,7 @@ import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
 import { TileObjectSprite } from 'app/game/interfaces';
-import { PlayEffect } from 'app/game/messages';
+import { PlayEffect, ShowParticles } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
@@ -79,11 +79,14 @@ export class InteractionTask extends Task {
   private objHp = 0;
   private obj!: TileObject;
   private cooldown = 0;
+  private displayCenter = vec2.create();
+
   private beginInteract(x: number, y: number, sprite: TileObjectSprite) {
     this.obj = this.game.library.objects[this.game.map.getObject(x, y)];
     if (this.obj.drops) {
       this.objHp = this.obj.drops.hp;
     }
+    vec2.add(this.displayCenter, this.targetTileCenter, sprite.jitter);
     this.cooldown = 0;
   }
 
@@ -95,12 +98,13 @@ export class InteractionTask extends Task {
     if (this.cooldown < 0) {
       this.cooldown = InteractionCooldown;
       this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
+      this.game.dispatch(new ShowParticles(this.displayCenter, 10, parseInt(this.obj.color, 16), 0));
       this.objHp--;
     }
 
     if (this.obj.drops && this.objHp <= 0) {
       for (const drop of generateDrops(this.obj.drops.table)) {
-        const itemDrop = ItemDrop.make(this.game, drop, this.targetTile);
+        const itemDrop = ItemDrop.make(this.game, drop, this.displayCenter);
         this.game.entities.add(itemDrop);
       }
       this.game.map.setObject(this.targetTile[0], this.targetTile[1], this.obj.drops.replaceWith);
