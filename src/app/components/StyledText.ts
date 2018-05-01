@@ -1,28 +1,30 @@
 import { UIScaleFactor } from 'app';
 import { LayoutView } from 'app/components';
-import { Container, Point, Text as PixiText, TextStyleOptions } from 'pixi.js';
+import MultiStyleText, { ExtendedTextStyle, TextStyleSet } from 'pixi-multistyle-text';
+import { Container, Point } from 'pixi.js';
 
-export class Text extends Container implements LayoutView {
-  private _text: PixiText;
+export class StyledText extends Container implements LayoutView {
+  private _text: MultiStyleText;
 
   public set text(value: string) { this._text.text = value; }
   public get style() { return this._text.style; }
   public get contentWidth() { return this._text.width; }
   public get contentHeight() { return this._text.height; }
 
-  constructor(text?: string, style?: TextStyleOptions & { scale?: number }) {
+  constructor(text: string, styles: TextStyleSet, scale: number = 1) {
     super();
-    this._text = new PixiText(text, {
+    const defaultStyle = {
       fontFamily: 'Unibody8Pro',
       fontSize: 8,
       fill: 'white',
       align: 'center',
-      ...style
-    } as TextStyleOptions);
+      ...(styles.default || {})
+    } as ExtendedTextStyle;
+
+    this._text = new MultiStyleText(text, { ...styles, default: defaultStyle });
     this.addChild(this._text);
 
-    const scale = (style && style.scale || 1) * UIScaleFactor;
-    this._text.scale = new Point(scale, scale);
+    this._text.scale = new Point(scale * UIScaleFactor, scale * UIScaleFactor);
   }
 
   public layout(width: number, height: number) {

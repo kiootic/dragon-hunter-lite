@@ -59,7 +59,10 @@ export class StatePreload extends GameState {
       next();
     });
 
-    const fontLoad = new FontFaceObserver('Unibody8Pro').load();
+    const fontLoad = Promise.all([
+      new FontFaceObserver('Unibody8Pro').load(),
+      new FontFaceObserver('Unibody8Pro', { weight: 'bold' }).load(),
+    ]);
 
     loader.load(async (_: any, resources: Record<string, loaders.Resource>) => {
       loader.onProgress.detach(progressHandler);
@@ -68,7 +71,7 @@ export class StatePreload extends GameState {
         const resource = resources[name];
         if (resource.type === loaders.Resource.TYPE.JSON &&
           !(resource as any)['spritesheet']) {
-            this.app.resources[name] = resource.data;
+          this.app.resources[name] = resource.data;
         }
       }
 

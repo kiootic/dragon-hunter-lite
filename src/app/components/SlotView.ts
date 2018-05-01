@@ -3,7 +3,7 @@ import { ItemToolTip } from 'app/components/ItemToolTip';
 import { Game } from 'app/game';
 import { InventorySwap } from 'app/game/messages';
 import { ItemSlot } from 'common/data';
-import { Container, DisplayObject } from 'pixi.js';
+import { interaction, Container, DisplayObject } from 'pixi.js';
 
 export class SlotView extends Container {
   public static Size = 56;
@@ -30,12 +30,13 @@ export class SlotView extends Container {
     let toolTip: ItemToolTip;
     this.interactive = true;
 
-    const showToolTip = () => {
-      if (this.slot.item && !this.dragging)
-        this.game.app.toolTip.show(
-          toolTip || (toolTip = new ItemToolTip(this.game.app, this.slot.item)),
-          this
-        );
+    const showToolTip = (e: interaction.InteractionEvent) => {
+      if (e.target === this && this.slot.item && !this.game.app.dragDrop.active) {
+        if (!toolTip) toolTip = new ItemToolTip(this.game.app, this.slot.item);
+        else toolTip.setItem(this.slot.item);
+
+        this.game.app.toolTip.show(toolTip, this);
+      }
     };
 
     this.on('pointerover', showToolTip);
