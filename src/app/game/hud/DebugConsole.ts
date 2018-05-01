@@ -2,7 +2,7 @@ import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
-import { Spatial } from 'app/game/traits';
+import { Spatial, Stats } from 'app/game/traits';
 import { Item } from 'common/data';
 import { Bone, Wood } from 'data/items';
 import { compact } from 'lodash';
@@ -93,6 +93,10 @@ export class DebugConsole implements HUDElement {
           this.game.entities.add(itemDrop);
           this.addLog('given item ' + item.name);
         }
+      } break;
+      case '/speed': {
+        const boost = Number(args[0]) || 0;
+        this.game.player.traits(Stats).bonus.spd = boost;
       } break;
       default:
         this.addLog('unknown command: ' + cmd[0]);
