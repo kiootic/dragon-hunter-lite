@@ -108,4 +108,9 @@ export class MenuOverlay extends GameOverlay {
     await this.done();
     await this.game.app.popState();
   }
+
+  async done() {
+    this.game.app.dragDrop.cancel();
+    await super.done();
+  }
 }

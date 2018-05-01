@@ -27,8 +27,7 @@ export class DragDrop {
   public begin(object: DisplayObject) {
     if (this.activeObj) {
       console.log('dragdrop: already in progress');
-      this.overlay.removeChild(this.activeObj);
-      this.endDrag$.next(null);
+      this.cancel();
     }
     this.overlay.toLocal(new Point(0, 0), object, this.dragOffset);
     this.dragOffset.x -= this.pointerPos.x;
@@ -37,6 +36,13 @@ export class DragDrop {
     this.overlay.addChild(object);
     this.activeObj = object;
     return this.endDrag$.pipe(first()).toPromise();
+  }
+
+  public cancel() {
+    if (this.activeObj) {
+      this.overlay.removeChild(this.activeObj);
+      this.endDrag$.next(null);
+    }
   }
 
   private end = (e: InteractionEvent) => {
