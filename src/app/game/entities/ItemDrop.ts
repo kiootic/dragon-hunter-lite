@@ -35,6 +35,7 @@ export class ItemDrop extends Entity {
     const spatial = this.traits(Spatial);
     vec2.set(spatial.scale, 2, 2);
     vec2.set(spatial.size, 0.25, 0.25);
+    spatial.solid = false;
     spatial.sprite.setTexture(this.item().texture, this.id);
     spatial.sprite.outline = true;
   }

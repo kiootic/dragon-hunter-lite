@@ -15,15 +15,19 @@ export class EntityMovementTask extends Task {
   public update(dt: number) {
     const t = dt / 1000;
     for (const entity of this.game.entities.withTrait(Spatial)) {
-      const { position, size, sprite, velocity } = entity.traits.get(Spatial);
+      const { position, size, sprite, velocity, solid } = entity.traits.get(Spatial);
       vec2.scale(this.vel, velocity, dt / 1000);
 
-      const obstacles = this.game.keyboard.isPressed('Alt') ? [] : Array.from(this.getObstacles(position));
-      const shape = new intersect.AABB(
-        new intersect.Point(position[0], position[1]),
-        new intersect.Point(size[0], size[1]));
-      this.resolve(obstacles, shape);
-      vec2.set(position, shape.pos.x, shape.pos.y);
+      if (solid) {
+        const obstacles = this.game.keyboard.isPressed('Alt') ? [] : Array.from(this.getObstacles(position));
+        const shape = new intersect.AABB(
+          new intersect.Point(position[0], position[1]),
+          new intersect.Point(size[0], size[1]));
+        this.resolve(obstacles, shape);
+        vec2.set(position, shape.pos.x, shape.pos.y);
+      } else {
+        vec2.add(position, position, this.vel);
+      }
 
       this.updateDisplay(velocity, this.vel, sprite);
 

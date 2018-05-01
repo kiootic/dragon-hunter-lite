@@ -22,15 +22,16 @@ export class InventoryTask extends Task {
       const spatial = itemDrop.traits(Spatial);
       const d = vec2.dist(spatial.position, this.playerPos);
 
-      if (itemDrop.age < 300 || d > 2.5) continue;
+      if (itemDrop.age < 350 || d > 3.5) continue;
 
       if (d > 0.5) {
-        // magnet
+        // magnet (faster if nearer)
         vec2.sub(spatial.velocity, this.playerPos, spatial.position);
-        vec2.scale(spatial.velocity, spatial.velocity, 1.5);
+        const len = vec2.len(spatial.velocity);
+        vec2.normalize(spatial.velocity, spatial.velocity);
+        vec2.scale(spatial.velocity, spatial.velocity, 5 / (len * len));
         continue;
-      } else if (itemDrop.age < 750)
-        continue;
+      }
 
       if (this.pickUp(itemDrop.traits(Inventory).slots[0].item!))
         itemDrop.delete();
