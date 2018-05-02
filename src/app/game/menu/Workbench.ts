@@ -55,7 +55,7 @@ class RecipeView extends Container {
   }
 
   check(inventory: ItemSlot[]) {
-    if (!this.output.slot.item) {
+    if (this.output.empty) {
       const inputSlots = this.checkInput(inventory);
 
       for (const slot of inputSlots)

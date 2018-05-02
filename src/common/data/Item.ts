@@ -10,7 +10,7 @@ export interface Item {
 
 export interface ItemSlot {
   item: Item | null;
-  accepts: Item.Type[] | null;
+  accepts: Item.Type[] | string | null;
 }
 
 export namespace Item {

@@ -26,7 +26,7 @@ export class Button extends Container implements LayoutView {
   public get isEnabled() { return this._isEnabled; }
   public set isEnabled(value: boolean) {
     this._isEnabled = value;
-    this.updateState(false);
+    this.updateState(this.isPressed);
     if (!value) {
       this.alpha = 0.5;
     } else {

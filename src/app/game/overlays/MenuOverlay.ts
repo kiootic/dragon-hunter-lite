@@ -2,8 +2,7 @@ import { Button, SlotView, TextureSprite, TextButton } from 'app/components';
 import { StyledText } from 'app/components/StyledText';
 import { TextToolTip } from 'app/components/TextToolTip';
 import { Game } from 'app/game';
-import { MenuPanel } from 'app/game/menu';
-import { Workbench } from 'app/game/menu/Workbench';
+import { Alchemy, MenuPanel, Workbench } from 'app/game/menu';
 import { GameOverlay } from 'app/game/overlays';
 import { Inventory, Stats, StatList } from 'app/game/traits';
 import * as vex from 'vex-js';
@@ -13,7 +12,7 @@ const MenuHeight = 600;
 const SlotsPerRow = 8;
 
 export class MenuOverlay extends GameOverlay {
-  private readonly activeTab: MenuPanel;
+  private activeTab: MenuPanel;
   private readonly tabs: MenuPanel[] = [];
   private readonly tabButtons: Button[];
   private readonly saveButton = new TextButton('save');
@@ -39,6 +38,7 @@ export class MenuOverlay extends GameOverlay {
     super(game);
 
     this.tabs.push(new Workbench(game));
+    this.tabs.push(new Alchemy(game));
     this.activeTab = this.tabs[0];
     this.addChild(this.activeTab);
 
@@ -53,6 +53,12 @@ export class MenuOverlay extends GameOverlay {
       game.app.toolTip.add(btn, () => {
         toolTip.text = tab.name;
         return toolTip;
+      });
+      btn.on(Button.Clicked, () => {
+        if (this.activeTab === tab) return;
+        this.removeChild(this.activeTab);
+        this.addChild(tab);
+        this.activeTab = tab;
       });
       return btn;
     });
@@ -124,8 +130,10 @@ export class MenuOverlay extends GameOverlay {
     x = buttonX;
     y = buttonY;
 
-    for (const button of this.tabButtons) {
-      button.position.set(buttonX, y);
+    for (let i = 0; i < this.tabs.length; i++) {
+      const button = this.tabButtons[i];
+      button.isEnabled = this.activeTab !== this.tabs[i];
+      button.position.set(x, y);
       button.layout(50, 50);
       x += 50 + 16;
     }
@@ -210,7 +218,8 @@ vit<s> </s>
 
   async done() {
     this.game.app.dragDrop.cancel();
-    this.activeTab.dispose();
+    for (const tab of this.tabs)
+      tab.dispose();
     await super.done();
   }
 }

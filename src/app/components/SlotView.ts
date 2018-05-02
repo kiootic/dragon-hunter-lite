@@ -16,6 +16,7 @@ export class SlotView extends Container {
   private dragging = false;
 
   public enabled = true;
+  public get empty() { return !this.slot.item; }
 
   constructor(private readonly game: Game, public readonly slot: ItemSlot) {
     super();

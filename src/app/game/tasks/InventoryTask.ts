@@ -38,10 +38,18 @@ export class InventoryTask extends Task {
     }
   }
 
+  private acceptable(item: Item | null, accepts: Item.Type[] | string | null) {
+    if (!item || !accepts) return true;
+    if (typeof accepts === 'string')
+      return item.id.startsWith(accepts);
+    else
+      return accepts.indexOf(item.type) >= 0;
+  }
+
   private pickUp(item: Item) {
     for (const slot of this.playerInv) {
       if (slot.item) continue;
-      if (slot.accepts && slot.accepts.indexOf(item.type) < 0) continue;
+      if (!this.acceptable(item, slot.accepts)) continue;
 
       slot.item = item;
       this.game.dispatch(new InventoryUpdated(slot));
@@ -51,12 +59,8 @@ export class InventoryTask extends Task {
   }
 
   private swapInventory = (swap: InventorySwap) => {
-    function acceptable(item: Item | null, accepts: Item.Type[] | null) {
-      return !(item && accepts && accepts.indexOf(item.type) < 0);
-    }
-
     const { slotA, slotB } = swap;
-    if (!acceptable(slotA.item, slotB.accepts) || !acceptable(slotB.item, slotA.accepts))
+    if (!this.acceptable(slotA.item, slotB.accepts) || !this.acceptable(slotB.item, slotA.accepts))
       return;
     const tmp = slotB.item;
     slotB.item = slotA.item;

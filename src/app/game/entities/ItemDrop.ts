@@ -9,7 +9,7 @@ export class ItemDrop extends Entity {
   public static readonly Type = 'item-drop';
   public get type() { return ItemDrop.Type; }
 
-  public static make(game: Game, item: Item, position: vec2) {
+  public static make(game: Game, item: Item, position: vec2 = game.player.traits(Spatial).position) {
     const entity = new ItemDrop(game).item(item);
     const spatial = entity.traits(Spatial);
     vec2.copy(spatial.position, position);
