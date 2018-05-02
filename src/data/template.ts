@@ -3,7 +3,7 @@ import { simpleDrops } from 'data/drops';
 import { ObjectDef } from 'data/objects';
 
 export const NumFlowerTypes = 4;
-export function makeFlower(name: string, type: number, color: string): ObjectDef {
+export function makeFlower(name: string, type: number, color: string, elements: [string, string]): ObjectDef {
   return {
     texture: {
       type: 'composite',
@@ -20,14 +20,21 @@ export function makeFlower(name: string, type: number, color: string): ObjectDef
         template: {
           id: `flower-${name}`,
           name,
-          type: Item.Type.Material,
+          type: Item.Type.Consumable,
           texture: {
             type: 'composite',
             overlay: { type: 'single', tex: `sprites/items/flower-petal-${type}`, tint: color },
             base: { type: 'single', tex: `sprites/items/flower-stem-${type}` }
-          }
+          },
+          aspects: [
+            { element: elements[0], amount: 0 },
+            { element: elements[1], amount: 0 }
+          ]
         },
-        substs: []
+        substs: [
+          { path: 'aspects[0].amount', type: 'gaussian', mean: 5, sd: 2, min: 0, max: 10 },
+          { path: 'aspects[1].amount', type: 'gaussian', mean: 2, sd: 2, min: 0, max: 5 },
+        ]
       })
     }
   };
@@ -44,7 +51,7 @@ export function makeBush(): ObjectDef {
 }
 
 export const NumBerryTypes = 4;
-export function makeBerryBush(name: string, depleted: string, type: number, color: string): ObjectDef {
+export function makeBerryBush(name: string, depleted: string, type: number, color: string, elements: [string, string]): ObjectDef {
   return {
     texture: {
       type: 'composite',
@@ -63,10 +70,17 @@ export function makeBerryBush(name: string, depleted: string, type: number, colo
         template: {
           id: `berries-${name}`,
           name: `${name} Berries`,
-          type: Item.Type.Material,
-          texture: { type: 'single', tex: `sprites/items/berries-${type}`, tint: color }
+          type: Item.Type.Consumable,
+          texture: { type: 'single', tex: `sprites/items/berries-${type}`, tint: color },
+          aspects: [
+            { element: elements[0], amount: 0 },
+            { element: elements[1], amount: 0 }
+          ]
         },
-        substs: []
+        substs: [
+          { path: 'aspects[0].amount', type: 'gaussian', mean: 8, sd: 2, min: 0, max: 12 },
+          { path: 'aspects[1].amount', type: 'gaussian', mean: 4, sd: 2, min: 0, max: 8 },
+        ]
       })
     }
   };

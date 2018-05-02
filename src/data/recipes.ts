@@ -1,42 +1,39 @@
 import { Item, Recipe, TextureDef } from 'common/data';
+import { ElementTypes } from 'data/elements';
 
 function recipe(input: { id: string, texture: TextureDef }[], output: Item): Recipe {
   return { input, output };
 }
 
 export const makeRecipes = (): Recipe[] => [
-  recipe([{
-    id: 'flint',
-    texture: 'sprites/items/flint'
-  }, {
-    id: 'stone',
-    texture: 'sprites/items/stone'
-  }], {
-      id: 'flint-stone',
-      name: 'Flint and Stone',
-      type: Item.Type.Material,
-      texture: 'sprites/items/flint-stone'
+  recipe([
+    { id: 'bone', texture: 'sprites/items/bone' },
+    { id: 'leaf', texture: 'sprites/items/leaf' },
+  ], {
+      id: 'gel-bone',
+      name: 'Bone Gel',
+      type: Item.Type.Consumable,
+      texture: 'sprites/items/gel',
+      aspects: [{
+        element: ElementTypes.Chaos,
+        amount: 3
+      }]
     }),
-  recipe([{
-    id: 'bone',
-    texture: 'sprites/items/bone'
-  }], {
-      id: 'dust-bone',
-      name: 'Bone Dust',
-      type: Item.Type.Material,
-      texture: 'sprites/items/dust'
-    }),
-  recipe([{
-    id: 'stone',
-    texture: 'sprites/items/stone'
-  }], {
-      id: 'dust-stone',
-      name: 'Stone Dust',
-      type: Item.Type.Material,
+  recipe([
+    { id: 'stone', texture: 'sprites/items/stone' },
+    { id: 'leaf', texture: 'sprites/items/leaf' },
+  ], {
+      id: 'gel-stone',
+      name: 'Stone Gel',
+      type: Item.Type.Consumable,
       texture: {
         type: 'single',
-        tex: 'sprites/items/dust',
+        tex: 'sprites/items/gel',
         tint: '808080'
-      }
+      },
+      aspects: [{
+        element: ElementTypes.Order,
+        amount: 3
+      }]
     }),
 ];

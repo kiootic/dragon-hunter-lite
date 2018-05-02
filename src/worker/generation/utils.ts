@@ -1,4 +1,5 @@
 import { randomValue, RandomValue } from 'common/random';
+import { Elements } from 'data/elements';
 import { RandomSeed } from 'random-seed';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
@@ -94,6 +95,13 @@ export function randomColors(
     result.push(r * 0x10000 + g * 0x100 + b * 0x1);
   }
   return result;
+}
+
+export function randomElementPair(rand: RandomSeed): [string, string] {
+  const elements = Elements.filter(elem => elem.tier <= 1);
+  const elem1 = elements.splice(rand.range(elements.length), 1)[0];
+  const elem2 = elements.splice(rand.range(elements.length), 1)[0];
+  return [elem1.name, elem2.name];
 }
 
 export function rasterizeLine(x0: number, y0: number, x1: number, y1: number, cb: (x: number, y: number) => void) {

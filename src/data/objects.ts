@@ -128,10 +128,15 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 0,
       replaceWith: null,
-      table: {
-        numDrops: { type: 'constant', value: 0 },
-        items: []
-      }
+      table: simpleDrops(0, 1, 4, {
+        template: {
+          id: 'leaf',
+          name: 'Leaf',
+          type: Item.Type.Material,
+          texture: 'sprites/items/leaf'
+        },
+        substs: []
+      })
     }
   },
   'cactus': {
@@ -157,28 +162,15 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 8,
       replaceWith: null,
-      table: {
-        numDrops: { type: 'exponential', min: 2, max: 5, rate: 0.5 },
-        items: [{
-          prob: 0.7, item: {
-            template: {
-              id: 'stone',
-              name: 'Stone',
-              type: Item.Type.Material,
-              texture: 'sprites/items/stone'
-            }, substs: []
-          }
-        }, {
-          prob: 0.3, item: {
-            template: {
-              id: 'flint',
-              name: 'Flint',
-              type: Item.Type.Material,
-              texture: 'sprites/items/flint'
-            }, substs: []
-          }
-        }]
-      }
+      table: simpleDrops(2, 5, 0.5, {
+        template: {
+          id: 'stone',
+          name: 'Stone',
+          type: Item.Type.Material,
+          texture: 'sprites/items/stone'
+        },
+        substs: []
+      })
     }
   },
   'rocks': {
@@ -193,28 +185,15 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 1,
       replaceWith: null,
-      table: {
-        numDrops: { type: 'exponential', min: 1, max: 3, rate: 1 },
-        items: [{
-          prob: 0.6, item: {
-            template: {
-              id: 'stone',
-              name: 'Stone',
-              type: Item.Type.Material,
-              texture: 'sprites/items/stone'
-            }, substs: []
-          }
-        }, {
-          prob: 0.4, item: {
-            template: {
-              id: 'flint',
-              name: 'Flint',
-              type: Item.Type.Material,
-              texture: 'sprites/items/flint'
-            }, substs: []
-          }
-        }]
-      }
+      table: simpleDrops(1, 3, 1, {
+        template: {
+          id: 'stone',
+          name: 'Stone',
+          type: Item.Type.Material,
+          texture: 'sprites/items/stone'
+        },
+        substs: []
+      })
     }
   },
 });

@@ -5,7 +5,7 @@ import { makeRecipes } from 'data/recipes';
 import { makeBerryBush, makeBush, makeFlower, NumBerryTypes, NumFlowerTypes } from 'data/template';
 import { makeTerrains } from 'data/terrains';
 import { create as createRand } from 'random-seed';
-import { randomColors } from 'worker/generation/utils';
+import { randomColors, randomElementPair } from 'worker/generation/utils';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 const NumFlowers = 16 / NumFlowerTypes;
@@ -26,7 +26,9 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
     );
     for (let i = 0; i < NumFlowers; i++) {
       objects[`flower-${type}${i}`] = makeFlower(
-        generateName(5, 10, random.random), type, flowerColors[i].toString(16)
+        generateName(5, 10, random.random),
+        type, flowerColors[i].toString(16),
+        randomElementPair(random)
       );
     }
   }
@@ -39,8 +41,10 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
     for (let i = 0; i < NumBerries; i++) {
       objects[`berrybush-${type}${i}-depleted`] = makeBush();
       objects[`berrybush-${type}${i}`] = makeBerryBush(
-        generateName(5, 10, random.random), `berrybush-${type}${i}-depleted`,
-        type, berryColors[i].toString(16)
+        generateName(5, 10, random.random),
+        `berrybush-${type}${i}-depleted`,
+        type, berryColors[i].toString(16),
+        randomElementPair(random)
       );
     }
   }

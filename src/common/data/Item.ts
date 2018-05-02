@@ -1,10 +1,11 @@
-import { TextureDef } from 'common/data';
+import { Aspect, TextureDef } from 'common/data';
 
 export interface Item {
   readonly id: string;
   readonly name: string;
   readonly type: Item.Type;
   readonly texture: TextureDef;
+  readonly aspects?: Aspect[];
 }
 
 export interface ItemSlot {

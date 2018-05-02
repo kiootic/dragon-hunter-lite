@@ -1,10 +1,7 @@
 import { Game } from 'app/game';
-import { ItemDrop } from 'app/game/entities';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
-import { Spatial, Stats } from 'app/game/traits';
-import { Item } from 'common/data';
-import { Bone, Wood } from 'data/items';
+import { Stats } from 'app/game/traits';
 import { compact } from 'lodash';
 
 const ConsoleHTML = `
@@ -80,20 +77,6 @@ export class DebugConsole implements HUDElement {
     }
     const [cmd, ...args] = compact(input.split(' ').map(part => part.trim()));
     switch (cmd) {
-      case '/give': {
-        let item: Item | undefined;
-        switch (args[0]) {
-          case 'wood': item = Wood(); break;
-          case 'bone': item = Bone(); break;
-        }
-        if (!item)
-          this.addLog('unknown item: ' + args[0]);
-        else {
-          const itemDrop = ItemDrop.make(this.game, item, this.game.player.traits.get(Spatial).position);
-          this.game.entities.add(itemDrop);
-          this.addLog('given item ' + item.name);
-        }
-      } break;
       case '/speed': {
         const boost = Number(args[0]) || 0;
         this.game.player.traits(Stats).bonus.spd = boost;
