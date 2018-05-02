@@ -1,5 +1,4 @@
-import { Terrain } from 'common/data/Terrain';
-import { TileObject } from 'common/data/TileObject';
+import { Terrain, TileObject } from 'common/data';
 
 export interface DataLibrary {
   readonly terrains: Terrain[];

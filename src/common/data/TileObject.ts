@@ -1,5 +1,4 @@
-import { DropTable, Item } from 'common/data';
-import { TextureDef } from 'common/data/TextureDef';
+import { DropTable, Item, TextureDef } from 'common/data';
 import { RandomTemplate } from 'common/random';
 
 export interface TileObjectDrops {

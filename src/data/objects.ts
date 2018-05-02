@@ -17,6 +17,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
       replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
+          id: 'wood-palm',
           name: 'Palm Wood',
           type: Item.Type.Material,
           texture: 'sprites/items/wood'
@@ -37,6 +38,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
       replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
+          id: 'wood-oak',
           name: 'Oak Wood',
           type: Item.Type.Material,
           texture: {
@@ -61,6 +63,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
       replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
+          id: 'wood-spruce',
           name: 'Spruce Wood',
           type: Item.Type.Material,
           texture: {
@@ -87,6 +90,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
       replaceWith: null,
       table: simpleDrops(0, 1, 0.5, {
         template: {
+          id: 'bone',
           name: 'Bone',
           type: Item.Type.Material,
           texture: 'sprites/items/bone'
@@ -153,14 +157,28 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 8,
       replaceWith: null,
-      table: simpleDrops(2, 4, 0.5, {
-        template: {
-          name: 'Stone',
-          type: Item.Type.Material,
-          texture: 'sprites/items/stone'
-        },
-        substs: []
-      })
+      table: {
+        numDrops: { type: 'exponential', min: 2, max: 4, rate: 0.5 },
+        items: [{
+          prob: 0.7, item: {
+            template: {
+              id: 'stone',
+              name: 'Stone',
+              type: Item.Type.Material,
+              texture: 'sprites/items/stone'
+            }, substs: []
+          }
+        }, {
+          prob: 0.3, item: {
+            template: {
+              id: 'flint',
+              name: 'Flint',
+              type: Item.Type.Material,
+              texture: 'sprites/items/flint'
+            }, substs: []
+          }
+        }]
+      }
     }
   },
   'rocks': {
@@ -175,14 +193,28 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 2,
       replaceWith: null,
-      table: simpleDrops(1, 2, 1, {
-        template: {
-          name: 'Stone',
-          type: Item.Type.Material,
-          texture: 'sprites/items/stone'
-        },
-        substs: []
-      })
+      table: {
+        numDrops: { type: 'exponential', min: 1, max: 2, rate: 1 },
+        items: [{
+          prob: 0.6, item: {
+            template: {
+              id: 'stone',
+              name: 'Stone',
+              type: Item.Type.Material,
+              texture: 'sprites/items/stone'
+            }, substs: []
+          }
+        }, {
+          prob: 0.4, item: {
+            template: {
+              id: 'flint',
+              name: 'Flint',
+              type: Item.Type.Material,
+              texture: 'sprites/items/flint'
+            }, substs: []
+          }
+        }]
+      }
     }
   },
 });
