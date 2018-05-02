@@ -15,7 +15,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 5,
       replaceWith: null,
-      table: simpleDrops(1, 2, 1, {
+      table: simpleDrops(2, 4, 0.5, {
         template: {
           id: 'wood-palm',
           name: 'Palm Wood',
@@ -36,7 +36,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 5,
       replaceWith: null,
-      table: simpleDrops(1, 2, 1, {
+      table: simpleDrops(2, 4, 0.5, {
         template: {
           id: 'wood-oak',
           name: 'Oak Wood',
@@ -61,7 +61,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 5,
       replaceWith: null,
-      table: simpleDrops(1, 2, 1, {
+      table: simpleDrops(2, 4, 0.5, {
         template: {
           id: 'wood-spruce',
           name: 'Spruce Wood',
@@ -88,7 +88,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 3,
       replaceWith: null,
-      table: simpleDrops(0, 1, 0.5, {
+      table: simpleDrops(0, 2, 1, {
         template: {
           id: 'bone',
           name: 'Bone',
@@ -158,7 +158,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
       hp: 8,
       replaceWith: null,
       table: {
-        numDrops: { type: 'exponential', min: 2, max: 4, rate: 0.5 },
+        numDrops: { type: 'exponential', min: 2, max: 5, rate: 0.5 },
         items: [{
           prob: 0.7, item: {
             template: {
@@ -191,10 +191,10 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     terrain: true,
     interactive: true,
     drops: {
-      hp: 2,
+      hp: 1,
       replaceWith: null,
       table: {
-        numDrops: { type: 'exponential', min: 1, max: 2, rate: 1 },
+        numDrops: { type: 'exponential', min: 1, max: 3, rate: 1 },
         items: [{
           prob: 0.6, item: {
             template: {
