@@ -38,8 +38,8 @@ export class DragDrop {
     return this.endDrag$.pipe(first()).toPromise();
   }
 
-  public cancel() {
-    if (this.activeObj) {
+  public cancel(object = this.activeObj) {
+    if (this.activeObj && this.activeObj === object) {
       this.overlay.removeChild(this.activeObj);
       this.endDrag$.next(null);
     }

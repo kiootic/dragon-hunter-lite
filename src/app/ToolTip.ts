@@ -25,6 +25,18 @@ export class ToolTip {
     });
   }
 
+  public add(target: DisplayObject, show: () => Panel | null) {
+    const showToolTip = (e: interaction.InteractionEvent) => {
+      if (e.target === target && !this.app.dragDrop.active) {
+        const panel = show();
+        if (panel)
+          this.show(panel, target);
+      }
+    };
+    target.on('pointerover', showToolTip);
+    target.on('pointermove', showToolTip);
+  }
+
   public show(panel: Panel, target: DisplayObject) {
     if (this.panel) this.hide(this.panel);
 

@@ -26,6 +26,12 @@ export class TextureSprite extends Sprite implements TexSprite {
   private textureDef?: Exclude<TextureDef, string>;
   private currentTex = Texture.EMPTY;
 
+  constructor(texture?: Texture) {
+    super(texture);
+    if (texture)
+      this.currentTex = texture;
+  }
+
   private updateTex() {
     let tex = this.currentTex;
     if (this.clip) {

@@ -1,6 +1,9 @@
-import { SlotView, TextButton } from 'app/components';
+import { Button, SlotView, TextureSprite, TextButton } from 'app/components';
 import { StyledText } from 'app/components/StyledText';
+import { TextToolTip } from 'app/components/TextToolTip';
 import { Game } from 'app/game';
+import { MenuPanel } from 'app/game/menu';
+import { Workbench } from 'app/game/menu/Workbench';
 import { GameOverlay } from 'app/game/overlays';
 import { Inventory, Stats, StatList } from 'app/game/traits';
 import * as vex from 'vex-js';
@@ -10,6 +13,8 @@ const MenuHeight = 600;
 const SlotsPerRow = 8;
 
 export class MenuOverlay extends GameOverlay {
+  private readonly tabs: MenuPanel[] = [];
+  private readonly tabButtons: Button[];
   private readonly saveButton = new TextButton('save');
   private readonly exitButton = new TextButton('exit');
 
@@ -32,18 +37,35 @@ export class MenuOverlay extends GameOverlay {
   constructor(game: Game) {
     super(game);
 
+    this.tabs.push(new Workbench());
+
+    const toolTip = new TextToolTip(game.app, '', {});
+
+    this.tabButtons = this.tabs.map(tab => {
+      const btn = new Button();
+      const icon = new TextureSprite(tab.icon);
+      icon.scale.set(2, 2);
+      btn.content.addChild(icon);
+      this.addChild(btn);
+      game.app.toolTip.add(btn, () => {
+        toolTip.text = tab.name;
+        return toolTip;
+      });
+      return btn;
+    });
+
     const slots = game.player.traits.get(Inventory).slots;
     for (const slot of slots) {
       const view = new SlotView(this.game, slot);
       this.slotViews.push(view);
       this.content.addChild(view);
     }
-    this.slotViews[40].overlay.setTexture('sprites/ui/inv-slot-chestplates');
-    this.slotViews[41].overlay.setTexture('sprites/ui/inv-slot-leggings');
-    this.slotViews[42].overlay.setTexture('sprites/ui/inv-slot-boots');
+    this.slotViews[40].bgOverlay.setTexture('sprites/ui/inv-slot-chestplates');
+    this.slotViews[41].bgOverlay.setTexture('sprites/ui/inv-slot-leggings');
+    this.slotViews[42].bgOverlay.setTexture('sprites/ui/inv-slot-boots');
 
     this.content.addChild(this.trash);
-    this.trash.overlay.setTexture('sprites/ui/inv-slot-trash');
+    this.trash.bgOverlay.setTexture('sprites/ui/inv-slot-trash');
 
     const stats = this.game.player.traits(Stats);
     this.stats = Stats.compute(stats);
@@ -95,9 +117,22 @@ export class MenuOverlay extends GameOverlay {
     );
     this.statValues.layout(this.statValues.contentWidth, this.statValues.contentHeight);
 
-    this.saveButton.position.set(24, 384);
+    const buttonX = 24, buttonY = 336;
+    x = buttonX;
+    y = buttonY;
+
+    for (const button of this.tabButtons) {
+      button.position.set(buttonX, y);
+      button.layout(50, 50);
+      x += 50 + 16;
+    }
+    y += 50 + 16;
+
+    x = buttonX;
+    this.saveButton.position.set(x, y);
     this.saveButton.layout(96, 48);
-    this.exitButton.position.set(this.saveButton.x + 16 + 96, 384);
+    x += 96 + 16;
+    this.exitButton.position.set(x, y);
     this.exitButton.layout(96, 48);
   }
 

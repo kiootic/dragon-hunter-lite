@@ -3,47 +3,48 @@ import { ItemToolTip } from 'app/components/ItemToolTip';
 import { Game } from 'app/game';
 import { InventorySwap } from 'app/game/messages';
 import { ItemSlot } from 'common/data';
-import { interaction, Container, DisplayObject } from 'pixi.js';
+import { Container, DisplayObject } from 'pixi.js';
 
 export class SlotView extends Container {
   public static Size = 56;
 
   private readonly bg = new TextureSprite();
-  public readonly overlay = new TextureSprite();
+  public readonly bgOverlay = new TextureSprite();
+  public readonly fgOverlay = new TextureSprite();
 
   private readonly obj: TextureSprite;
   private dragging = false;
+
+  public enabled = true;
 
   constructor(private readonly game: Game, public readonly slot: ItemSlot) {
     super();
 
     this.bg.setTexture('sprites/ui/inv-slot');
     this.addChild(this.bg);
-    this.addChild(this.overlay);
+    this.addChild(this.bgOverlay);
 
     this.obj = new TextureSprite();
     this.obj.scale.set(2, 2);
     this.obj.anchor.set(0.5, 0.5);
     this.obj.outline = true;
     this.addChild(this.obj);
+    this.addChild(this.fgOverlay);
 
     let toolTip: ItemToolTip;
     this.interactive = true;
 
-    const showToolTip = (e: interaction.InteractionEvent) => {
-      if (e.target === this && this.slot.item && !this.game.app.dragDrop.active) {
+    this.game.app.toolTip.add(this, () => {
+      if (this.slot.item) {
         if (!toolTip) toolTip = new ItemToolTip(this.game.app, this.slot.item);
         else toolTip.setItem(this.slot.item);
-
-        this.game.app.toolTip.show(toolTip, this);
-      }
-    };
-
-    this.on('pointerover', showToolTip);
-    this.on('pointermove', showToolTip);
+        return toolTip;
+      } else
+        return null;
+    });
 
     this.on('pointerdown', () => {
-      if (this.slot.item && !this.game.app.dragDrop.active) {
+      if (this.enabled && this.slot.item && !this.game.app.dragDrop.active) {
         this.dragging = true;
         this.game.app.dragDrop.begin(this.obj).then(this.endDrag);
         if (toolTip)
@@ -78,7 +79,7 @@ export class SlotView extends Container {
   private endDrag = (target: DisplayObject | null) => {
     this.dragging = false;
     this.addChild(this.obj);
-    if (target instanceof SlotView && target !== this) {
+    if (target instanceof SlotView && target !== this && this.enabled && target.enabled) {
       this.game.dispatch(new InventorySwap(this.slot, target.slot));
     }
   }
