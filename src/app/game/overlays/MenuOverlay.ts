@@ -13,6 +13,7 @@ const MenuHeight = 600;
 const SlotsPerRow = 8;
 
 export class MenuOverlay extends GameOverlay {
+  private readonly activeTab: MenuPanel;
   private readonly tabs: MenuPanel[] = [];
   private readonly tabButtons: Button[];
   private readonly saveButton = new TextButton('save');
@@ -37,7 +38,9 @@ export class MenuOverlay extends GameOverlay {
   constructor(game: Game) {
     super(game);
 
-    this.tabs.push(new Workbench());
+    this.tabs.push(new Workbench(game));
+    this.activeTab = this.tabs[0];
+    this.addChild(this.activeTab);
 
     const toolTip = new TextToolTip(game.app, '', {});
 
@@ -134,6 +137,9 @@ export class MenuOverlay extends GameOverlay {
     x += 96 + 16;
     this.exitButton.position.set(x, y);
     this.exitButton.layout(96, 48);
+
+    this.activeTab.position.set(256, 336);
+    this.activeTab.layout(MenuWidth - 256 - 16, MenuHeight - 336 - 16);
   }
 
   update(dt: number) {
@@ -204,6 +210,7 @@ vit<s> </s>
 
   async done() {
     this.game.app.dragDrop.cancel();
+    this.activeTab.dispose();
     await super.done();
   }
 }

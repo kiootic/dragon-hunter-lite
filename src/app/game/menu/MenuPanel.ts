@@ -6,4 +6,5 @@ export abstract class MenuPanel extends Container implements LayoutView {
   abstract get name(): string;
 
   abstract layout(width: number, height: number): void;
+  dispose() { }
 }

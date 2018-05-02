@@ -5,3 +5,4 @@ export * from './TextureDef';
 export * from './DataLibrary';
 export * from './GameSave';
 export * from './DropTable';
+export * from './Recipe';

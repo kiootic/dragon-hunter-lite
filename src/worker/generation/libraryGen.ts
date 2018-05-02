@@ -1,6 +1,7 @@
 import { loadDataLib } from 'common/data';
 import { generateName } from 'common/markov';
 import { makeObjects } from 'data/objects';
+import { makeRecipes } from 'data/recipes';
 import { makeBerryBush, makeBush, makeFlower, NumBerryTypes, NumFlowerTypes } from 'data/template';
 import { makeTerrains } from 'data/terrains';
 import { create as createRand } from 'random-seed';
@@ -16,6 +17,7 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
 
   const terrains = makeTerrains();
   const objects = makeObjects();
+  const recipes = makeRecipes();
 
   for (let type = 1; type <= NumFlowerTypes; type++) {
     const flowerColors = randomColors(random, NumFlowers,
@@ -43,5 +45,5 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
     }
   }
 
-  return loadDataLib(terrains, objects);
+  return loadDataLib(terrains, objects, recipes);
 }

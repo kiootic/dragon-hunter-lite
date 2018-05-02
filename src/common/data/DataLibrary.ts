@@ -1,8 +1,9 @@
-import { Terrain, TileObject } from 'common/data';
+import { Recipe, Terrain, TileObject } from 'common/data';
 
 export interface DataLibrary {
   readonly terrains: Terrain[];
   readonly objects: TileObject[];
+  readonly recipes: Recipe[];
 }
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
@@ -22,9 +23,11 @@ function populateNameId<T extends { id: number, name: string }>(items: Record<st
 export function loadDataLib(
   terrains: Record<string, Omit<Terrain, 'id' | 'name'>>,
   objects: Record<string, Omit<TileObject, 'id' | 'name'>>,
+  recipes: Recipe[]
 ): DataLibrary {
   return {
     terrains: populateNameId(terrains),
-    objects: populateNameId(objects)
+    objects: populateNameId(objects),
+    recipes
   };
 }
