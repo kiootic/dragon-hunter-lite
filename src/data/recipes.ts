@@ -1,5 +1,5 @@
 import { Item, Recipe, TextureDef } from 'common/data';
-import { ElementTypes } from 'data/elements';
+import { ElementDef } from 'data/elements';
 
 function recipe(input: { id: string, texture: TextureDef }[], output: Item): Recipe {
   return { input, output };
@@ -15,7 +15,7 @@ export const makeRecipes = (): Recipe[] => [
       type: Item.Type.Consumable,
       texture: 'sprites/items/gel',
       aspects: [{
-        element: ElementTypes.Chaos,
+        element: ElementDef.Type.Chaos,
         amount: 3
       }]
     }),
@@ -32,7 +32,7 @@ export const makeRecipes = (): Recipe[] => [
         tint: '808080'
       },
       aspects: [{
-        element: ElementTypes.Order,
+        element: ElementDef.Type.Order,
         amount: 3
       }]
     }),

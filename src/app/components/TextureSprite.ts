@@ -28,6 +28,8 @@ export class TextureSprite extends Sprite implements TexSprite {
 
   constructor(texture?: Texture) {
     super(texture);
+    this.pluginName = TextureSpriteRenderer.Name;
+
     if (texture)
       this.currentTex = texture;
   }
@@ -61,7 +63,6 @@ export class TextureSprite extends Sprite implements TexSprite {
     this.tint = 0xffffff;
     this.overlay && this.removeChild(this.overlay);
     this.overlay = undefined;
-    this.pluginName = TextureSpriteRenderer.Name;
 
     if (typeof textureDef === 'string') {
       this.textureDef = undefined;

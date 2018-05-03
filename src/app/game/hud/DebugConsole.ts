@@ -3,8 +3,8 @@ import { ItemDrop } from 'app/game/entities';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
 import { Stats } from 'app/game/traits';
-import { instantiate } from 'common/random';
-import { compact } from 'lodash';
+import { instantiate, randomValue, RandomValue } from 'common/random';
+import { compact, padStart } from 'lodash';
 
 const ConsoleHTML = `
 <div class="debug-console">
@@ -31,10 +31,16 @@ export class DebugConsole implements HUDElement {
     document.body.addEventListener('keydown', this.onKeyDown);
   }
 
+  private lastInput = '';
+
   private onKeyDown = (event: KeyboardEvent) => {
     const isActive = this.root.classList.contains('active');
     if (isActive && event.key === 'Escape') {
       this.toggleInput();
+    } else if (isActive && event.key === 'ArrowUp' && event.target === this.input) {
+      this.input.value = this.lastInput;
+      this.input.setSelectionRange(this.input.value.length, this.input.value.length);
+      event.preventDefault();
     } else if (event.key.toLowerCase() === 't' || event.key === '/') {
       if (isActive)
         this.input.focus();
@@ -47,6 +53,8 @@ export class DebugConsole implements HUDElement {
       this.processInput(this.input.value);
       this.input.value = '';
     }
+    if (event.target !== this.input)
+      event.preventDefault();
   }
 
   update() {
@@ -74,6 +82,8 @@ export class DebugConsole implements HUDElement {
 
   private processInput(input: string) {
     if (!input) return;
+    this.lastInput = input;
+
     if (!input.startsWith('/')) {
       this.addLog(input);
       return;
@@ -92,8 +102,20 @@ export class DebugConsole implements HUDElement {
         const boost = Number(args[0]) || 0;
         this.game.player.traits(Stats).bonus.spd = boost;
       } break;
+      case '/elements': {
+        const valueOf = (value: RandomValue) => padStart(randomValue(value).toFixed(2), 5, ' ');
+        this.addLog('|   name   |    fission   |    fusion    | color |');
+        for (const name of Object.keys(this.game.library.elements)) {
+          const elem = this.game.library.elements[name];
+          this.addLog(` \
+${padStart(name, 10, ' ')}\
+ (${valueOf(elem.fissionThreshold)}, ${valueOf(elem.fissionRate)})\
+ (${valueOf(elem.fusionThreshold)}, ${valueOf(elem.fusionRate)})\
+ ${padStart(elem.color, 6, '0')}`);
+        }
+      } break;
       default:
-        this.addLog('unknown command: ' + cmd[0]);
+        this.addLog('unknown command: ' + cmd);
         break;
     }
   }

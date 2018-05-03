@@ -1,0 +1,31 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #202020;
+  overflow: hidden;
+}
+
+canvas {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+@font-face {
+  font-family: "Unibody8Pro";
+  src: url('../../assets/fonts/Unibody8Pro-Regular.otf') format("opentype")
+}
+
+@font-face {
+  font-family: "Unibody8Pro";
+  font-weight: bold;
+  src: url('../../assets/fonts/Unibody8Pro-Bold.otf') format("opentype")
+}
+
+@font-face {
+  font-family: "Unscii";
+  font-weight: bold;
+  src: url('../../assets/fonts/unscii-16.woff') format("woff")
+}

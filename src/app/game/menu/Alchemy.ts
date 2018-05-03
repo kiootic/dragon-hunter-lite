@@ -23,6 +23,7 @@ export class Alchemy extends MenuPanel {
     super();
 
     this.bg = new TextureSprite(Texture.from('sprites/ui/cauldron'));
+    this.bg.outline = true;
     this.bg.scale.set(7, 7);
     this.addChild(this.bg);
 
@@ -48,6 +49,7 @@ export class Alchemy extends MenuPanel {
     this.subscription.add(game.messages$.ofType(InventoryUpdated).subscribe(this.checkInventory));
     this.checkInventory();
 
+    this.processButton.on(Button.Clicked, this.doAlchemy);
   }
 
   private checkInventory = () => {
@@ -55,23 +57,52 @@ export class Alchemy extends MenuPanel {
       !this.input1.empty && !this.input2.empty && !this.fuel.empty && this.output.empty;
   }
 
+  private doAlchemy = () => {
+    const input1 = this.input1.slot.item!;
+    const input2 = this.input2.slot.item!;
+    const output: Item = {
+      id: 'solution',
+      name: 'Solution',
+      type: Item.Type.Consumable,
+      texture: {
+        type: 'composite',
+        base: 'sprites/items/solution',
+        overlay: {
+          type: 'single',
+          tex: 'sprites/items/solution-overlay',
+          tint: 'ff0000'
+        }
+      },
+      aspects: [...(input1.aspects || []), ... (input2.aspects || [])]
+    };
+
+    this.output.slot.item = output;
+    this.input1.slot.item = null;
+    this.input2.slot.item = null;
+    this.fuel.slot.item = null;
+    this.game.dispatch(new InventoryUpdated(this.input1.slot));
+    this.game.dispatch(new InventoryUpdated(this.input2.slot));
+    this.game.dispatch(new InventoryUpdated(this.output.slot));
+    this.game.dispatch(new InventoryUpdated(this.fuel.slot));
+  }
+
   layout(width: number, height: number) {
     const contentWidth = SlotView.Size + 16 + 40 + 16 + SlotView.Size;
-    this.input1.position.set(0, 4);
+    this.input1.position.set(16, 4);
     this.input1.layout();
 
-    this.processButton.position.set(SlotView.Size + 16, 16);
+    this.processButton.position.set(16 + SlotView.Size + 16, 16);
     this.processButton.layout(40, 40);
 
-    this.input2.position.set(SlotView.Size + 16 + 40 + 16, 4);
+    this.input2.position.set(16 + SlotView.Size + 16 + 40 + 16, 4);
     this.input2.layout();
 
-    this.bg.position.set((contentWidth - this.bg.width) / 2, SlotView.Size + 16);
+    this.bg.position.set(16 + (contentWidth - this.bg.width) / 2, SlotView.Size + 8);
 
-    this.output.position.set((contentWidth - SlotView.Size) / 2, SlotView.Size + 32);
+    this.output.position.set(16 + (contentWidth - SlotView.Size) / 2, SlotView.Size + 28);
     this.output.layout();
 
-    this.fuel.position.set((contentWidth - SlotView.Size) / 2, 192);
+    this.fuel.position.set(16 + (contentWidth - SlotView.Size) / 2, 192);
     this.fuel.layout();
   }
 

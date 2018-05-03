@@ -32,8 +32,8 @@ export function makeFlower(name: string, type: number, color: string, elements: 
           ]
         },
         substs: [
-          { path: 'aspects[0].amount', type: 'gaussian', mean: 5, sd: 2, min: 0, max: 10 },
-          { path: 'aspects[1].amount', type: 'gaussian', mean: 2, sd: 2, min: 0, max: 5 },
+          { path: 'aspects[0].amount', type: 'gaussian', mean: 15, sd: 2, min: 0, max: 20 },
+          { path: 'aspects[1].amount', type: 'gaussian', mean: 8, sd: 2, min: 0, max: 12 },
         ]
       })
     }
@@ -78,8 +78,8 @@ export function makeBerryBush(name: string, depleted: string, type: number, colo
           ]
         },
         substs: [
-          { path: 'aspects[0].amount', type: 'gaussian', mean: 8, sd: 2, min: 0, max: 12 },
-          { path: 'aspects[1].amount', type: 'gaussian', mean: 4, sd: 2, min: 0, max: 8 },
+          { path: 'aspects[0].amount', type: 'gaussian', mean: 20, sd: 2, min: 0, max: 25 },
+          { path: 'aspects[1].amount', type: 'gaussian', mean: 12, sd: 2, min: 0, max: 15 },
         ]
       })
     }

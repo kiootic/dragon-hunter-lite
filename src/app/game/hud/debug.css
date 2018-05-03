@@ -23,7 +23,7 @@
 
 .debug-console * {
   cursor: default;
-  font-family: Unibody8Pro;
+  font-family: Unscii;
   font-size: 16px;
   box-sizing: border-box;
 }
@@ -39,8 +39,8 @@
   bottom: 0;
 
   background: rgba(255, 255, 255, 0.6);
-  width: 800px;
-  max-height: 600px;
+  width: 600px;
+  max-height: 800px;
   pointer-events: auto;
 
   overflow-y: auto;
@@ -61,6 +61,7 @@
   display: block;
   padding: 4px;
   color: #000000;
+  white-space: pre;
 }
 
 .debug-input {

@@ -6,6 +6,7 @@ import * as vex from 'vex-js';
 
 import 'vex-js/dist/css/vex-theme-plain.css';
 import 'vex-js/dist/css/vex.css';
+import './styles.css';
 
 export function bootstrap<App extends Application>(app: App) {
   document.body.appendChild(app.view);

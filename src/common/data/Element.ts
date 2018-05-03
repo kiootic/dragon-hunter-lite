@@ -1,5 +1,11 @@
+import { RandomValue } from 'common/random';
+
 export interface Element {
-  readonly tier: number;
-  readonly name: string;
-  readonly composition?: [string, string];
+  readonly fusionThreshold: RandomValue;
+  readonly fusionRate: RandomValue;
+
+  readonly fissionThreshold: RandomValue;
+  readonly fissionRate: RandomValue;
+
+  readonly color: string;
 }
