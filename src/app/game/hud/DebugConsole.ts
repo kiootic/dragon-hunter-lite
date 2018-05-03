@@ -1,13 +1,17 @@
 import { Game } from 'app/game';
+import { ItemDrop } from 'app/game/entities';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
 import { Stats } from 'app/game/traits';
+import { instantiate } from 'common/random';
 import { compact } from 'lodash';
 
 const ConsoleHTML = `
 <div class="debug-console">
   <div class="debug-log-box">
-    <div class="debug-log"></div>
+    <div class="debug-log-scroll">
+      <div class="debug-log"></div>
+    </div>
   </div>
   <div>
     <input class="debug-input">
@@ -65,8 +69,7 @@ export class DebugConsole implements HUDElement {
     entry.classList.add('debug-log-entry');
     entry.innerText = text;
     this.log.appendChild(entry);
-    while (this.log.childNodes.length > 20)
-      this.log.removeChild(this.log.firstChild!);
+    entry.scrollIntoView();
   }
 
   private processInput(input: string) {
@@ -77,6 +80,14 @@ export class DebugConsole implements HUDElement {
     }
     const [cmd, ...args] = compact(input.split(' ').map(part => part.trim()));
     switch (cmd) {
+      case '/drops': {
+        for (const obj of this.game.library.objects.filter(obj => obj.drops)) {
+          for (const { item } of obj.drops!.table.items) {
+            const drop = ItemDrop.make(this.game, instantiate(item));
+            this.game.entities.add(drop);
+          }
+        }
+      } break;
       case '/speed': {
         const boost = Number(args[0]) || 0;
         this.game.player.traits(Stats).bonus.spd = boost;

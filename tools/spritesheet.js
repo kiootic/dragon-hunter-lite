@@ -29,7 +29,8 @@ module.exports = function () {
             format: 'pixi.js',
             path: outPath,
             name,
-            trim: false
+            trim: false,
+            padding: 2,
           }, () => {
             const json = JSON.parse(fs.readFileSync(jsonPath));
             json.frames = Object.assign({}, ...Object.keys(json.frames)
