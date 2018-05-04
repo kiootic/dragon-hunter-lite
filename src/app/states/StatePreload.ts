@@ -62,6 +62,7 @@ export class StatePreload extends GameState {
     const fontLoad = Promise.all([
       new FontFaceObserver('Unibody8Pro').load(),
       new FontFaceObserver('Unibody8Pro', { weight: 'bold' }).load(),
+      new FontFaceObserver('Unibody8Pro', { style: 'italic' }).load(),
     ]);
 
     loader.load(async (_: any, resources: Record<string, loaders.Resource>) => {

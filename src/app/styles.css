@@ -25,6 +25,12 @@ canvas {
 }
 
 @font-face {
+  font-family: "Unibody8Pro";
+  font-style: italic;
+  src: url('../../assets/fonts/Unibody8Pro-RegularItalic.otf') format("opentype")
+}
+
+@font-face {
   font-family: "Unscii";
   font-weight: bold;
   src: url('../../assets/fonts/unscii-16.woff') format("woff")

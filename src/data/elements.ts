@@ -20,7 +20,7 @@ export namespace ElementDef {
     Life = 'Life',
 
     Defense = 'Defense',
-    Heal = 'Heal',
+    Recovery = 'Recovery',
     Time = 'Time',
     Explosion = 'Explosion',
     Poison = 'Poison',
@@ -30,9 +30,9 @@ export namespace ElementDef {
     Capture = 'Capture',
 
     Sense = 'Sense',
-    Absorb = 'Absorb',
+    Absorption = 'Absorption',
     Cognition = 'Cognition',
-    Decept = 'Decept',
+    Deception = 'Deception',
   }
 }
 
@@ -61,7 +61,7 @@ export const Elements: ElementDef[] = [
   element(1, ElementDef.Type.Life, [ElementDef.Type.Order, ElementDef.Type.Chaos]),
 
   element(2, ElementDef.Type.Defense, [ElementDef.Type.Order, ElementDef.Type.Void]),
-  element(2, ElementDef.Type.Heal, [ElementDef.Type.Order, ElementDef.Type.Life]),
+  element(2, ElementDef.Type.Recovery, [ElementDef.Type.Order, ElementDef.Type.Life]),
   element(2, ElementDef.Type.Time, [ElementDef.Type.Order, ElementDef.Type.Motion]),
   element(2, ElementDef.Type.Explosion, [ElementDef.Type.Chaos, ElementDef.Type.Energy]),
   element(2, ElementDef.Type.Poison, [ElementDef.Type.Chaos, ElementDef.Type.Life]),
@@ -71,7 +71,10 @@ export const Elements: ElementDef[] = [
   element(2, ElementDef.Type.Capture, [ElementDef.Type.Frost, ElementDef.Type.Motion]),
 
   element(3, ElementDef.Type.Sense, [ElementDef.Type.Motion, ElementDef.Type.Spirit]),
-  element(3, ElementDef.Type.Absorb, [ElementDef.Type.Heal, ElementDef.Type.Spirit]),
+  element(3, ElementDef.Type.Absorption, [ElementDef.Type.Recovery, ElementDef.Type.Spirit]),
   element(3, ElementDef.Type.Cognition, [ElementDef.Type.Time, ElementDef.Type.Spirit]),
-  element(3, ElementDef.Type.Decept, [ElementDef.Type.Weakness, ElementDef.Type.Spirit]),
+  element(3, ElementDef.Type.Deception, [ElementDef.Type.Weakness, ElementDef.Type.Spirit]),
 ];
+
+export const ElementLookup: Record<string, ElementDef> =
+  Object.assign({}, ...Elements.map(elem => ({ [elem.name]: elem })));

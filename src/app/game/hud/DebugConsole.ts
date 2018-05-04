@@ -22,13 +22,14 @@ const ConsoleHTML = `
 export class DebugConsole implements HUDElement {
   public readonly display = null;
 
-  private readonly root = new DOMParser().parseFromString(ConsoleHTML, 'text/html').querySelector('.debug-console')!;
+  private readonly root = new DOMParser().parseFromString(ConsoleHTML, 'text/html').querySelector('.debug-console') as HTMLElement;
   private readonly input = this.root.querySelector('.debug-input') as HTMLInputElement;
   private readonly log = this.root.querySelector('.debug-log') as HTMLDivElement;
 
   constructor(private readonly game: Game) {
     document.body.appendChild(this.root);
-    document.body.addEventListener('keydown', this.onKeyDown);
+    this.root.addEventListener('keydown', this.onKeyDown);
+    this.game.app.view.addEventListener('keydown', this.onKeyDown);
   }
 
   private lastInput = '';
@@ -91,7 +92,7 @@ export class DebugConsole implements HUDElement {
     const [cmd, ...args] = compact(input.split(' ').map(part => part.trim()));
     switch (cmd) {
       case '/drops': {
-        for (const obj of this.game.library.objects.filter(obj => obj.drops)) {
+        for (const obj of this.game.library.objects.filter(obj => obj && obj.drops)) {
           for (const { item } of obj.drops!.table.items) {
             const drop = ItemDrop.make(this.game, instantiate(item));
             this.game.entities.add(drop);

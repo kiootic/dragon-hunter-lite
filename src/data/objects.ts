@@ -88,7 +88,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     drops: {
       hp: 3,
       replaceWith: null,
-      table: simpleDrops(0, 2, 1, {
+      table: simpleDrops(2, 5, 0.7, {
         template: {
           id: 'bone',
           name: 'Bone',

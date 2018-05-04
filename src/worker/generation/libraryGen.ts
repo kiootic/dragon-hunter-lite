@@ -21,6 +21,7 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
   const objects = makeObjects();
   const recipes = makeRecipes();
 
+  const randomElementState: any[] = [];
   const flowerColors = randomColors(random, NumFlowers * NumFlowerTypes,
     { type: 'uniform', min: 0.5, max: 1 },
     { type: 'uniform', min: 0.8, max: 1 }
@@ -30,7 +31,7 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
       objects[`flower-${type}${i}`] = makeFlower(
         generateName(5, 10, random.random),
         type, flowerColors.pop()!.toString(16),
-        randomElementPair(random)
+        randomElementPair(random, randomElementState)
       );
     }
   }
@@ -46,7 +47,7 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
         generateName(5, 10, random.random),
         `berrybush-${type}${i}-depleted`,
         type, berryColors.pop()!.toString(16),
-        randomElementPair(random)
+        randomElementPair(random, randomElementState)
       );
     }
   }
@@ -55,9 +56,9 @@ export function generateLibrary(seed: string, report: ProgressReporter) {
   const elements: Record<ElementDef.Type, Element> = fromPairs(
     Elements.map(({ tier, name }): [string, Element] => {
       const fissionThreshold = random.random() * 6 + tier * 8;
-      const fissionRate = Math.log1p((tier + random.random()) * 0.3) / Math.log1p(ElementDef.MaxTier);
+      const fissionRate = 0.1 + 0.1 * (tier + 1) * random.random();
       const fusionThreshold = 10 + random.random() * 8 + tier * 10;
-      const fusionRate = Math.log1p((ElementDef.MaxTier - tier + random.random()) * 0.3) / Math.log1p(ElementDef.MaxTier);
+      const fusionRate = 0.2 + 0.1 * (ElementDef.MaxTier - tier + 1) * (random.random() + 1);
       const color = elemColors.pop()!.toString(16);
 
       return [name, {

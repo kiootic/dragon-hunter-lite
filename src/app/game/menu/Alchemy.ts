@@ -4,6 +4,7 @@ import { ItemDrop } from 'app/game/entities';
 import { MenuPanel } from 'app/game/menu';
 import { InventoryUpdated } from 'app/game/messages';
 import { Item } from 'common/data';
+import { mix } from 'common/logic/alchemy';
 import { Texture } from 'pixi.js';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -60,21 +61,7 @@ export class Alchemy extends MenuPanel {
   private doAlchemy = () => {
     const input1 = this.input1.slot.item!;
     const input2 = this.input2.slot.item!;
-    const output: Item = {
-      id: 'solution',
-      name: 'Solution',
-      type: Item.Type.Consumable,
-      texture: {
-        type: 'composite',
-        base: 'sprites/items/solution',
-        overlay: {
-          type: 'single',
-          tex: 'sprites/items/solution-overlay',
-          tint: 'ff0000'
-        }
-      },
-      aspects: [...(input1.aspects || []), ... (input2.aspects || [])]
-    };
+    const output = mix(input1, input2, this.game.library.elements);
 
     this.output.slot.item = output;
     this.input1.slot.item = null;

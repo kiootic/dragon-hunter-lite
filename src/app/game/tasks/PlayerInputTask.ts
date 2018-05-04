@@ -3,7 +3,7 @@ import { MenuOverlay } from 'app/game/overlays/MenuOverlay';
 import { Task } from 'app/game/tasks';
 import { Spatial, Stats, StatList } from 'app/game/traits';
 import { StateOverlay } from 'app/states';
-import { tilePerSecond } from 'app/utils/stats';
+import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
 
 export class PlayerInputTask extends Task {

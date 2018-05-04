@@ -1,6 +1,6 @@
 import { distance, lch } from 'chroma-js';
 import { randomValue, RandomValue } from 'common/random';
-import { Elements } from 'data/elements';
+import { Elements, ElementDef } from 'data/elements';
 import { times } from 'lodash';
 import { RandomSeed } from 'random-seed';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
@@ -95,10 +95,14 @@ export function randomColors(
   return result.map(color => color.rgb()).map(([r, g, b]) => (r * 0x10000 + g * 0x100 + b * 0x1));
 }
 
-export function randomElementPair(rand: RandomSeed): [string, string] {
-  const elements = Elements.filter(elem => elem.tier <= 1);
-  const elem1 = elements.splice(rand.range(elements.length), 1)[0];
-  const elem2 = elements.splice(rand.range(elements.length), 1)[0];
+export function randomElementPair(rand: RandomSeed, state: any[]): [string, string] {
+  let elem1: ElementDef, elem2: ElementDef;
+  do {
+    const elements = Elements.filter(elem => elem.tier <= 1);
+    elem1 = elements.splice(rand.range(elements.length), 1)[0];
+    elem2 = elements.splice(rand.range(elements.length), 1)[0];
+  } while (state.indexOf(`${elem1.name}:${elem2.name}`) >= 0);
+  state.push(`${elem1.name}:${elem2.name}`);
   return [elem1.name, elem2.name];
 }
 
