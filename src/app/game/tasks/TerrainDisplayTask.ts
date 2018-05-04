@@ -9,6 +9,8 @@ import { Container, RenderTexture, Sprite, SCALE_MODES, TransformStatic } from '
 const TileSize = 16;
 
 export class TerrainDisplayTask extends Task {
+  public readonly runWhenPaused = true;
+
   private readonly sprites = new Map<string, TextureSprite>();
   private readonly container = new Container();
   private readonly renderTex = RenderTexture.create(1, 1, SCALE_MODES.NEAREST);

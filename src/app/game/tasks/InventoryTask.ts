@@ -7,6 +7,8 @@ import { Item, ItemSlot } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
 export class InventoryTask extends Task {
+  public readonly runWhenPaused = true;
+
   private readonly playerPos: vec2;
   private readonly playerInv: ItemSlot[];
 

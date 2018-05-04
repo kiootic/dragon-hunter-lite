@@ -37,10 +37,12 @@ export class TaskManager {
     this.tasks.push(task);
   }
 
-  public update(dt: number) {
+  public update(dt: number, paused: boolean) {
     for (let i = 0; i < this.tasks.length; i++) {
-      if (this.tasks[i].isActive)
-        this.tasks[i].update(dt);
+      if (this.tasks[i].isActive) {
+        if (!paused || this.tasks[i].runWhenPaused)
+          this.tasks[i].update(dt);
+      }
       else {
         this.tasks[i].dispose();
         this.tasks.splice(i, 1);

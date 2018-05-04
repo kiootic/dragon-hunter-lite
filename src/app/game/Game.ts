@@ -33,9 +33,9 @@ export class Game {
     this.entities.save();
   }
 
-  public update(dt: number) {
+  public update(dt: number, paused = false) {
     this.entities.update(dt);
-    this.tasks.update(dt);
+    this.tasks.update(dt, paused);
   }
 
   public layout() {

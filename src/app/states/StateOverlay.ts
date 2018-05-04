@@ -20,6 +20,7 @@ export class StateOverlay extends GameState {
 
   update(dt: number) {
     this.overlay.update(dt);
+    this.overlay.game.update(dt, true);
   }
 
   layout() {
@@ -27,6 +28,7 @@ export class StateOverlay extends GameState {
     this.bg.width = width;
     this.bg.height = height;
     this.overlay.layout(width, height);
+    this.overlay.game.layout();
   }
 
   async leave() {

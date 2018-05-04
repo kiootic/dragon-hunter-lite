@@ -8,6 +8,8 @@ import { vec2 } from 'gl-matrix';
 const MarginSize = 5;
 
 export class EntityDisplayTask extends Task {
+  public readonly runWhenPaused = true;
+
   private readonly visible = new Set<Entity>();
 
   public update(dt: number) {

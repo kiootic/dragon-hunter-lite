@@ -5,6 +5,8 @@ import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
 
 export class CameraUpdateTask extends Task {
+  public readonly runWhenPaused = true;
+
   private readonly position: vec2;
   private readonly cameraOffset = vec2.create();
 

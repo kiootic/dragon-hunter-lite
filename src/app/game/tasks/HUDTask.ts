@@ -9,6 +9,7 @@ const HUDElements: hud.HUDElementType[] = [
 ];
 
 export class HUDTask extends Task {
+  public readonly runWhenPaused = true;
   private readonly elements: hud.HUDElement[] = [];
 
   constructor(game: Game) {
