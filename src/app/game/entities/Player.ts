@@ -1,5 +1,5 @@
 import { Entity } from 'app/game/entities';
-import { Inventory, Spatial, Stats } from 'app/game/traits';
+import { Inventory, PlayerData, Spatial, Stats } from 'app/game/traits';
 import { Item } from 'common/data';
 import { Animations } from 'data/animations';
 import { vec2 } from 'gl-matrix';
@@ -21,6 +21,7 @@ export class Player extends Entity {
     inventory.slots[42].accepts = [Item.Type.Boots];
 
     this.traits(Stats);
+    this.traits(PlayerData);
   }
 }
 Entity.types.set(Player.Type, Player);

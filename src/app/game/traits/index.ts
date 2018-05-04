@@ -3,3 +3,4 @@ export * from './Spatial';
 export * from './Inventory';
 export * from './Float';
 export * from './Stats';
+export * from './PlayerData';

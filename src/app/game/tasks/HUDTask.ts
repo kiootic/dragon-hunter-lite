@@ -4,7 +4,8 @@ import { Task } from 'app/game/tasks';
 
 const HUDElements: hud.HUDElementType[] = [
   hud.DebugConsole,
-  hud.MiniMap
+  hud.MiniMap,
+  hud.Hotbar,
 ];
 
 export class HUDTask extends Task {

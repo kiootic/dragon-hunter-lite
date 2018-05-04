@@ -16,6 +16,8 @@ export class SlotView extends Container {
   private dragging = false;
 
   public enabled = true;
+  public showTooltip = true;
+  public alwaysInteractive = false;
   public get empty() { return !this.slot.item; }
 
   constructor(private readonly game: Game, public readonly slot: ItemSlot) {
@@ -36,7 +38,7 @@ export class SlotView extends Container {
     this.interactive = true;
 
     this.game.app.toolTip.add(this, () => {
-      if (this.slot.item) {
+      if (this.slot.item && this.showTooltip) {
         if (!toolTip) toolTip = new ItemToolTip(this.game.app, this.slot.item);
         else toolTip.setItem(this.slot.item);
         return toolTip;
@@ -58,11 +60,11 @@ export class SlotView extends Container {
     if (this.slot.item) {
       this.obj.setTexture(this.slot.item.texture);
       this.obj.alpha = 1;
-      this.buttonMode = true;
+      this.buttonMode = true || this.alwaysInteractive;
     } else {
       this.obj.clearTexture();
       this.obj.alpha = 0;
-      this.buttonMode = false;
+      this.buttonMode = false || this.alwaysInteractive;
     }
   }
 
