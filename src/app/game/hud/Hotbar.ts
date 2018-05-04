@@ -43,6 +43,8 @@ export class Hotbar extends Container implements HUDElement {
       this.addChild(view);
       view.on('pointerdown', () => this.player.hotbarSelection = this.slots.indexOf(view.slot));
     }
+
+    this.alpha = 0.65;
   }
 
   update(dt: number) {
@@ -54,7 +56,7 @@ export class Hotbar extends Container implements HUDElement {
 
   layout(width: number, height: number) {
     const contentWidth = 4 + (SlotView.Size + 4) * this.slotViews.length;
-    const contentHeight = SlotView.Size + 8;
+    const contentHeight = SlotView.Size + 7;
     this.position.set(
       (width - contentWidth) / 2,
       height - contentHeight
