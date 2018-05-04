@@ -6,6 +6,7 @@ const HUDElements: hud.HUDElementType[] = [
   hud.DebugConsole,
   hud.MiniMap,
   hud.Hotbar,
+  hud.Status,
 ];
 
 export class HUDTask extends Task {

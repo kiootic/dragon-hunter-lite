@@ -59,11 +59,11 @@ export class SlotView extends Container {
   public updateSlot() {
     if (this.slot.item) {
       this.obj.setTexture(this.slot.item.texture);
-      this.obj.alpha = 1;
+      this.obj.visible = true;
       this.buttonMode = true || this.alwaysInteractive;
     } else {
       this.obj.clearTexture();
-      this.obj.alpha = 0;
+      this.obj.visible = false;
       this.buttonMode = false || this.alwaysInteractive;
     }
   }
