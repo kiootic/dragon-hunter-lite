@@ -45,13 +45,37 @@ export class Hotbar extends Container implements HUDElement {
     }
 
     this.alpha = 0.65;
+    this.interactive = true;
+    this.on('pointerover', () => this.alpha = 1);
+    this.on('pointerout', () => this.alpha = 0.65);
+
+    game.app.view.addEventListener('wheel', this.wheelSelection);
   }
 
+  private wheelDebounce = 0;
+  private wheelSelection = (event: WheelEvent) => {
+    if (this.elapsed - this.wheelDebounce < 20) return;
+
+    const delta = event.deltaX + event.deltaY;
+    if (Math.abs(delta) < 32) return;
+
+    const offset = Math.sign(delta);
+    const numSlots = this.slots.length;
+    this.player.hotbarSelection = (this.player.hotbarSelection + offset + numSlots) % numSlots;
+    this.wheelDebounce = this.elapsed;
+  }
+
+  dispose() {
+    this.game.app.view.removeEventListener('wheel', this.wheelSelection);
+  }
+
+  private elapsed = 0;
   update(dt: number) {
     for (const [slotNum, key] of HotbarKeys) {
       if (this.game.keyboard.isDown(key))
         this.player.hotbarSelection = slotNum;
     }
+    this.elapsed += dt;
   }
 
   layout(width: number, height: number) {
