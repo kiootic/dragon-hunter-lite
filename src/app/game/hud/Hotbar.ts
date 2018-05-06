@@ -32,22 +32,26 @@ export class Hotbar extends Container implements HUDElement {
     this.player = game.player.traits(PlayerData);
 
     this.bg.tint = 0x808080;
-    this.addChild(this.bg);
-    this.addChild(this.selection);
+
+    const views = new Container();
+    views.addChild(this.bg);
 
     this.slotViews = this.slots.map(slot => new SlotView(game, slot));
     for (const view of this.slotViews) {
       view.enabled = false;
       view.showTooltip = false;
       view.alwaysInteractive = true;
-      this.addChild(view);
+      views.addChild(view);
       view.on('pointerdown', () => this.player.hotbarSelection = this.slots.indexOf(view.slot));
     }
 
-    this.alpha = 0.65;
+    this.addChild(views);
+    this.addChild(this.selection);
+
+    views.alpha = 0.65;
     this.interactive = true;
-    this.on('pointerover', () => this.alpha = 1);
-    this.on('pointerout', () => this.alpha = 0.65);
+    this.on('pointerover', () => views.alpha = 1);
+    this.on('pointerout', () => views.alpha = 0.65);
 
     game.app.view.addEventListener('wheel', this.wheelSelection);
   }
