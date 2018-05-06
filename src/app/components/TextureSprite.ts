@@ -54,15 +54,13 @@ export class TextureSprite extends Sprite implements TexSprite {
     this.overlay = undefined;
     this.currentTex = Texture.EMPTY;
     this.textureDef = undefined;
+    this.offset = undefined;
     this.updateTex();
   }
 
   public setTexture(textureDef: TextureDef, key: number = 0) {
     key = hashKey(key);
-
-    this.tint = 0xffffff;
-    this.overlay && this.removeChild(this.overlay);
-    this.overlay = undefined;
+    this.clearTexture();
 
     if (typeof textureDef === 'string') {
       this.textureDef = undefined;
