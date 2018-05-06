@@ -1,4 +1,5 @@
 import { Element, Item } from 'common/data';
+import { compute } from 'common/logic/effect';
 import { randomValue } from 'common/random';
 import { Elements, ElementLookup } from 'data/elements';
 
@@ -15,8 +16,6 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
   const aspects: Record<string, number> = {};
   for (const { element, amount } of [...a.aspects || [], ...b.aspects || []])
     aspects[element] = (aspects[element] || 0) + amount;
-
-  console.log(aspects);
 
   const fusionBoost = (a.id === 'gel-bone' || b.id === 'gel-bone') ? BoostRate : 1;
   const fissionBoost = (a.id === 'gel-stone' || b.id === 'gel-stone') ? BoostRate : 1;
@@ -58,21 +57,11 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
   // purify
   let total = 0;
   if (a.id === 'gel-alchemy' || b.id === 'gel-alchemy') {
-    let minority = 0, majority = 0;
     for (const element of Object.keys(aspects)) total += aspects[element];
     for (const element of Object.keys(aspects)) {
       const amount = aspects[element];
       if (amount / total < PurifyThreshold) {
-        minority += amount * PurifyRate;
         aspects[element] *= 1 - PurifyRate;
-      } else {
-        majority += amount;
-      }
-    }
-    for (const element of Object.keys(aspects)) {
-      const amount = aspects[element];
-      if (amount / total >= PurifyThreshold) {
-        aspects[element] += (amount / majority) * minority * (1 - PurifyRate);
       }
     }
   }
@@ -86,8 +75,6 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
     else if (amount > MaxAspect) amount = MaxAspect;
     aspects[element] = amount;
   }
-
-  console.log(aspects);
 
   // color
   const rgb = [0, 0, 0];
@@ -122,6 +109,11 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
   else if (max < 700) name = `Solution of Mythical ${maxElem}`;
   else name = `Solution of Perfect ${maxElem}`;
 
+  const finalAspects = Object.keys(aspects)
+    .map(element => ({ element, amount: aspects[element] }))
+    .filter(({ amount }) => amount > 0);
+  console.log(finalAspects);
+
   return {
     id: 'solution',
     name,
@@ -135,8 +127,7 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
         tint: color
       }
     },
-    aspects: Object.keys(aspects)
-      .map(element => ({ element, amount: aspects[element] }))
-      .filter(({ amount }) => amount > 0)
+    aspects: finalAspects,
+    effects: compute(finalAspects)
   };
 }

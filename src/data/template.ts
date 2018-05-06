@@ -1,5 +1,7 @@
 import { Item } from 'common/data';
+import { makeEffect } from 'common/logic/effect';
 import { simpleDrops } from 'data/drops';
+import { EffectDef } from 'data/effects';
 import { ObjectDef } from 'data/objects';
 
 export const NumFlowerTypes = 4;
@@ -75,6 +77,9 @@ export function makeBerryBush(name: string, depleted: string, type: number, colo
           aspects: [
             { element: elements[0], amount: 0 },
             { element: elements[1], amount: 0 }
+          ],
+          effects: [
+            makeEffect(EffectDef.Type.Heal, 5, 0)
           ]
         },
         substs: [

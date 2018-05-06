@@ -1,4 +1,4 @@
-import { Aspect, TextureDef } from 'common/data';
+import { Aspect, Effect, TextureDef } from 'common/data';
 
 export interface Item {
   readonly id: string;
@@ -7,6 +7,7 @@ export interface Item {
   readonly type: Item.Type;
   readonly texture: TextureDef;
   readonly aspects?: Aspect[];
+  readonly effects?: Effect[];
 }
 
 export interface ItemSlot {

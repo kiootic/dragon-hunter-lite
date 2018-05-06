@@ -112,11 +112,10 @@ export class DebugConsole implements HUDElement {
         }
       } break;
       case '/give': {
-        const id = args[0];
         for (const obj of this.game.library.objects.filter(obj => obj && obj.drops)) {
           for (const { item: template } of obj.drops!.table.items) {
             const item = instantiate(template);
-            if (item.id !== id) continue;
+            if (args.indexOf(item.id) < 0) continue;
             const drop = ItemDrop.make(this.game, item);
             this.game.entities.add(drop);
           }

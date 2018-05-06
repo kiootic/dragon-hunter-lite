@@ -16,44 +16,37 @@ export namespace EffectDef {
   }
 }
 
-export const EffectAdverbs = [
-  ' slightly',
-  '',
-  ' greatly',
-  ' drastically',
-];
-
 export const Effects: Record<EffectDef.Type, EffectDef> = {
   [EffectDef.Type.Heal]: {
     name: 'Heal',
-    description: 'Recover HP${adv}'
+    description: 'Recover <power> HP'
   },
   [EffectDef.Type.Damage]: {
     name: 'Damage',
-    description: 'Damage HP${adv}'
+    description: 'Damage <power> HP'
   },
   [EffectDef.Type.Regen]: {
     name: 'Regeneration',
-    description: 'Increase vitality${adv}'
+    description: 'Increase vitality by <power>'
   },
   [EffectDef.Type.Poison]: {
     name: 'Poison',
-    description: 'Lose HP${adv} regularly'
+    description: 'Lose <power> HP regularly'
   },
   [EffectDef.Type.Speed]: {
     name: 'Speed',
-    description: 'Increase speed${adv}'
+    description: 'Increase speed by <power>'
   },
   [EffectDef.Type.Slowness]: {
     name: 'Slowness',
-    description: 'Decrease speed${adv}'
+    description: 'Decrease speed by <power>'
   },
   [EffectDef.Type.Strength]: {
     name: 'Strength',
-    description: 'Increase strength${adv}'
+    description: 'Increase strength by <power>'
   },
   [EffectDef.Type.Weakness]: {
     name: 'Weakness',
-    description: 'Decrease strength${adv}'
+    description: 'Decrease strength by <power>'
   },
 };

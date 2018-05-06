@@ -11,9 +11,10 @@ export class ItemToolTip extends TextToolTip {
       default: { align: 'left' },
       name: { fontWeight: 'bold' },
       type: { fill: '#d0d0d0' },
-      desc: { fill: '#d0d0d0', fontStyle: 'italic' },
+      desc: { fontStyle: 'italic' },
       aspect: { fill: '#d0d0d0' },
       elem: { fontWeight: 'bold' },
+      effect: { fill: '#d0d0d0' },
     });
     this.item = item;
     this.updateView();
@@ -36,6 +37,7 @@ export class ItemToolTip extends TextToolTip {
       texts.push(`<desc>${this.item.description}</desc>`);
 
     if (this.item.aspects) {
+      texts.push('');
       let sum = 0;
       for (const { amount } of this.item.aspects)
         sum += amount;
@@ -45,6 +47,13 @@ export class ItemToolTip extends TextToolTip {
         texts.push(`<aspect>${percentage.toFixed(0)}% <elem>${element}</elem></aspect>`);
       }
     }
+    if (this.item.effects) {
+      texts.push('');
+      for (const effect of this.item.effects) {
+        texts.push(`<effect>\u2022 ${effect.description}</effect>`);
+      }
+    }
+
     this.text = texts.join('\n');
   }
 }
