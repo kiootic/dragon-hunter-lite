@@ -18,7 +18,7 @@ export function makeFlower(name: string, type: number, color: string, elements: 
       replaceWith: null,
       table: simpleDrops(1, 2, 1, {
         template: {
-          id: `flower-${name}`,
+          id: `flower-${name.toLowerCase()}`,
           name,
           type: Item.Type.Consumable,
           texture: {
@@ -68,7 +68,7 @@ export function makeBerryBush(name: string, depleted: string, type: number, colo
       replaceWith: depleted,
       table: simpleDrops(2, 4, 1, {
         template: {
-          id: `berries-${name}`,
+          id: `berries-${name.toLowerCase()}`,
           name: `${name} Berries`,
           type: Item.Type.Consumable,
           texture: { type: 'single', tex: `sprites/items/berries-${type}`, tint: color },

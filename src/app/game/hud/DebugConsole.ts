@@ -2,7 +2,8 @@ import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
 import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
-import { Stats } from 'app/game/traits';
+import { InventoryUpdated } from 'app/game/messages';
+import { Inventory, PlayerData, Stats } from 'app/game/traits';
 import { instantiate, randomValue, RandomValue } from 'common/random';
 import { compact, padStart } from 'lodash';
 
@@ -91,12 +92,43 @@ export class DebugConsole implements HUDElement {
     }
     const [cmd, ...args] = compact(input.split(' ').map(part => part.trim()));
     switch (cmd) {
+      case '/clear': {
+        while (this.log.lastChild)
+          this.log.removeChild(this.log.lastChild);
+      } break;
+      case '/clear-inv': {
+        const { slots } = this.game.player.traits(Inventory);
+        for (const slot of slots) {
+          slot.item = null;
+          this.game.dispatch(new InventoryUpdated(slot));
+        }
+      } break;
       case '/drops': {
         for (const obj of this.game.library.objects.filter(obj => obj && obj.drops)) {
           for (const { item } of obj.drops!.table.items) {
             const drop = ItemDrop.make(this.game, instantiate(item));
             this.game.entities.add(drop);
           }
+        }
+      } break;
+      case '/give': {
+        const id = args[0];
+        for (const obj of this.game.library.objects.filter(obj => obj && obj.drops)) {
+          for (const { item: template } of obj.drops!.table.items) {
+            const item = instantiate(template);
+            if (item.id !== id) continue;
+            const drop = ItemDrop.make(this.game, item);
+            this.game.entities.add(drop);
+          }
+        }
+      } break;
+      case '/dupe': {
+        const { hotbarSelection: sel } = this.game.player.traits(PlayerData);
+        const { slots } = this.game.player.traits(Inventory);
+        const item = slots[sel].item;
+        if (item) {
+          const drop = ItemDrop.make(this.game, item);
+          this.game.entities.add(drop);
         }
       } break;
       case '/speed': {

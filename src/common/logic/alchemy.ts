@@ -115,10 +115,10 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
     }
   }
   let name: string;
-  if (max / total < 0.3) name = 'Mixed solution';
-  else if (max < 100) name = `Solution of ${maxElem}`;
-  else if (max < 300) name = `Solution of Greater ${maxElem}`;
-  else if (max < 500) name = `Solution of Brilliant ${maxElem}`;
+  if (max < 100) name = `Mundane Solution`;
+  else if (max / total < 0.5) name = 'Mixed solution';
+  else if (max < 300) name = `Solution of ${maxElem}`;
+  else if (max < 500) name = `Solution of Greater ${maxElem}`;
   else if (max < 700) name = `Solution of Mythical ${maxElem}`;
   else name = `Solution of Perfect ${maxElem}`;
 
