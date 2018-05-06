@@ -34,7 +34,8 @@ export class Game {
   }
 
   public update(dt: number, paused = false) {
-    this.entities.update(dt);
+    if (!paused)
+      this.entities.update(dt);
     this.tasks.update(dt, paused);
   }
 

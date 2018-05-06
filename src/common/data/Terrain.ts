@@ -6,4 +6,6 @@ export interface Terrain {
   readonly texture: TextureDef;
   readonly color: string;
   readonly liquid?: boolean;
+  readonly speed?: number;
+  readonly damage?: number;
 }

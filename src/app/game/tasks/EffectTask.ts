@@ -1,10 +1,10 @@
 import { Game } from 'app/game';
-import { ApplyEffects, ShowParticles } from 'app/game/messages';
+import { Entity } from 'app/game/entities';
+import { ApplyEffects, UpdateHP } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { Spatial, Stats, StatList } from 'app/game/traits';
+import { Stats, StatList } from 'app/game/traits';
 import { Effect } from 'common/data';
 import { EffectDef } from 'data/effects';
-import { vec2 } from 'gl-matrix';
 
 export class EffectTask extends Task {
   constructor(game: Game) {
@@ -35,7 +35,6 @@ export class EffectTask extends Task {
   update(dt: number) {
     for (const entity of this.game.entities.withTrait(Stats)) {
       const { base, boost, effects } = entity.traits.get(Stats);
-      const position = entity.traits.get(Spatial).position;
       // reset boost stats, recalc each tick
       boost.hp = 0;
       boost.maxHp = 0;
@@ -48,7 +47,7 @@ export class EffectTask extends Task {
         const effect = effects[i];
         // when a second just elapsed
         const secEdge = (Math.floor(effect.duration / 1000) - Math.floor((effect.duration - dt) / 1000)) !== 0;
-        this.applyEffect(effect, position, base, boost, secEdge);
+        this.applyEffect(effect, entity, base, boost, secEdge);
         effect.duration -= dt;
         if (effect.duration <= 0)
           effects.splice(i, 1);
@@ -56,18 +55,16 @@ export class EffectTask extends Task {
     }
   }
 
-  private applyEffect(effect: Effect, position: vec2, base: StatList, boost: StatList, secondEdge: boolean) {
+  private applyEffect(effect: Effect, entity: Entity, base: StatList, boost: StatList, secondEdge: boolean) {
     switch (effect.type) {
       case EffectDef.Type.Regen: if (!secondEdge) break;
       case EffectDef.Type.Heal:
-        base.hp = Math.min(base.maxHp + boost.maxHp, base.hp + effect.power);
-        this.game.dispatch(ShowParticles.float(position, 20, 0xffffff));
+        this.game.dispatch(new UpdateHP(entity.id, effect.power));
         break;
 
       case EffectDef.Type.Poison: if (!secondEdge) break;
       case EffectDef.Type.Damage:
-        base.hp = Math.max(0, base.hp - effect.power);
-        this.game.dispatch(ShowParticles.splash(position, 20, 0xff0000));
+        this.game.dispatch(new UpdateHP(entity.id, -effect.power));
         break;
 
       case EffectDef.Type.Speed:

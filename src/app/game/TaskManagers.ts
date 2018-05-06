@@ -13,6 +13,8 @@ export class TaskManager {
     this.add(tasks.PlayerInputTask);
 
     this.add(tasks.EffectTask);
+    this.add(tasks.TerrainEffectTask);
+    this.add(tasks.EntityHPTask);
     this.add(tasks.EntityMovementTask);
 
     this.add(tasks.UseItemTask);

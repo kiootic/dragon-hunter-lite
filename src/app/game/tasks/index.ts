@@ -3,6 +3,8 @@ export * from './Task';
 export * from './PlayerInputTask';
 
 export * from './EffectTask';
+export * from './TerrainEffectTask';
+export * from './EntityHPTask';
 export * from './EntityMovementTask';
 
 export * from './UseItemTask';

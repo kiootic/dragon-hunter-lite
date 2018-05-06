@@ -7,15 +7,19 @@ export const makeTerrains = (): Record<string, TerrainDef> => ({
     texture: { type: 'liquid', tex: 'sprites/terrains/water', offset: 16, time: 5000 },
     color: '235c7c',
     liquid: true,
+    speed: -5,
   },
   'lava': {
     texture: { type: 'liquid', tex: 'sprites/terrains/lava', offset: 16, time: 15000 },
     color: '8b1408',
     liquid: true,
+    speed: -20,
+    damage: 10,
   },
   'mud': {
     texture: { type: 'liquid', tex: 'sprites/terrains/mud', offset: 8, time: 5000 },
     color: '6d584b',
+    speed: -10,
     liquid: true,
   },
 
