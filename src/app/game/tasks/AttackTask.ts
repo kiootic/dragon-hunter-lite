@@ -11,13 +11,13 @@ import { TileObject } from 'common/data';
 import { vec2 } from 'gl-matrix';
 import { interaction, DisplayObject, Point, RendererPlugins } from 'pixi.js';
 
-const InteractionRadius = 2;
-const InteractionCooldown = 500;
+const AttackRadius = 2;
+const AttackCooldown = 500;
 
-export class InteractionTask extends Task {
+export class AttackTask extends Task {
   private readonly position: vec2;
   private readonly sprite: TextureSprite;
-  private interactAnimName = '';
+  private attackAnimName = '';
 
   private pressing = false;
   private readonly interaction: interaction.InteractionManager;
@@ -31,12 +31,15 @@ export class InteractionTask extends Task {
     super(game);
     ({ position: this.position, sprite: this.sprite } = game.player.traits(Spatial));
     this.interaction = (this.game.app.renderer.plugins as RendererPlugins).interaction;
-    game.view.on('pointermove', (e: interaction.InteractionEvent) => {
+
+    const handler = (e: interaction.InteractionEvent) => {
       this.cursorPos.copy(e.data.global);
-    });
-    game.view.on('pointerdown', () => this.pressing = true);
-    game.view.on('pointerup', () => this.pressing = false);
-    game.view.on('pointerupoutside', () => this.pressing = false);
+      this.pressing = (e.data.buttons & 1) !== 0;
+    };
+    game.view.on('pointermove', handler);
+    game.view.on('pointerdown', handler);
+    game.view.on('pointerup', handler);
+    game.view.on('pointerupoutside', handler);
   }
 
   isTileObject(obj: DisplayObject): obj is TileObjectSprite {
@@ -48,19 +51,19 @@ export class InteractionTask extends Task {
 
     if (
       !this.isTileObject(obj) || !vec2.equals(this.targetTile, obj.coords) ||
-      !this.pressing || vec2.dist(this.position, this.targetTileCenter) >= InteractionRadius
+      !this.pressing || vec2.dist(this.position, this.targetTileCenter) >= AttackRadius
     ) {
       if (this.targetTile[0] >= 0)
-        this.endInteract(this.targetTile[0], this.targetTile[1], this.targetSprite!);
+        this.endAttack(this.targetTile[0], this.targetTile[1], this.targetSprite!);
       vec2.set(this.targetTile, -1, -1);
       this.targetSprite = undefined;
     }
 
     if (this.pressing && this.isTileObject(obj) && this.targetTile[0] < 0) {
       vec2.add(this.targetTileCenter, obj.coords, [0.5, 0.5]);
-      if (vec2.dist(this.position, this.targetTileCenter) < InteractionRadius) {
+      if (vec2.dist(this.position, this.targetTileCenter) < AttackRadius) {
         if (this.targetTile[0] < 0)
-          this.beginInteract(obj.coords[0], obj.coords[1], obj);
+          this.beginAttack(obj.coords[0], obj.coords[1], obj);
         vec2.copy(this.targetTile, obj.coords);
         this.targetSprite = obj;
       }
@@ -68,11 +71,11 @@ export class InteractionTask extends Task {
 
     if (this.targetTile[0] >= 0) {
       vec2.sub(this.dir, this.targetTileCenter, this.position);
-      const dir = direction(this.dir[1], this.dir[0], 'interact');
-      this.interactAnimName = `interact-${dir}`;
+      const dir = direction(this.dir[1], this.dir[0], 'attack');
+      this.attackAnimName = `attack-${dir}`;
       this.sprite.animName = dir;
-      this.sprite.playActionAnim(this.interactAnimName);
-      this.interacting(dt, this.targetSprite!);
+      this.sprite.playActionAnim(this.attackAnimName);
+      this.attacking(dt, this.targetSprite!);
     }
   }
 
@@ -81,7 +84,7 @@ export class InteractionTask extends Task {
   private cooldown = 0;
   private displayCenter = vec2.create();
 
-  private beginInteract(x: number, y: number, sprite: TileObjectSprite) {
+  private beginAttack(x: number, y: number, sprite: TileObjectSprite) {
     this.obj = this.game.library.objects[this.game.map.getObject(x, y)];
     if (this.obj.drops) {
       this.objHp = this.obj.drops.hp;
@@ -90,13 +93,13 @@ export class InteractionTask extends Task {
     this.cooldown = 0;
   }
 
-  private endInteract(x: number, y: number, sprite: TileObjectSprite) {
+  private endAttack(x: number, y: number, sprite: TileObjectSprite) {
   }
 
-  private interacting(dt: number, sprite: TileObjectSprite) {
+  private attacking(dt: number, sprite: TileObjectSprite) {
     this.cooldown -= dt;
     if (this.cooldown < 0) {
-      this.cooldown = InteractionCooldown;
+      this.cooldown = AttackCooldown;
       this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
       this.game.dispatch(new ShowParticles(this.displayCenter, 20, parseInt(this.obj.color, 16), 0));
       this.objHp--;

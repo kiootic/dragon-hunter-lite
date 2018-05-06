@@ -13,7 +13,8 @@ export class TaskManager {
     this.add(tasks.PlayerInputTask);
     this.add(tasks.EntityMovementTask);
 
-    this.add(tasks.InteractionTask);
+    this.add(tasks.UseItemTask);
+    this.add(tasks.AttackTask);
     this.add(tasks.InventoryTask);
 
     this.add(tasks.CameraUpdateTask);

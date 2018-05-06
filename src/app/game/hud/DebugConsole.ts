@@ -4,6 +4,7 @@ import { HUDElement } from 'app/game/hud';
 import 'app/game/hud/debug.css';
 import { InventoryUpdated } from 'app/game/messages';
 import { Inventory, PlayerData, Stats } from 'app/game/traits';
+import { makeSolution } from 'common/logic/alchemy';
 import { instantiate, randomValue, RandomValue } from 'common/random';
 import { compact, padStart } from 'lodash';
 
@@ -130,9 +131,16 @@ export class DebugConsole implements HUDElement {
           this.game.entities.add(drop);
         }
       } break;
+      case '/solution': {
+        const element = args[0];
+        if (!this.game.library.elements[element]) break;
+        const amount = Number(args[1]) || 100;
+        const drop = ItemDrop.make(this.game, makeSolution([{ element, amount }], this.game.library.elements));
+        this.game.entities.add(drop);
+      } break;
       case '/speed': {
         const boost = Number(args[0]) || 0;
-        this.game.player.traits(Stats).bonus.spd = boost;
+        this.game.player.traits(Stats).boost.spd = boost;
       } break;
       case '/elements': {
         const valueOf = (value: RandomValue) => padStart(randomValue(value).toFixed(2), 5, ' ');

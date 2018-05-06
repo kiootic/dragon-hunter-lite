@@ -1,10 +1,10 @@
 import { Aspect, Effect } from 'common/data';
+import { MaxAspects } from 'common/logic/alchemy';
 import { Effects, EffectDef } from 'data/effects';
 import { ElementDef } from 'data/elements';
 import { fromPairs, round } from 'lodash';
 
 const StrengthThreshold = 0.1;
-const MaxAspects = 1000;
 
 function computeStrength(amount: number, total: number) {
   const purity = amount / total;
@@ -15,7 +15,7 @@ function computeStrength(amount: number, total: number) {
 
 export function makeEffect(effect: EffectDef.Type, power: number, duration: number, element?: string): Effect {
   power = Math.round(power);
-  duration = round(duration, -3);
+  duration = round(duration, -2);
   const name = Effects[effect].name;
   const description = Effects[effect].description.replace('<power>', power.toString()) +
     (duration ? ` for ${round(duration / 1000)} seconds` : '');
@@ -53,7 +53,7 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
       let duration = 0;
       if (strengths[ElementDef.Type.Time] >= 0.2) {
         duration = strengths[ElementDef.Type.Time] * 20000;
-        amount =  amount / duration * 1500;
+        amount = amount / duration * 1500;
         return makeEffect(EffectDef.Type.Poison, amount, duration);
       } else {
         return makeEffect(EffectDef.Type.Damage, amount, 0);

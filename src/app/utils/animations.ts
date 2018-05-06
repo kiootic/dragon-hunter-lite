@@ -32,9 +32,9 @@ function dir(dy: number, dx: number, left: number, right: number) {
     return 'down';
 }
 
-export function direction(dy: number, dx: number, type: 'movement' | 'interact') {
+export function direction(dy: number, dx: number, type: 'movement' | 'attack') {
   switch (type) {
     case 'movement': return dir(dy, dx, 3 / 5, 2 / 5);
-    case 'interact': return dir(dy, dx, 3 / 4, 1 / 4);
+    case 'attack': return dir(dy, dx, 3 / 4, 1 / 4);
   }
 }

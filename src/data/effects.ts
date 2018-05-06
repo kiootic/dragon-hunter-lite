@@ -27,7 +27,7 @@ export const Effects: Record<EffectDef.Type, EffectDef> = {
   },
   [EffectDef.Type.Regen]: {
     name: 'Regeneration',
-    description: 'Increase vitality by <power>'
+    description: 'Recover <power> HP regularly'
   },
   [EffectDef.Type.Poison]: {
     name: 'Poison',

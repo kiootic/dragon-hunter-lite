@@ -1,4 +1,5 @@
 import { Trait } from 'app/game/traits';
+import { Effect } from 'common/data';
 import { defaults } from 'lodash';
 
 export interface StatList {
@@ -13,8 +14,9 @@ export interface StatList {
 export interface Stats extends Trait {
   readonly type: typeof Stats.Type;
   readonly base: StatList;
-  readonly bonus: StatList;
   readonly boost: StatList;
+
+  readonly effects: Effect[];
 }
 
 export namespace Stats {
@@ -25,30 +27,33 @@ export namespace Stats {
     return {
       type: Stats.Type,
       base: { hp: 100, maxHp: 100, str: 10, def: 0, spd: 10, vit: 10 },
-      bonus: { hp: 0, maxHp: 0, str: 0, def: 0, spd: 0, vit: 0 },
-      boost: { hp: 0, maxHp: 0, str: 0, def: 0, spd: 0, vit: 0 }
+      boost: { hp: 0, maxHp: 0, str: 0, def: 0, spd: 0, vit: 0 },
+      effects: []
     };
   }
 
   export function serialize(trait: Stats) {
     return {
       base: trait.base,
-      bonus: trait.bonus
+      effects: trait.effects,
     };
   }
 
   export function deserialize(data: any): Stats {
-    return defaults(data, make());
+    return defaults({
+      base: data.base || { hp: 100, maxHp: 100, str: 10, def: 0, spd: 10, vit: 10 },
+      effects: data.effects || [],
+    }, make());
   }
 
   export function compute(stats: Stats): StatList {
     return {
-      get hp() { return stats.base.hp + stats.bonus.hp + stats.boost.hp; },
-      get maxHp() { return stats.base.maxHp + stats.bonus.maxHp + stats.boost.maxHp; },
-      get str() { return stats.base.str + stats.bonus.str + stats.boost.str; },
-      get def() { return stats.base.def + stats.bonus.def + stats.boost.def; },
-      get spd() { return stats.base.spd + stats.bonus.spd + stats.boost.spd; },
-      get vit() { return stats.base.vit + stats.bonus.vit + stats.boost.vit; },
+      get hp() { return stats.base.hp + stats.boost.hp; },
+      get maxHp() { return stats.base.maxHp + stats.boost.maxHp; },
+      get str() { return stats.base.str + stats.boost.str; },
+      get def() { return stats.base.def + stats.boost.def; },
+      get spd() { return stats.base.spd + stats.boost.spd; },
+      get vit() { return stats.base.vit + stats.boost.vit; },
     };
   }
 }
