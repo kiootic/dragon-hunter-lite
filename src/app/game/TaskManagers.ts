@@ -11,6 +11,8 @@ export class TaskManager {
 
   public init() {
     this.add(tasks.PlayerInputTask);
+
+    this.add(tasks.EffectTask);
     this.add(tasks.EntityMovementTask);
 
     this.add(tasks.UseItemTask);
@@ -22,7 +24,7 @@ export class TaskManager {
     this.add(tasks.ObjectDisplayTask);
     this.add(tasks.EntityDisplayTask);
 
-    this.add(tasks.EffectTask);
+    this.add(tasks.FXTask);
     this.add(tasks.ParticleTask);
     this.add(tasks.HUDTask);
   }

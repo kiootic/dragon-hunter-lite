@@ -2,7 +2,7 @@ import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
 import { TileObjectSprite } from 'app/game/interfaces';
-import { PlayEffect, ShowParticles } from 'app/game/messages';
+import { PlayFX, ShowParticles } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
@@ -36,10 +36,10 @@ export class AttackTask extends Task {
       this.cursorPos.copy(e.data.global);
       this.pressing = (e.data.buttons & 1) !== 0;
     };
-    game.view.on('pointermove', handler);
-    game.view.on('pointerdown', handler);
-    game.view.on('pointerup', handler);
-    game.view.on('pointerupoutside', handler);
+    game.view.camera.on('pointermove', handler);
+    game.view.camera.on('pointerdown', handler);
+    game.view.camera.on('pointerup', handler);
+    game.view.camera.on('pointerupoutside', handler);
   }
 
   isTileObject(obj: DisplayObject): obj is TileObjectSprite {
@@ -47,7 +47,7 @@ export class AttackTask extends Task {
   }
 
   update(dt: number) {
-    const obj = this.interaction.hitTest(this.cursorPos, this.game.view);
+    const obj = this.interaction.hitTest(this.cursorPos, this.game.view.camera);
 
     if (
       !this.isTileObject(obj) || !vec2.equals(this.targetTile, obj.coords) ||
@@ -100,7 +100,7 @@ export class AttackTask extends Task {
     this.cooldown -= dt;
     if (this.cooldown < 0) {
       this.cooldown = AttackCooldown;
-      this.game.dispatch(new PlayEffect.Shake(PlayEffect.Type.Shake, sprite));
+      this.game.dispatch(new PlayFX.Shake(PlayFX.Type.Shake, sprite));
       this.game.dispatch(new ShowParticles(this.displayCenter, 20, parseInt(this.obj.color, 16), 0));
       this.objHp--;
     }

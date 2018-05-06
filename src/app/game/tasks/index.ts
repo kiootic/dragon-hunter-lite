@@ -1,6 +1,8 @@
 export * from './Task';
 
 export * from './PlayerInputTask';
+
+export * from './EffectTask';
 export * from './EntityMovementTask';
 
 export * from './UseItemTask';
@@ -12,6 +14,6 @@ export * from './TerrainDisplayTask';
 export * from './ObjectDisplayTask';
 export * from './EntityDisplayTask';
 
-export * from './EffectTask';
+export * from './FXTask';
 export * from './ParticleTask';
 export * from './HUDTask';

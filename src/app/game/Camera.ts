@@ -30,6 +30,7 @@ export class Camera extends Container {
     super();
     this.bg.tint = 0x202020;
     this.add(this.bg);
+    this.interactive = true;
   }
 
   private nextId = 0;

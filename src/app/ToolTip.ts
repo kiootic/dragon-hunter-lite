@@ -63,8 +63,14 @@ export class ToolTip {
 
   public layout() {
     if (this.panel) {
-      this.panel.layout(this.app.screen.width, this.app.screen.height);
-      this.panel.position.set(this.pointerPos.x + ToolTipOffset, this.pointerPos.y + ToolTipOffset);
+      const { width, height } = this.app.screen;
+      this.panel.layout(width, height);
+      const { width: panelWidth, height: panelHeight } = this.panel;
+
+      let x = this.pointerPos.x + ToolTipOffset, y = this.pointerPos.y + ToolTipOffset;
+      if (x + panelWidth >= width) x = this.pointerPos.x - ToolTipOffset - panelWidth;
+      if (y + panelHeight >= height) y = this.pointerPos.y - ToolTipOffset - panelHeight;
+      this.panel.position.set(x, y);
     }
   }
 }

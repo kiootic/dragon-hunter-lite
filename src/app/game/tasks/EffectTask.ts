@@ -1,35 +1,80 @@
-import { Group, Tween } from '@tweenjs/tween.js';
 import { Game } from 'app/game';
-import { PlayEffect } from 'app/game/messages';
+import { Entity } from 'app/game/entities';
+import { ApplyEffects } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
+import { Stats, StatList } from 'app/game/traits';
+import { Effect } from 'common/data';
+import { EffectDef } from 'data/effects';
 
 export class EffectTask extends Task {
-  private readonly animTargets = new Set();
-  private readonly tween = new Group();
-  private elapsed = 0;
-
   constructor(game: Game) {
     super(game);
-    this.game.messages$.ofType(PlayEffect.Shake).subscribe(this.shake);
+    this.game.messages$.ofType(ApplyEffects).subscribe(this.applyEffects);
+  }
+
+  private applyEffects = ({ entityId, effects }: ApplyEffects) => {
+    const entity = this.game.entities.get(entityId);
+    if (!entity) return;
+    const stats = entity.traits.get(Stats);
+    if (!stats) return;
+
+    const entityEffects = stats.effects;
+
+    // replace existing effect if duration of new effect is longer
+    for (let i = 0; i < entityEffects.length; i++) {
+      const { type, duration } = entityEffects[i];
+      const effectIndex = effects.findIndex(effect => effect.type === type && effect.duration >= duration);
+      if (effectIndex >= 0) {
+        entityEffects[i] = effects.splice(effectIndex, 1)[0];
+      }
+    }
+
+    entityEffects.push(...effects);
   }
 
   update(dt: number) {
-    this.elapsed += dt;
-    this.tween.update(this.elapsed);
+    for (const entity of this.game.entities.withTrait(Stats)) {
+      const { base, boost, effects } = entity.traits.get(Stats);
+      // reset boost stats, recalc each tick
+      boost.hp = 0;
+      boost.maxHp = 0;
+      boost.str = 0;
+      boost.def = 0;
+      boost.spd = 0;
+      boost.vit = 0;
+
+      for (let i = effects.length - 1; i >= 0; i--) {
+        const effect = effects[i];
+        // when a second just elapsed
+        const secEdge = (Math.floor(effect.duration / 1000) - Math.floor((effect.duration - dt) / 1000)) !== 0;
+        this.applyEffect(effect, entity, base, boost, secEdge);
+        effect.duration -= dt;
+        if (effect.duration <= 0)
+          effects.splice(i, 1);
+      }
+    }
   }
 
-  private shake = ({ target }: PlayEffect.Shake) => {
-    if (target) {
-      if (this.animTargets.has(target))
-        return;
-      this.animTargets.add(target);
-      target.renderTranslation = target.renderTranslation || [0, 0];
-      const offsets = [4, -4, 3, -3, 2, -2, 1, -1, 0];
-      new Tween(target.renderTranslation, this.tween)
-        .to({ [0]: offsets.slice(0, 4) }, 300)
-        .chain(new Tween(target.renderTranslation, this.tween).to({ [0]: offsets.slice(4) }, 300))
-        .onComplete(() => this.animTargets.delete(target))
-        .start(this.elapsed);
+  private applyEffect(effect: Effect, entity: Entity, base: StatList, boost: StatList, secondEdge: boolean) {
+    switch (effect.type) {
+      case EffectDef.Type.Regen: if (!secondEdge) break;
+      case EffectDef.Type.Heal:
+        base.hp = Math.min(base.maxHp + boost.maxHp, base.hp + effect.power);
+        break;
+
+      case EffectDef.Type.Damage: if (!secondEdge) break;
+      case EffectDef.Type.Poison:
+        base.hp = Math.max(0, base.hp - effect.power);
+        break;
+
+      case EffectDef.Type.Speed:
+        boost.spd += effect.power; break;
+      case EffectDef.Type.Slowness:
+        boost.spd -= effect.power; break;
+      case EffectDef.Type.Strength:
+        boost.str += effect.power; break;
+      case EffectDef.Type.Weakness:
+        boost.str -= effect.power; break;
     }
   }
 }

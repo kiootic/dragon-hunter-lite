@@ -5,7 +5,7 @@ import { Inventory, PlayerData } from 'app/game/traits';
 import { cloneDeep } from 'lodash';
 import { interaction } from 'pixi.js';
 
-const UseItemCooldown = 500;
+const UseItemCooldown = 200;
 
 export class UseItemTask extends Task {
   private pressing = false;
@@ -13,13 +13,9 @@ export class UseItemTask extends Task {
 
   constructor(game: Game) {
     super(game);
-    const handler = (e: interaction.InteractionEvent) => {
+    game.view.camera.on('pointerdown', (e: interaction.InteractionEvent) => {
       this.pressing = (e.data.buttons & 2) !== 0;
-    };
-    game.view.on('pointermove', handler);
-    game.view.on('pointerdown', handler);
-    game.view.on('pointerup', handler);
-    game.view.on('pointerupoutside', handler);
+    });
   }
 
   update(dt: number) {
@@ -30,6 +26,7 @@ export class UseItemTask extends Task {
       }
     } else
       this.elapsed -= dt;
+    this.pressing = false;
   }
 
   private useItem() {
