@@ -20,7 +20,7 @@ export class Status extends Container implements HUDElement {
   private readonly hpBarFill = new Sprite(Texture.WHITE);
   private readonly hpBarText = new Text();
 
-  private readonly effectIcons: Sprite[] = [];
+  private readonly effectIcons: (Sprite & { effectIndex: number })[] = [];
   private readonly effectToolTip: EffectToolTip;
 
   constructor(private readonly game: Game) {
@@ -66,28 +66,26 @@ export class Status extends Container implements HUDElement {
     else if (percentage < 0.6) this.hpBarFill.tint = 0xa0a000;
     else this.hpBarFill.tint = 0x00a000;
 
-    while (this.effectIcons.length < this.effects.length) {
-      const icon = new Sprite();
+    const showEffects = this.effects.filter(({duration}) => duration > 0);
+    while (this.effectIcons.length < showEffects.length) {
+      const icon = Object.assign(new Sprite(), { effectIndex: 0 });
       icon.interactive = true;
       icon.scale.set(2, 2);
       this.addChild(icon);
 
       this.game.app.toolTip.add(icon, () => {
-        const index = this.effectIcons.indexOf(icon);
-        if (index >= 0) {
-          this.effectToolTip.setEffect(this.effects[index]);
-          return this.effectToolTip;
-        }
-        return null;
+        this.effectToolTip.setEffect(this.effects[icon.effectIndex]);
+        return this.effectToolTip;
       });
       this.effectIcons.push(icon);
     }
-    while (this.effectIcons.length > this.effects.length) {
+    while (this.effectIcons.length > showEffects.length) {
       this.removeChild(this.effectIcons.splice(this.effectIcons.length - 1, 1)[0]);
     }
 
-    for (let i = 0; i < this.effects.length; i++) {
-      this.effectIcons[i].texture = Texture.fromFrame(`sprites/effects/${this.effects[i].type}`);
+    for (let i = 0; i < showEffects.length; i++) {
+      this.effectIcons[i].texture = Texture.fromFrame(`sprites/effects/${showEffects[i].type}`);
+      this.effectIcons[i].effectIndex = this.effects.indexOf(showEffects[i]);
     }
     this.effectToolTip.update();
   }

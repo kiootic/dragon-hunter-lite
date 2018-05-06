@@ -11,15 +11,36 @@ const ParticleGravity = -10;
 const ParticleRestitution = 0.5;
 
 class Particle extends Sprite {
-  readonly coords = vec2.random(vec2.create(), 0.25);
-  readonly velocity = vec2.random(vec2.create(), 0.5);
+  readonly coords: vec2;
+  readonly velocity: vec2;
   readonly z: vec2;
+  readonly gravity: boolean;
   life = ParticleLife * (Math.random() * 0.5 + 0.75);
 
-  constructor(coords: vec2, z: number, color: number) {
+  constructor(type: ShowParticles.Type, coords: vec2, z: number, color: number) {
     super(Texture.fromFrame('sprites/ui/particle'));
+
+    let size;
+    if (type === ShowParticles.Type.Splash) {
+      this.coords = vec2.random(vec2.create(), 0.25);
+      this.velocity = vec2.random(vec2.create(), 0.5);
+      this.z = vec2.fromValues(z + 0.25 + Math.random() * 0.5, Math.random());
+      this.gravity = true;
+      size = clamp(ParticleSize * (Math.random() + 0.5), 10, 22);
+    } else {
+      this.coords = vec2.fromValues(Math.random() - 0.5, 0);
+      this.velocity = vec2.fromValues(0, 0);
+      this.z = vec2.fromValues(z + 0.25 + Math.random(), Math.random() * 0.5 + 0.25);
+      this.gravity = false;
+      size = clamp(ParticleSize * Math.random(), 10, 16);
+      this.alpha = 0.7;
+    }
+
     vec2.add(this.coords, this.coords, coords);
-    this.z = vec2.fromValues(z + 0.25 + Math.random() * 0.5, Math.random());
+
+    // even size to reduce scale artifacts
+    size = (size + 1) & ~1;
+    this.scale.set(size / ParticleSize, size / ParticleSize);
 
     const colorJitter = Math.floor((Math.random() * 2 - 1) * 32);
     let r = (color >> 16) & 0xff, g = (color >> 8) & 0xff, b = color & 0xff;
@@ -40,12 +61,9 @@ export class ParticleTask extends Task {
     game.messages$.ofType(ShowParticles).subscribe(this.showParticles);
   }
 
-  private showParticles = ({ coords, numParticles, color, z }: ShowParticles) => {
+  private showParticles = ({ particleType, coords, numParticles, color, z }: ShowParticles) => {
     for (let i = 0; i < numParticles; i++) {
-      const particle = new Particle(coords, z, color);
-      // even size to reduce scale artifacts
-      const size = clamp(ParticleSize * (Math.random() + 0.5) + 1 & ~1, 10, 22);
-      particle.scale.set(size / ParticleSize, size / ParticleSize);
+      const particle = new Particle(particleType, coords, z, color);
 
       this.overlay.addChild(particle);
       this.particles.push(particle);
@@ -64,8 +82,10 @@ export class ParticleTask extends Task {
       }
 
       vec2.scaleAndAdd(particle.coords, particle.coords, particle.velocity, t);
-      particle.z[0] += particle.z[1] * t + 0.5 * ParticleGravity * t * t;
-      particle.z[1] += ParticleGravity * t;
+
+      const gravity = particle.gravity ? ParticleGravity : 0;
+      particle.z[0] += particle.z[1] * t + 0.5 * gravity * t * t;
+      particle.z[1] += gravity * t;
       if (particle.z[0] <= 0) {
         particle.z[0] = 0;
         particle.z[1] = -particle.z[1] * ParticleRestitution;

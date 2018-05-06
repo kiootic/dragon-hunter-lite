@@ -101,7 +101,7 @@ export class AttackTask extends Task {
     if (this.cooldown < 0) {
       this.cooldown = AttackCooldown;
       this.game.dispatch(new PlayFX.Shake(PlayFX.Type.Shake, sprite));
-      this.game.dispatch(new ShowParticles(this.displayCenter, 20, parseInt(this.obj.color, 16), 0));
+      this.game.dispatch(ShowParticles.splash(this.displayCenter, 20, parseInt(this.obj.color, 16), 0));
       this.objHp--;
     }
 
