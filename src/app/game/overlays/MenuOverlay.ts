@@ -41,6 +41,7 @@ export class MenuOverlay extends GameOverlay {
     this.tabs.push(new Alchemy(game));
     this.tabs.push(new Anvil(game));
     this.activeTab = this.tabs[0];
+    this.activeTab.active = true;
     this.addChild(this.activeTab);
 
     const toolTip = new TextToolTip(game.app, '', {});
@@ -59,7 +60,9 @@ export class MenuOverlay extends GameOverlay {
         if (this.activeTab === tab) return;
         this.removeChild(this.activeTab);
         this.addChild(tab);
+        this.activeTab.active = false;
         this.activeTab = tab;
+        tab.active = true;
       });
       return btn;
     });

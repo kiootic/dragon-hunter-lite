@@ -59,6 +59,7 @@ export class Hotbar extends Container implements HUDElement {
 
   private wheelDebounce = 0;
   private wheelSelection = (event: WheelEvent) => {
+    if (this.game.paused) return;
     if (this.elapsed - this.wheelDebounce < 20) return;
 
     const delta = event.deltaX + event.deltaY;

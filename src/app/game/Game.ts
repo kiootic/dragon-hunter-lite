@@ -22,6 +22,9 @@ export class Game {
   public readonly tasks = new TaskManager(this);
   public readonly entities = new EntityManager(this);
 
+  private _paused = false;
+  public get paused() { return this._paused; }
+
   public init() {
     this.map = TileMap.deserialize(this.data.map);
     this.entities.init();
@@ -34,6 +37,7 @@ export class Game {
   }
 
   public update(dt: number, paused = false) {
+    this._paused = paused;
     if (!paused)
       this.entities.update(dt);
     this.tasks.update(dt, paused);

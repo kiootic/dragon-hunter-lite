@@ -99,7 +99,7 @@ export class Workbench extends MenuPanel {
 
   private scrollOffset = 0;
 
-  constructor(game: Game) {
+  constructor(private readonly game: Game) {
     super();
 
     this.upButton = new Button();
@@ -132,6 +132,24 @@ export class Workbench extends MenuPanel {
 
     this.upButton.on(Button.Clicked, () => this.scrollOffset--);
     this.downButton.on(Button.Clicked, () => this.scrollOffset++);
+
+    game.app.view.addEventListener('wheel', this.wheelList);
+  }
+
+  private wheelDebounce = 0;
+  private wheelList = (event: WheelEvent) => {
+    if (!this.active) return;
+    if (this.elapsed - this.wheelDebounce < 20) return;
+
+    const delta = event.deltaX + event.deltaY;
+    if (Math.abs(delta) < 32) return;
+
+    this.scrollOffset += Math.sign(delta);
+  }
+
+  private elapsed = 0;
+  update(dt: number) {
+    this.elapsed += dt;
   }
 
   private checkInventory = ({ slot }: InventoryUpdated) => {
@@ -167,7 +185,11 @@ export class Workbench extends MenuPanel {
   }
 
   dispose(exit: boolean) {
-    if (exit) this.subscription.unsubscribe();
+    if (exit) {
+      this.subscription.unsubscribe();
+      this.game.app.view.removeEventListener('wheel', this.wheelList);
+    }
+
     for (const view of this.recipeViews)
       view.dispose();
   }
