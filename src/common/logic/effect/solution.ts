@@ -35,6 +35,14 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
         return makeEffect(EffectDef.Type.Damage, amount, 0);
       }
     }
+    case ElementDef.Type.Defense: {
+      let amount = strength * 50;
+
+      if (strengths[ElementDef.Type.Void] > 0.3)
+        return makeEffect(EffectDef.Type.DefBreak, amount, 10000);
+      else
+        return makeEffect(EffectDef.Type.Resistance, amount, 10000);
+    }
     case ElementDef.Type.Motion: {
       let amount = strength * 50;
 
