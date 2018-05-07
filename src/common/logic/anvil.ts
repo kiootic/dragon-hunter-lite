@@ -69,7 +69,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       const aspects = scaleAspects(mix(parts, data), material.affinity);
       return Object.assign({}, parts[1], { effects: computeSolution(aspects) });
     } else {
-      const [aspects, effects] = computeArmors(parts, material, 1, data);
+      const [effects, aspects] = computeArmors(parts, material, 1, data);
       return Object.assign({}, parts[1], { aspects, effects });
     }
   } else {
