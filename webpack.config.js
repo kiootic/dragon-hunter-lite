@@ -2,6 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const template = [
+
+];
+
 module.exports = {
   entry: './src/app',
   mode: 'development',
@@ -50,6 +54,9 @@ module.exports = {
       }, {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      }, {
+        include: path.resolve(__dirname, 'node_modules/gl-matrix'),
+        sideEffects: false
       }
     ]
   },
@@ -61,6 +68,7 @@ module.exports = {
       'worker': path.resolve(__dirname, 'src', 'worker'),
       'data': path.resolve(__dirname, 'src', 'data'),
       'assets': path.resolve(__dirname, 'assets'),
+      'lodash': path.resolve(__dirname, 'node_modules/lodash-es'),
     }
   },
   output: {
