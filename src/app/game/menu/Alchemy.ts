@@ -28,7 +28,6 @@ export class Alchemy extends MenuPanel {
     this.bg.scale.set(7, 7);
     this.addChild(this.bg);
 
-    this.processButton = new Button();
     const icon = new TextureSprite(Texture.fromFrame('sprites/ui/arrow-compact'));
     icon.scale.set(2, 2);
     icon.rotation = -Math.PI / 2;

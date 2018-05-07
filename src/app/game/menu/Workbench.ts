@@ -30,9 +30,6 @@ class RecipeView extends Container {
       const slot = new SlotView(game, { accepts: escapeRegExp(id), item: null });
       slot.bgOverlay.setTexture(texture);
       slot.bgOverlay.outline = true;
-      slot.bgOverlay.scale.set(2, 2);
-      slot.bgOverlay.position.set(4, 4);
-      slot.bgOverlay.alpha = 0.5;
       return slot;
     });
 

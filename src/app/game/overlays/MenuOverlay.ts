@@ -2,7 +2,7 @@ import { Button, SlotView, TextureSprite, TextButton } from 'app/components';
 import { StyledText } from 'app/components/StyledText';
 import { TextToolTip } from 'app/components/TextToolTip';
 import { Game } from 'app/game';
-import { Alchemy, MenuPanel, Workbench } from 'app/game/menu';
+import { Alchemy, Anvil, MenuPanel, Workbench } from 'app/game/menu';
 import { GameOverlay } from 'app/game/overlays';
 import { Inventory, Stats, StatList } from 'app/game/traits';
 import * as vex from 'vex-js';
@@ -39,6 +39,7 @@ export class MenuOverlay extends GameOverlay {
 
     this.tabs.push(new Workbench(game));
     this.tabs.push(new Alchemy(game));
+    this.tabs.push(new Anvil(game));
     this.activeTab = this.tabs[0];
     this.addChild(this.activeTab);
 
@@ -69,7 +70,7 @@ export class MenuOverlay extends GameOverlay {
       this.slotViews.push(view);
       this.content.addChild(view);
     }
-    this.slotViews[40].bgOverlay.setTexture('sprites/ui/inv-slot-chestplates');
+    this.slotViews[40].bgOverlay.setTexture('sprites/ui/inv-slot-chestplate');
     this.slotViews[41].bgOverlay.setTexture('sprites/ui/inv-slot-leggings');
     this.slotViews[42].bgOverlay.setTexture('sprites/ui/inv-slot-boots');
 
@@ -160,6 +161,8 @@ export class MenuOverlay extends GameOverlay {
     this.trash.update(dt);
 
     this.updateStats();
+
+    this.activeTab.update(dt);
   }
 
   private updateStats() {

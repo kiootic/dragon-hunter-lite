@@ -27,6 +27,11 @@ https://github.com/progwml6/Natura
 
 License: CC-BY
 
+### Tinkers' Construct
+https://github.com/SlimeKnights/TinkersConstruct
+
+License: MIT
+
 ### Dungeon assets
 https://forums.tigsource.com/index.php?topic=14166.0
 

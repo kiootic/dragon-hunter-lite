@@ -24,6 +24,9 @@ export class SlotView extends Container {
     super();
 
     this.bg.setTexture('sprites/ui/inv-slot');
+    this.bgOverlay.scale.set(2, 2);
+    this.bgOverlay.position.set(4, 4);
+    this.bgOverlay.alpha = 0.5;
     this.addChild(this.bg);
     this.addChild(this.bgOverlay);
 
