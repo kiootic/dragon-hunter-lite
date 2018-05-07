@@ -36,7 +36,7 @@ export class UseItemTask extends Task {
     if (!slot.item) return;
 
     const item = slot.item;
-    if (item.effects) {
+    if (item.effects && item.effects.length > 0) {
       const effects = cloneDeep(item.effects);
       this.game.dispatch(new ApplyEffects(this.game.player.id, effects));
       slot.item = null;
