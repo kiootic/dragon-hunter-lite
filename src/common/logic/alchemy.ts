@@ -1,35 +1,29 @@
+import { blend } from 'common/color';
 import { Aspect, Element, Item } from 'common/data';
-import { compute } from 'common/logic/effect';
+import { compute } from 'common/logic/effect/solution';
 import { randomValue } from 'common/random';
 import { Elements, ElementLookup } from 'data/elements';
+import { flatten } from 'lodash';
 
 export const MaxAspects = 1000;
 
 export function makeSolution(aspects: Aspect[], data: Record<string, Element>): Item {
-  let total = 0;
-
-  const rgb = [0, 0, 0];
   // color
-  for (const { element, amount } of aspects) {
-    const elemColor = parseInt(data[element].color, 16);
-    rgb[0] += ((elemColor >> 16) & 0xff) * amount;
-    rgb[1] += ((elemColor >> 8) & 0xff) * amount;
-    rgb[2] += ((elemColor >> 0) & 0xff) * amount;
-    total += amount;
-  }
-  const color = (
-    (Math.floor(rgb[0] / total) << 16) +
-    (Math.floor(rgb[1] / total) << 8) +
-    (Math.floor(rgb[2] / total) << 0)
+  const color = blend(
+    aspects.map(({ element, amount }) => ({
+      color: parseInt(data[element].color, 16),
+      weight: amount
+    }))
   ).toString(16);
 
   // name
-  let max = 0, maxElem = '';
+  let max = 0, maxElem = '', total = 0;
   for (const { element, amount } of aspects) {
     if (amount > max) {
       max = amount;
       maxElem = element;
     }
+    total += amount;
   }
   let name: string;
   if (max < 100) name = `Mundane Solution`;
@@ -64,13 +58,17 @@ const FissionLoss = 0.25;
 const FusionLoss = 0.1;
 const Epsilon = 1;
 
-export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
+export interface AlchemyReactant {
+  id?: string;
+  aspects?: Aspect[];
+}
+export function mix(reactants: AlchemyReactant[], data: Record<string, Element>): Aspect[] {
   const aspects: Record<string, number> = {};
-  for (const { element, amount } of [...a.aspects || [], ...b.aspects || []])
+  for (const { element, amount } of flatten(reactants.map(reactant => reactant.aspects || [])))
     aspects[element] = (aspects[element] || 0) + amount;
 
-  const fusionBoost = (a.id === 'gel-bone' || b.id === 'gel-bone') ? BoostRate : 1;
-  const fissionBoost = (a.id === 'gel-stone' || b.id === 'gel-stone') ? BoostRate : 1;
+  const fusionBoost = reactants.some(({ id }) => id === 'gel-bone') ? BoostRate : 1;
+  const fissionBoost = reactants.some(({ id }) => id === 'gel-stone') ? BoostRate : 1;
 
   // fusion
   for (const { name: element, composition: compo } of Elements) {
@@ -108,7 +106,7 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
 
   // purify
   let total = 0;
-  if (a.id === 'gel-alchemy' || b.id === 'gel-alchemy') {
+  if (reactants.some(({ id }) => id === 'gel-alchemy')) {
     for (const element of Object.keys(aspects)) total += aspects[element];
     for (const element of Object.keys(aspects)) {
       const amount = aspects[element];
@@ -133,5 +131,9 @@ export function mix(a: Item, b: Item, data: Record<string, Element>): Item {
     .filter(({ amount }) => amount > 0);
   console.log(finalAspects);
 
-  return makeSolution(finalAspects, data);
+  return finalAspects;
+}
+
+export function mixSolution(a: Item, b: Item, data: Record<string, Element>): Item {
+  return makeSolution(mix([a, b], data), data);
 }

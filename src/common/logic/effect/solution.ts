@@ -1,31 +1,7 @@
 import { Aspect, Effect } from 'common/data';
-import { MaxAspects } from 'common/logic/alchemy';
-import { Effects, EffectDef } from 'data/effects';
+import { computeEffects, makeEffect } from 'common/logic/effect/common';
+import { EffectDef } from 'data/effects';
 import { ElementDef } from 'data/elements';
-import { fromPairs, round } from 'lodash';
-
-const StrengthThreshold = 0.1;
-
-function computeStrength(amount: number, total: number) {
-  const purity = amount / total;
-  const power = Math.pow(amount / MaxAspects, 0.75);
-  const strength = purity * power;
-  return strength;
-}
-
-export function makeEffect(effect: EffectDef.Type, power: number, duration: number, element?: string): Effect {
-  power = Math.round(power);
-  duration = round(duration, -2);
-  const name = Effects[effect].name;
-  const description = Effects[effect].description.replace('<power>', power.toString()) +
-    (duration ? ` for ${round(duration / 1000)} seconds` : '');
-
-  return {
-    type: effect,
-    name, description,
-    power, element, duration
-  };
-}
 
 function computeEffect(element: string, strength: number, strengths: Record<string, number>) {
   switch (element) {
@@ -86,22 +62,5 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
 }
 
 export function compute(aspects: Aspect[]): Effect[] {
-  let total = 0;
-  for (const { amount } of aspects) total += amount;
-
-  const strengths = fromPairs(aspects.map<[string, number]>(({ element, amount }) =>
-    [element, computeStrength(amount, total)]
-  ).sort((a, b) => b[1] - a[1]));
-
-  const effects: Effect[] = [];
-  for (const element of Object.keys(strengths)) {
-    const strength = strengths[element];
-    if (strength < StrengthThreshold) continue;
-
-    const effect = computeEffect(element, strength, strengths);
-    if (effect)
-      effects.push(effect);
-  }
-
-  return effects;
+  return computeEffects(aspects, computeEffect);
 }

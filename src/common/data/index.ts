@@ -9,3 +9,5 @@ export * from './Recipe';
 export * from './Element';
 export * from './Aspect';
 export * from './Effect';
+export * from './Material';
+export * from './Weapon';

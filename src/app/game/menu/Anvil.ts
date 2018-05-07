@@ -3,11 +3,15 @@ import { TextToolTip } from 'app/components/TextToolTip';
 import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
 import { MenuPanel } from 'app/game/menu';
+import { InventoryUpdated } from 'app/game/messages';
+import { Item } from 'common/data';
+import { assemble, AssemblyType } from 'common/logic/anvil';
 import { times } from 'lodash';
 import { Sprite, Texture } from 'pixi.js';
+import { Subscription } from 'rxjs/Subscription';
 
 interface AnvilTarget {
-  id: string;
+  id: AssemblyType;
   name: string;
   description: string;
   slots: ({
@@ -21,7 +25,7 @@ function slot(...accepts: string[]) {
 }
 
 const Targets: AnvilTarget[] = [{
-  id: 'chestplate',
+  id: AssemblyType.Chestplate,
   name: 'Chestplate',
   description: '',
   slots: [
@@ -30,7 +34,7 @@ const Targets: AnvilTarget[] = [{
     null, slot('skin', 'scale'), null,
   ]
 }, {
-  id: 'leggings',
+  id: AssemblyType.Leggings,
   name: 'Leggings',
   description: '',
   slots: [
@@ -39,7 +43,7 @@ const Targets: AnvilTarget[] = [{
     slot('skin', 'scale'), null, slot('skin', 'scale'),
   ]
 }, {
-  id: 'boots',
+  id: AssemblyType.Boots,
   name: 'Boots',
   description: '',
   slots: [
@@ -48,7 +52,7 @@ const Targets: AnvilTarget[] = [{
     slot('skin'), null, slot('skin'),
   ]
 }, {
-  id: 'sword',
+  id: AssemblyType.Sword,
   name: 'Sword',
   description: `
 average damage
@@ -61,7 +65,7 @@ average speed
     null, null, slot('bone', 'rod'),
   ]
 }, {
-  id: 'spear',
+  id: AssemblyType.Spear,
   name: 'Spear',
   description: `
 high damage
@@ -74,7 +78,7 @@ low speed
     null, null, slot('bone', 'rod'),
   ]
 }, {
-  id: 'bow',
+  id: AssemblyType.Bow,
   name: 'Bow',
   description: `
 low damage
@@ -87,16 +91,16 @@ high speed
     slot('bone', 'rod'), slot('skin'), null,
   ]
 }, {
-  id: 'arrow',
+  id: AssemblyType.Arrow,
   name: 'Arrow',
   description: 'ammo of bow',
   slots: [
     slot('fang', 'scale'), null, null,
     null, slot('bone', 'rod'), null,
-    null, null, slot('scale'),
+    null, null, slot('scale', 'leaf'),
   ]
 }, {
-  id: 'solution',
+  id: AssemblyType.Infusion,
   name: 'Infusion',
   description: 'infuse solution effects into equipment',
   slots: [
@@ -118,6 +122,8 @@ export class Anvil extends MenuPanel {
 
   activeTarget = Targets[0];
   readonly targetButtons: (Button & { target: AnvilTarget })[] = [];
+
+  private readonly subscription = new Subscription();
 
   constructor(private readonly game: Game) {
     super();
@@ -144,7 +150,8 @@ export class Anvil extends MenuPanel {
     for (const target of Targets) {
       const button = Object.assign(new Button(), { target });
 
-      const icon = new Sprite(Texture.fromFrame(`sprites/ui/inv-slot-${target.id}`));
+      const texId = target.id === AssemblyType.Infusion ? 'solution' : target.id;
+      const icon = new Sprite(Texture.fromFrame(`sprites/ui/inv-slot-${texId}`));
       icon.scale.set(2, 2);
       icon.alpha = 0.5;
       button.content.addChild(icon);
@@ -164,12 +171,17 @@ ${target.name}
       x += 64;
     }
     this.updateTarget();
+
+    this.subscription.add(game.messages$.ofType(InventoryUpdated).subscribe(this.checkInventory));
   }
 
   private updateTarget(target = this.activeTarget) {
     for (const { slot } of this.inSlots) {
-      if (slot.item)
+      if (slot.item) {
         this.game.entities.add(ItemDrop.make(this.game, slot.item));
+        slot.item = null;
+        this.game.dispatch(new InventoryUpdated(slot));
+      }
     }
 
     for (let i = 0; i < 9; i++) {
@@ -186,6 +198,34 @@ ${target.name}
     }
 
     this.activeTarget = target;
+  }
+
+  private checkInventory = ({ slot }: InventoryUpdated) => {
+    let ok = true;
+    const items: Item[] = [];
+    for (let i = 0; i < 9; i++) {
+      const slot = this.activeTarget.slots[i];
+      if (!slot) continue;
+      const item = this.inSlots[i].slot.item;
+      if (item) {
+        items.push(item);
+      } else {
+        ok = false;
+        break;
+      }
+    }
+    if (!ok && this.outSlot.slot.item) {
+      this.outSlot.slot.item = null;
+      this.game.dispatch(new InventoryUpdated(this.outSlot.slot));
+    } else if (ok && slot === this.outSlot.slot && !slot.item) {
+      for (const { slot } of this.inSlots) {
+        slot.item = null;
+        this.game.dispatch(new InventoryUpdated(slot));
+      }
+    } else if (ok && slot !== this.outSlot.slot) {
+      this.outSlot.slot.item = assemble(this.activeTarget.id, items, this.game.library.elements);
+      this.game.dispatch(new InventoryUpdated(this.outSlot.slot));
+    }
   }
 
   layout(width: number, height: number) {
@@ -224,5 +264,6 @@ ${target.name}
 
   dispose() {
     this.updateTarget();
+    this.subscription.unsubscribe();
   }
 }

@@ -4,7 +4,7 @@ import { ItemDrop } from 'app/game/entities';
 import { MenuPanel } from 'app/game/menu';
 import { InventoryUpdated } from 'app/game/messages';
 import { Item } from 'common/data';
-import { mix } from 'common/logic/alchemy';
+import { mixSolution } from 'common/logic/alchemy';
 import { Texture } from 'pixi.js';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -60,7 +60,7 @@ export class Alchemy extends MenuPanel {
   private doAlchemy = () => {
     const input1 = this.input1.slot.item!;
     const input2 = this.input2.slot.item!;
-    const output = mix(input1, input2, this.game.library.elements);
+    const output = mixSolution(input1, input2, this.game.library.elements);
 
     this.output.slot.item = output;
     this.input1.slot.item = null;

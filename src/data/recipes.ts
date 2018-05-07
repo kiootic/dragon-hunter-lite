@@ -54,7 +54,13 @@ export const makeRecipes = (): Recipe[] => [
         type: 'single',
         tex: 'sprites/items/scale',
         tint: '808080'
-      }
+      },
+      material: {
+        weight: 0.1,
+        toughness: 0.1,
+        sharpness: 0.15,
+        affinity: 0.1,
+      },
     }),
   recipe([
     { accepts: '^bone$', texture: 'sprites/items/bone' },
@@ -63,6 +69,12 @@ export const makeRecipes = (): Recipe[] => [
       name: 'Bone Shard',
       type: Item.Type.Material,
       texture: 'sprites/items/scale',
+      material: {
+        weight: 0.05,
+        toughness: 0.05,
+        sharpness: 0.2,
+        affinity: 0.15,
+      },
     }),
   recipe([
     { accepts: '^wood-', texture: 'sprites/items/wood' },
@@ -74,8 +86,14 @@ export const makeRecipes = (): Recipe[] => [
       texture: {
         type: 'single',
         tex: 'sprites/items/rod',
-        tint: '7a6454'
-      }
+        tint: 'b3927b'
+      },
+      material: {
+        weight: 0.15,
+        toughness: 0.15,
+        sharpness: 0.05,
+        affinity: 0.25,
+      },
     }),
   recipe([
     { accepts: '^stone$', texture: 'sprites/items/stone' },
@@ -88,6 +106,50 @@ export const makeRecipes = (): Recipe[] => [
         type: 'single',
         tex: 'sprites/items/rod',
         tint: '808080'
-      }
+      },
+      material: {
+        weight: 0.25,
+        toughness: 0.2,
+        sharpness: 0.1,
+        affinity: 0.1,
+      },
     }),
+  recipe([
+    { accepts: '^wood-', texture: 'sprites/items/wood' },
+    { accepts: '^wood-', texture: 'sprites/items/wood' },
+  ], {
+      id: 'skin',
+      name: 'Wood Plate',
+      type: Item.Type.Material,
+      texture: {
+        type: 'single',
+        tex: 'sprites/items/skin',
+        tint: 'b3927b'
+      },
+      material: {
+        weight: 0.2,
+        toughness: 0.2,
+        sharpness: 0.05,
+        affinity: 0.25,
+      },
+    }),
+    recipe([
+      { accepts: '^leaf$', texture: 'sprites/items/leaf' },
+      { accepts: '^leaf$', texture: 'sprites/items/leaf' },
+    ], {
+        id: 'skin',
+        name: 'Leaf Pelt',
+        type: Item.Type.Material,
+        texture: {
+          type: 'single',
+          tex: 'sprites/items/skin',
+          tint: '00d000'
+        },
+        material: {
+          weight: 0.1,
+          toughness: 0.15,
+          sharpness: 0.05,
+          affinity: 0.15,
+        },
+      }),
 ];

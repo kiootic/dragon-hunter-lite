@@ -9,10 +9,15 @@ export namespace EffectDef {
     Damage = 'damage',
     Regen = 'regen',
     Poison = 'poison',
-    Speed = 'speed',
-    Slowness = 'slowness',
+
     Strength = 'strength',
     Weakness = 'weakness',
+    Resistance = 'resistance',
+    DefBreak = 'def-break',
+    Speed = 'speed',
+    Slowness = 'slowness',
+    VitalityUp = 'vit-up',
+    VitalityDown = 'vit-down',
   }
 }
 
@@ -33,6 +38,22 @@ export const Effects: Record<EffectDef.Type, EffectDef> = {
     name: 'Poison',
     description: 'Lose <power> HP regularly'
   },
+  [EffectDef.Type.Strength]: {
+    name: 'Strength',
+    description: 'Increase strength by <power>'
+  },
+  [EffectDef.Type.Weakness]: {
+    name: 'Weakness',
+    description: 'Decrease strength by <power>'
+  },
+  [EffectDef.Type.Resistance]: {
+    name: 'Resistance',
+    description: 'Increase defense by <power>'
+  },
+  [EffectDef.Type.DefBreak]: {
+    name: 'Defense Break',
+    description: 'Decrease defense by <power>'
+  },
   [EffectDef.Type.Speed]: {
     name: 'Speed',
     description: 'Increase speed by <power>'
@@ -41,12 +62,12 @@ export const Effects: Record<EffectDef.Type, EffectDef> = {
     name: 'Slowness',
     description: 'Decrease speed by <power>'
   },
-  [EffectDef.Type.Strength]: {
-    name: 'Strength',
-    description: 'Increase strength by <power>'
+  [EffectDef.Type.VitalityUp]: {
+    name: 'Vitality Up',
+    description: 'Increase vitality by <power>'
   },
-  [EffectDef.Type.Weakness]: {
-    name: 'Weakness',
-    description: 'Decrease strength by <power>'
+  [EffectDef.Type.VitalityDown]: {
+    name: 'Vitality Down',
+    description: 'Decrease vitality by <power>'
   },
 };

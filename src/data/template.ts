@@ -1,5 +1,5 @@
 import { Item } from 'common/data';
-import { makeEffect } from 'common/logic/effect';
+import { makeEffect } from 'common/logic/effect/common';
 import { simpleDrops } from 'data/drops';
 import { EffectDef } from 'data/effects';
 import { ObjectDef } from 'data/objects';
