@@ -5,6 +5,7 @@ import { Inventory, PlayerData } from 'app/game/traits';
 import { ItemSlot } from 'common/data';
 import { Container, Sprite, Texture } from 'pixi.js';
 
+const HotbarOpacity = 0.75;
 const HotbarKeys: [number, string][] = [
   [0, '1'],
   [1, '2'],
@@ -31,7 +32,7 @@ export class Hotbar extends Container implements HUDElement {
     this.slots = game.player.traits(Inventory).slots.slice(0, 8);
     this.player = game.player.traits(PlayerData);
 
-    this.bg.tint = 0x808080;
+    this.bg.tint = 0x404040;
 
     const views = new Container();
     views.addChild(this.bg);
@@ -48,10 +49,10 @@ export class Hotbar extends Container implements HUDElement {
     this.addChild(views);
     this.addChild(this.selection);
 
-    views.alpha = 0.65;
+    views.alpha = HotbarOpacity;
     this.interactive = true;
     this.on('pointerover', () => views.alpha = 1);
-    this.on('pointerout', () => views.alpha = 0.65);
+    this.on('pointerout', () => views.alpha = HotbarOpacity);
 
     game.app.view.addEventListener('wheel', this.wheelSelection);
   }
@@ -83,20 +84,20 @@ export class Hotbar extends Container implements HUDElement {
   }
 
   layout(width: number, height: number) {
-    const contentWidth = 4 + (SlotView.Size + 4) * this.slotViews.length;
-    const contentHeight = SlotView.Size + 7;
+    const contentWidth = 8 + (SlotView.Size + 4) * this.slotViews.length;
+    const contentHeight = SlotView.Size + 12;
     this.position.set(
-      (width - contentWidth) / 2,
+      Math.round((width - contentWidth) / 2),
       height - contentHeight
     );
 
-    let x = 4;
+    let x = 6;
     for (const view of this.slotViews) {
-      view.position.set(x, 4);
+      view.position.set(x, 6);
       view.layout();
       x += SlotView.Size + 4;
     }
-    this.selection.position.set((SlotView.Size + 4) * this.player.hotbarSelection, 0);
+    this.selection.position.set(3 + (SlotView.Size + 4) * this.player.hotbarSelection, 3);
 
     this.bg.position.set(0, 0);
     this.bg.width = contentWidth;
