@@ -2,6 +2,7 @@ import { Game } from 'app/game';
 import { ShowParticles, UpdateHP } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial, Stats } from 'app/game/traits';
+import { healPerTick } from 'common/logic/stats';
 import { clamp } from 'lodash';
 
 export class EntityHPTask extends Task {
@@ -26,5 +27,10 @@ export class EntityHPTask extends Task {
   }
 
   update(dt: number) {
+    for (const entity of this.game.entities.withTrait(Stats)) {
+      const stats = entity.traits.get(Stats);
+      const { vit, maxHp } = Stats.compute(stats);
+      stats.base.hp = clamp(stats.base.hp + healPerTick(vit), 0, maxHp);
+    }
   }
 }

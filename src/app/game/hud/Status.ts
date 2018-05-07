@@ -58,7 +58,7 @@ export class Status extends Container implements HUDElement {
     const { hp, maxHp } = this.stats;
     const percentage = hp / maxHp;
 
-    this.hpBarText.text = `${hp}/${maxHp}`;
+    this.hpBarText.text = `${Math.ceil(hp)}/${maxHp}`;
     this.hpBarFill.width = HPBarWidth * percentage;
     this.hpBarFill.height = HPBarHeight;
 

@@ -178,7 +178,7 @@ spd<s> </s>
 vit<s> </s>
 `.trim();
     this.statValues.text = `
-<s> </s>${this.stats.hp} / ${this.stats.maxHp} ${makeBonusText(this.base.maxHp, this.stats.maxHp)}
+<s> </s>${Math.ceil(this.stats.hp)} / ${this.stats.maxHp} ${makeBonusText(this.base.maxHp, this.stats.maxHp)}
 <s> </s>${this.stats.str} ${makeBonusText(this.base.str, this.stats.str)}
 <s> </s>${this.stats.def} ${makeBonusText(this.base.def, this.stats.def)}
 <s> </s>${this.stats.spd} ${makeBonusText(this.base.spd, this.stats.spd)}
