@@ -43,7 +43,11 @@ export class TileMap {
   }
 
   private toIndex(x: number, y: number): number {
-    return Math.floor(x) + this.width * Math.floor(y);
+    x = Math.floor(x);
+    y = Math.floor(y);
+    if (x < 0 || x >= this.width) return -1;
+    if (y < 0 || y >= this.height) return -1;
+    return x + this.width * y;
   }
 
   public getTerrain(x: number, y: number) {

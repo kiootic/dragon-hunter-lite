@@ -4,7 +4,6 @@ import { Float, Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
 import * as intersect from 'app/utils/intersect';
 import { vec2 } from 'gl-matrix';
-import { clamp } from 'lodash';
 
 const Gravity = -10;
 const StaticThreshold = 0.5;
@@ -53,13 +52,21 @@ export class EntityMovementTask extends Task {
     const map = this.game.map;
     const lib = this.game.library;
 
-    const left = clamp(Math.floor(Math.min(position[0] + this.vel[0], position[0])) - 1, 0, map.width - 1);
-    const right = clamp(Math.ceil(Math.max(position[0] + this.vel[0], position[0])) + 1, 0, map.width - 1);
-    const top = clamp(Math.floor(Math.min(position[1] + this.vel[1], position[1])) - 1, 0, map.height - 1);
-    const bottom = clamp(Math.ceil(Math.max(position[1] + this.vel[1], position[1])) + 1, 0, map.height - 1);
+    const left = Math.floor(Math.min(position[0] + this.vel[0], position[0])) - 1;
+    const right = Math.ceil(Math.max(position[0] + this.vel[0], position[0])) + 1;
+    const top = Math.floor(Math.min(position[1] + this.vel[1], position[1])) - 1;
+    const bottom = Math.ceil(Math.max(position[1] + this.vel[1], position[1])) + 1;
 
     for (let y = top; y <= bottom; y++)
       for (let x = left; x <= right; x++) {
+        const terrainDef = lib.terrains[map.getTerrain(x, y)];
+        if (!terrainDef) {
+          yield new intersect.AABB(
+            new intersect.Point(x + 0.5, y + 0.5),
+            new intersect.Point(0.5, 0.5)
+          );
+        }
+
         const objectDef = lib.objects[map.getObject(x, y)];
         if (objectDef && objectDef.obstacle)
           yield new intersect.AABB(
