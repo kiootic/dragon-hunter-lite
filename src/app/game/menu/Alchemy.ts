@@ -39,7 +39,7 @@ export class Alchemy extends MenuPanel {
 
     this.input1 = new SlotView(game, { accepts: [Item.Type.Consumable], item: null });
     this.input2 = new SlotView(game, { accepts: [Item.Type.Consumable], item: null });
-    this.fuel = new SlotView(game, { accepts: 'wood-', item: null });
+    this.fuel = new SlotView(game, { accepts: '^wood-', item: null });
     this.output = new SlotView(game, { accepts: [], item: null });
     this.addChild(this.input1);
     this.addChild(this.input2);

@@ -43,7 +43,7 @@ export class InventoryTask extends Task {
   private acceptable(item: Item | null, accepts: Item.Type[] | string | null) {
     if (!item || !accepts) return true;
     if (typeof accepts === 'string')
-      return item.id.startsWith(accepts);
+      return !!item.id.match(accepts);
     else
       return accepts.indexOf(item.type) >= 0;
   }

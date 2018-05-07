@@ -1,17 +1,19 @@
 import { Button, SlotView, TextureSprite } from 'app/components';
 import { Game } from 'app/game';
+import { ItemDrop } from 'app/game/entities';
 import { MenuPanel } from 'app/game/menu';
 import { InventoryUpdated } from 'app/game/messages';
-import { Inventory } from 'app/game/traits';
 import { ItemSlot, Recipe } from 'common/data';
-import { clamp, cloneDeep } from 'lodash';
+import { clamp, cloneDeep, escapeRegExp } from 'lodash';
 import { Container, Texture } from 'pixi.js';
 import { Subscription } from 'rxjs/Subscription';
 
 const NumRows = 3;
 
 class RecipeView extends Container {
+  readonly arrow: TextureSprite;
   readonly output: SlotView;
+  readonly inputs: SlotView[];
 
   private makeOutput() {
     return cloneDeep(this.recipe.output);
@@ -19,61 +21,71 @@ class RecipeView extends Container {
 
   constructor(private readonly game: Game, private readonly recipe: Recipe) {
     super();
+
     this.output = new SlotView(game, { accepts: [], item: this.makeOutput() });
     this.output.position.set(0, (64 - SlotView.Size) / 2);
     this.addChild(this.output);
 
-    const arrow = new TextureSprite(Texture.fromFrame('sprites/ui/arrow'));
-    arrow.position.set(SlotView.Size + 16, 0);
-    arrow.scale.set(2, 2);
-    this.addChild(arrow);
+    this.inputs = recipe.input.map(({ id, texture }) => {
+      const slot = new SlotView(game, { accepts: escapeRegExp(id), item: null });
+      slot.bgOverlay.setTexture(texture);
+      slot.bgOverlay.outline = true;
+      slot.bgOverlay.scale.set(2, 2);
+      slot.bgOverlay.position.set(4, 4);
+      slot.bgOverlay.alpha = 0.5;
+      return slot;
+    });
+
+    this.arrow = new TextureSprite(Texture.fromFrame('sprites/ui/arrow'));
+    this.arrow.position.set(SlotView.Size + 16, 0);
+    this.arrow.scale.set(2, 2);
+    this.addChild(this.arrow);
 
     let x = SlotView.Size + 16 + 64 + 16;
-    for (const { texture } of recipe.input) {
-      const icon = new TextureSprite();
-      icon.outline = true;
-      icon.setTexture(texture);
-      icon.scale.set(2, 2);
-      icon.position.set(x + 8, 8);
-      this.addChild(icon);
+    for (const input of this.inputs) {
+      this.addChild(input);
+      input.position.set(x + 8, 8);
       x += 64;
     }
   }
 
-  checkInput(inventory: ItemSlot[]) {
-    const inputs = this.recipe.input.map(item => item.id);
-    const slots: ItemSlot[] = [];
-    for (const slot of inventory) {
-      if (!slot.item) continue;
-      const index = inputs.indexOf(slot.item.id);
-      if (index < 0) continue;
-
-      inputs.splice(index, 1);
-      slots.push(slot);
-    }
-    return slots;
-  }
-
-  check(inventory: ItemSlot[]) {
-    if (this.output.empty) {
-      const inputSlots = this.checkInput(inventory);
-
-      for (const slot of inputSlots)
-        slot.item = null;
-      this.output.slot.item = this.makeOutput();
-
-      for (const slot of inputSlots)
-        this.game.dispatch(new InventoryUpdated(slot));
+  check(slot?: ItemSlot) {
+    let numInputs = 0;
+    for (const input of this.inputs) {
+      if (!input.slot.item) {
+        input.alpha = 0.5;
+      } else {
+        input.alpha = 1;
+        numInputs++;
+      }
     }
 
-    const inputs = this.checkInput(inventory);
-    const ok = inputs.length === this.recipe.input.length;
+    const ok = numInputs === this.recipe.input.length;
     this.output.enabled = ok;
-    this.alpha = ok ? 1 : 0.5;
+    this.output.alpha = ok ? 1 : 0.5;
+    this.arrow.alpha = ok ? 1 : 0.5;
+    if (!this.output.slot.item) {
+      this.output.slot.item = this.makeOutput();
+      this.game.dispatch(new InventoryUpdated(this.output.slot));
+      for (const { slot } of this.inputs) {
+        slot.item = null;
+        this.game.dispatch(new InventoryUpdated(slot));
+      }
+    }
   }
 
   layout() {
     this.output.layout();
+    for (const input of this.inputs)
+      input.layout();
+  }
+
+  dispose() {
+    for (const { slot } of this.inputs)
+      if (slot.item) {
+        const drop = ItemDrop.make(this.game, slot.item);
+        this.game.entities.add(drop);
+      }
   }
 }
 
@@ -88,7 +100,7 @@ export class Workbench extends MenuPanel {
 
   private scrollOffset = 0;
 
-  constructor(private readonly game: Game) {
+  constructor(game: Game) {
     super();
 
     this.upButton = new Button();
@@ -116,16 +128,16 @@ export class Workbench extends MenuPanel {
     }
 
     this.subscription.add(game.messages$.ofType(InventoryUpdated).subscribe(this.checkInventory));
-    this.checkInventory();
+    for (const view of this.recipeViews)
+      view.check();
 
     this.upButton.on(Button.Clicked, () => this.scrollOffset--);
     this.downButton.on(Button.Clicked, () => this.scrollOffset++);
   }
 
-  private checkInventory = () => {
-    const inventory = this.game.player.traits(Inventory).slots;
+  private checkInventory = ({ slot }: InventoryUpdated) => {
     for (const view of this.recipeViews)
-      view.check(inventory);
+      view.check(slot);
   }
 
   layout(width: number, height: number) {
@@ -157,5 +169,7 @@ export class Workbench extends MenuPanel {
 
   dispose() {
     this.subscription.unsubscribe();
+    for (const view of this.recipeViews)
+      view.dispose();
   }
 }
