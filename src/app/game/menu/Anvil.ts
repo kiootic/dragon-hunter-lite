@@ -17,7 +17,7 @@ interface AnvilTarget {
 }
 
 function slot(...accepts: string[]) {
-  return { accepts: `^(${accepts.join('|')})$`, textures: accepts };
+  return { accepts: `^(${accepts.join('|')})$`, textures: accepts.map(id => `sprites/items/${id}`) };
 }
 
 const Targets: AnvilTarget[] = [{
@@ -58,7 +58,7 @@ average speed
   slots: [
     slot('fang', 'scale'), null, null,
     null, slot('fang', 'scale'), null,
-    null, null, slot('fang', 'bone'),
+    null, null, slot('bone', 'rod'),
   ]
 }, {
   id: 'spear',
@@ -70,8 +70,8 @@ low speed
 `,
   slots: [
     slot('fang', 'scale'), null, null,
-    null, slot('bone'), null,
-    null, null, slot('bone'),
+    null, slot('bone', 'rod'), null,
+    null, null, slot('bone', 'rod'),
   ]
 }, {
   id: 'bow',
@@ -82,9 +82,9 @@ high range
 high speed
 `,
   slots: [
-    null, slot('bone'), slot('bone'),
-    slot('bone'), null, slot('skin'),
-    slot('bone'), slot('skin'), null,
+    null, slot('bone', 'rod'), slot('bone', 'rod'),
+    slot('bone', 'rod'), null, slot('skin'),
+    slot('bone', 'rod'), slot('skin'), null,
   ]
 }, {
   id: 'arrow',
@@ -92,8 +92,17 @@ high speed
   description: 'ammo of bow',
   slots: [
     slot('fang', 'scale'), null, null,
-    null, slot('bone'), null,
+    null, slot('bone', 'rod'), null,
     null, null, slot('scale'),
+  ]
+}, {
+  id: 'solution',
+  name: 'Infusion',
+  description: 'infuse solution effects into equipment',
+  slots: [
+    null, null, slot('solution'),
+    null, null, null,
+    null, null, slot('chestplate', 'leggings', 'boots', 'sword', 'spear', 'bow', 'arrow'),
   ]
 }];
 
@@ -131,7 +140,7 @@ export class Anvil extends MenuPanel {
     this.arrow.position.set(SlotView.Size * 3 + 112, 64 + SlotView.Size + 24);
     this.addChild(this.arrow);
 
-    let x = 32;
+    let x = 0;
     for (const target of Targets) {
       const button = Object.assign(new Button(), { target });
 
@@ -209,7 +218,7 @@ ${target.name}
       if (this.inSlots[i].slot.item)
         this.inSlots[i].bgOverlay.clearTexture();
       else
-        this.inSlots[i].bgOverlay.setTexture(`sprites/items/${slot.textures[tick % slot.textures.length]}`);
+        this.inSlots[i].bgOverlay.setTexture(slot.textures[tick % slot.textures.length]);
     }
   }
 

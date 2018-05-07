@@ -4,7 +4,7 @@ import { ItemDrop } from 'app/game/entities';
 import { MenuPanel } from 'app/game/menu';
 import { InventoryUpdated } from 'app/game/messages';
 import { ItemSlot, Recipe } from 'common/data';
-import { clamp, cloneDeep, escapeRegExp } from 'lodash';
+import { clamp, cloneDeep } from 'lodash';
 import { Container, Texture } from 'pixi.js';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -26,8 +26,8 @@ class RecipeView extends Container {
     this.output.position.set(0, (64 - SlotView.Size) / 2);
     this.addChild(this.output);
 
-    this.inputs = recipe.input.map(({ id, texture }) => {
-      const slot = new SlotView(game, { accepts: escapeRegExp(id), item: null });
+    this.inputs = recipe.input.map(({ accepts, texture }) => {
+      const slot = new SlotView(game, { accepts, item: null });
       slot.bgOverlay.setTexture(texture);
       slot.bgOverlay.outline = true;
       return slot;
