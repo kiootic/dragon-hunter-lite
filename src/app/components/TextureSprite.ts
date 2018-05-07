@@ -149,8 +149,10 @@ export class TextureSprite extends Sprite implements TexSprite {
 
     this.updateTex();
 
-    if (this.overlay)
+    if (this.overlay) {
+      this.overlay.clip = this.clip;
       this.overlay.update(elapsed);
+    }
   }
 
   _onAnchorUpdate() {
