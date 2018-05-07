@@ -262,8 +262,8 @@ ${target.name}
     }
   }
 
-  dispose() {
+  dispose(exit: boolean) {
     this.updateTarget();
-    this.subscription.unsubscribe();
+    if (exit) this.subscription.unsubscribe();
   }
 }

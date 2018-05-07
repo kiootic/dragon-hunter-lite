@@ -190,7 +190,6 @@ vit<s> </s>
   }
 
   private save() {
-    this.game.save();
     vex.dialog.prompt({
       label: 'Save name (max 8 char.): ',
       value: this.game.data.id,
@@ -207,6 +206,10 @@ vit<s> </s>
           vex.dialog.alert({ content: 'Name is too long!', callback: () => this.game.app.view.focus() });
           return;
         }
+        for (const tab of this.tabs)
+          tab.dispose(false);
+
+        this.game.save();
         this.game.data.id = name;
         localStorage[name] = this.game.data.export();
         vex.dialog.alert({ content: `Saved as name '${name}'.`, callback: () => this.game.app.view.focus() });
@@ -222,7 +225,7 @@ vit<s> </s>
   async done() {
     this.game.app.dragDrop.cancel();
     for (const tab of this.tabs)
-      tab.dispose();
+      tab.dispose(true);
     await super.done();
   }
 }

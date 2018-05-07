@@ -82,6 +82,8 @@ class RecipeView extends Container {
       if (slot.item) {
         const drop = ItemDrop.make(this.game, slot.item);
         this.game.entities.add(drop);
+        slot.item = null;
+        this.game.dispatch(new InventoryUpdated(slot));
       }
   }
 }
@@ -164,8 +166,8 @@ export class Workbench extends MenuPanel {
     this.downButton.layout(64, 32);
   }
 
-  dispose() {
-    this.subscription.unsubscribe();
+  dispose(exit: boolean) {
+    if (exit) this.subscription.unsubscribe();
     for (const view of this.recipeViews)
       view.dispose();
   }

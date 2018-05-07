@@ -92,12 +92,14 @@ export class Alchemy extends MenuPanel {
     this.fuel.layout();
   }
 
-  dispose() {
-    this.subscription.unsubscribe();
+  dispose(exit: boolean) {
+    if (exit) this.subscription.unsubscribe();
     for (const { slot } of [this.input1, this.input2, this.fuel, this.output])
       if (slot.item) {
         const drop = ItemDrop.make(this.game, slot.item);
         this.game.entities.add(drop);
+        slot.item = null;
+        this.game.dispatch(new InventoryUpdated(slot));
       }
   }
 }
