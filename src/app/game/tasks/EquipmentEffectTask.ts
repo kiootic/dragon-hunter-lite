@@ -5,20 +5,29 @@ import { Effect } from 'common/data';
 import { EffectDef } from 'data/effects';
 
 export class EquipmentEffectTask extends Task {
+  public readonly runWhenPaused = true;
+
   constructor(game: Game) {
     super(game);
   }
 
   update(dt: number) {
     const { slots } = this.game.player.traits.get(Inventory);
-    const { boost, effects } = this.game.player.traits.get(Stats);
+    const { bonus } = this.game.player.traits.get(Stats);
+    // reset bonus stats, recalc each tick
+    bonus.hp = 0;
+    bonus.maxHp = 0;
+    bonus.str = 0;
+    bonus.def = 0;
+    bonus.spd = 0;
+    bonus.vit = 0;
 
     const equipments = slots.slice(40, 43);
 
     for (const { item } of equipments) {
       if (!item || !item.effects) continue;
       for (const effect of item.effects) {
-        this.applyEffect(effect, boost);
+        this.applyEffect(effect, bonus);
       }
     }
   }

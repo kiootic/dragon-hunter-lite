@@ -17,7 +17,8 @@ export class EntityHPTask extends Task {
     const stats = entity.traits.get(Stats);
     if (!stats) return;
 
-    stats.base.hp = clamp(stats.base.hp + hpDiff, 0, stats.base.maxHp + stats.boost.maxHp);
+    const { maxHp } = Stats.compute(stats);
+    stats.base.hp = clamp(stats.base.hp + hpDiff, 0, maxHp);
 
     const position = entity.traits.get(Spatial).position;
     if (hpDiff > 0)
