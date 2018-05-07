@@ -67,14 +67,25 @@ export class EffectTask extends Task {
         this.game.dispatch(new UpdateHP(entity.id, -effect.power));
         break;
 
+      case EffectDef.Type.Resistance:
+        boost.def += effect.power; break;
+      case EffectDef.Type.DefBreak:
+        boost.def -= effect.power; break;
+
       case EffectDef.Type.Speed:
         boost.spd += effect.power; break;
       case EffectDef.Type.Slowness:
         boost.spd -= effect.power; break;
+
       case EffectDef.Type.Strength:
         boost.str += effect.power; break;
       case EffectDef.Type.Weakness:
         boost.str -= effect.power; break;
+
+      case EffectDef.Type.VitalityUp:
+        boost.vit += effect.power; break;
+      case EffectDef.Type.VitalityDown:
+        boost.vit -= effect.power; break;
     }
   }
 }

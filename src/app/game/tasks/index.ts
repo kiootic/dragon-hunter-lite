@@ -4,6 +4,7 @@ export * from './PlayerInputTask';
 
 export * from './EffectTask';
 export * from './TerrainEffectTask';
+export * from './EquipmentEffectTask';
 export * from './EntityHPTask';
 export * from './EntityMovementTask';
 

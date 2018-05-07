@@ -14,6 +14,7 @@ export class TaskManager {
 
     this.add(tasks.EffectTask);
     this.add(tasks.TerrainEffectTask);
+    this.add(tasks.EquipmentEffectTask);
     this.add(tasks.EntityHPTask);
     this.add(tasks.EntityMovementTask);
 
