@@ -104,6 +104,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
     switch (type) {
       case AssemblyType.Sword:
         weapon = {
+          type: Weapon.Type.Sword,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 100,
           cooldown: mat.weight * (1 - mat.toughness) * 10000,
           knockback: mat.weight * (1 + mat.sharpness) * 10,
@@ -127,6 +128,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         break;
       case AssemblyType.Spear:
         weapon = {
+          type: Weapon.Type.Spear,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 250,
           cooldown: mat.weight * (1 - mat.toughness) * 20000,
           knockback: mat.weight * (1 + mat.sharpness) * 15,
@@ -150,6 +152,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         break;
       case AssemblyType.Bow:
         weapon = {
+          type: Weapon.Type.Bow,
           strength: mat.toughness * (1 + mat.weight) * 30,
           cooldown: mat.weight * (1 - mat.toughness) * 2000,
           knockback: 0,
@@ -173,6 +176,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         break;
       case AssemblyType.Arrow:
         weapon = {
+          type: Weapon.Type.Arrow,
           strength: mat.weight * (1 + mat.sharpness) * 20,
           cooldown: 0,
           knockback: 0,

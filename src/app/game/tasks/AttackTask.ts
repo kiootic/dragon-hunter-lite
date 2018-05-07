@@ -4,7 +4,7 @@ import { ItemDrop } from 'app/game/entities';
 import { TileObjectSprite } from 'app/game/interfaces';
 import { PlayFX, ShowParticles } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { Spatial } from 'app/game/traits';
+import { Inventory, PlayerData, Spatial } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
 import { generateDrops } from 'app/utils/drops';
 import { TileObject } from 'common/data';
@@ -71,10 +71,21 @@ export class AttackTask extends Task {
 
     if (this.targetTile[0] >= 0) {
       vec2.sub(this.dir, this.targetTileCenter, this.position);
+      const { hotbarSelection } = this.game.player.traits.get(PlayerData);
+      const { slots } = this.game.player.traits.get(Inventory);
+      const active = slots[hotbarSelection].item;
+
       const dir = direction(this.dir[1], this.dir[0], 'attack');
-      this.attackAnimName = `attack-${dir}`;
       this.sprite.animName = dir;
-      this.sprite.playActionAnim(this.attackAnimName);
+      if (active && active.weapon) {
+        this.attackAnimName = `${active.weapon.type}-${dir}`;
+        const maxDuration = ({ sword: 500, spear: 700, bow: 1200 } as Record<string, number>)[active.weapon.type];
+        const animDuration = Math.min(maxDuration, active.weapon.cooldown);
+        this.sprite.playActionAnim(this.attackAnimName, animDuration);
+      } else {
+        this.attackAnimName = `attack-${dir}`;
+        this.sprite.playActionAnim(this.attackAnimName);
+      }
       this.attacking(dt, this.targetSprite!);
     }
   }

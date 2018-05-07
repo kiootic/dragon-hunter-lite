@@ -16,10 +16,12 @@ export class TextureSprite extends Sprite implements TexSprite {
   public renderTranslation?: [number, number];
   public clip?: [number, number];
 
+  private animBeginTime = 0;
   public animName: string = '';
   public still: boolean = true;
 
   private actionAnimName: string = '';
+  private actionAnimFPS = 0;
   private actionEndTime = -1;
 
   private overlay?: TextureSprite;
@@ -87,6 +89,7 @@ export class TextureSprite extends Sprite implements TexSprite {
         case 'animation':
           this.frame = -1;
           this.currentTex = Texture.EMPTY;
+          this.animBeginTime = this.elapsed;
           break;
         case 'liquid':
           this.currentTex = Texture.fromFrame(textureDef.tex);
@@ -96,7 +99,7 @@ export class TextureSprite extends Sprite implements TexSprite {
     this.updateTex();
   }
 
-  public playActionAnim(name: string) {
+  public playActionAnim(name: string, duration?: number) {
     if (!this.textureDef || this.textureDef.type !== 'animation' || !(name in this.textureDef.anims)) {
       console.log('animation: no such name: ' + name);
       return;
@@ -105,7 +108,9 @@ export class TextureSprite extends Sprite implements TexSprite {
       const animation = this.textureDef.anims[name];
       this.frame = 0;
       this.actionAnimName = name;
-      this.actionEndTime = this.elapsed + 1000 / animation.fps * animation.numFrames;
+      this.animBeginTime = this.elapsed;
+      this.actionAnimFPS = duration === undefined ? animation.fps : animation.numFrames / (duration / 1000);
+      this.actionEndTime = this.elapsed + 1000 / this.actionAnimFPS * animation.numFrames;
     }
   }
 
@@ -114,6 +119,8 @@ export class TextureSprite extends Sprite implements TexSprite {
       this.frame = 0;
       this.actionAnimName = '';
       this.actionEndTime = -1;
+      this.actionAnimFPS = 0;
+      this.animBeginTime = this.elapsed;
     }
   }
 
@@ -122,22 +129,24 @@ export class TextureSprite extends Sprite implements TexSprite {
   public update(elapsed: number) {
     this.elapsed = elapsed;
     if (this.textureDef) {
+      if (this.actionEndTime > 0 && this.actionEndTime < elapsed) {
+        this.actionAnimName = '';
+        this.actionEndTime = -1;
+        this.actionAnimFPS = 0;
+        this.animBeginTime = elapsed;
+      }
       if (this.textureDef.type === 'animation' && (this.animName || this.actionAnimName)) {
         const animation = this.textureDef.anims[this.actionAnimName || this.animName];
         if (animation) {
           if (this.still && !this.actionAnimName) {
             this.frame = -1;
           } else {
-            const frameDuration = 1000 / animation.fps;
-            this.frame = Math.floor(elapsed / frameDuration) % animation.numFrames;
+            const frameDuration = 1000 / (this.actionAnimFPS || animation.fps);
+            this.frame = Math.floor((elapsed - this.animBeginTime) / frameDuration) % animation.numFrames;
           }
           this.currentTex = Texture.fromFrame(`${animation.frameId}-${this.frame + 1}`);
         } else {
           console.log('animation: no such name: ' + (this.actionAnimName || this.animName));
-        }
-        if (this.actionEndTime < elapsed) {
-          this.actionAnimName = '';
-          this.actionEndTime = -1;
         }
       } else if (this.textureDef.type === 'liquid') {
         let d = (elapsed % this.textureDef.time) / this.textureDef.time;
