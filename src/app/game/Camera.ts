@@ -76,7 +76,8 @@ export namespace Camera {
   export enum Layer {
     Background = -1,
     Terrain = 0,
-    Objects = 1
+    Objects = 1,
+    Projectiles = 2,
   }
   export interface Sprite extends PIXISprite {
     id?: number

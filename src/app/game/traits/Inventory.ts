@@ -24,10 +24,10 @@ export namespace Inventory {
     };
   }
 
-  export function deserialize(data: any): Inventory {
+  export function deserialize(data: any, trait: Inventory): Inventory {
     return defaults({
       slots: data.slots.slice()
-    }, make());
+    }, trait);
   }
 }
 Trait.types.set(Inventory.Type, Inventory);

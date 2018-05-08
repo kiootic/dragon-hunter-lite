@@ -22,9 +22,11 @@ export class App extends Application {
     settings.SCALE_MODE = SCALE_MODES.NEAREST;
     this.ticker.add(this.tick.bind(this));
 
+    const interaction = (this.renderer.plugins as RendererPlugins).interaction;
+    interaction.moveWhenInside = true;
+
     // Workaround for outside events not firing due to pixi.js#4608
     // Passes outside events to children
-    const interaction = (this.renderer.plugins as RendererPlugins).interaction;
     interaction.on('pointerup', (e: interaction.InteractionEvent) => {
       function passEvent(obj: DisplayObject, trigger: boolean) {
         if (trigger && obj.interactive) {

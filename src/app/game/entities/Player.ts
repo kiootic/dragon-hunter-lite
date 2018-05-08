@@ -13,7 +13,6 @@ export class Player extends Entity {
     const spatial = this.traits(Spatial);
     vec2.set(spatial.scale, 2, 2);
     vec2.set(spatial.size, 0.25, 0.25);
-    spatial.sprite.setTexture(Animations.Player, this.id);
 
     const inventory = this.traits(Inventory, 43);
     inventory.slots[40].accepts = [Item.Type.Chestplate];
@@ -22,6 +21,10 @@ export class Player extends Entity {
 
     this.traits(Stats);
     this.traits(PlayerData);
+  }
+
+  hydrate() {
+    this.traits.get(Spatial).sprite.setTexture(Animations.Player, this.id);
   }
 }
 Entity.types.set(Player.Type, Player);

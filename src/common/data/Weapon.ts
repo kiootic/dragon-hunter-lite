@@ -4,6 +4,7 @@ export interface Weapon {
   readonly cooldown: number;
   readonly knockback: number;
   readonly range: number;
+  readonly color: string;
 }
 
 export namespace Weapon {
@@ -11,6 +12,7 @@ export namespace Weapon {
     Sword = 'sword',
     Spear = 'spear',
     Bow = 'bow',
-    Arrow = 'arrow'
+    Arrow = 'arrow',
+    Fist = 'fist'
   }
 }

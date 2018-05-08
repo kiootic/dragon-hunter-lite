@@ -5,3 +5,4 @@ export * from './PlayFX';
 export * from './ShowParticles';
 export * from './ApplyEffects';
 export * from './UpdateHP';
+export * from './Attack';

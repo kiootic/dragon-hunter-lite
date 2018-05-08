@@ -13,9 +13,13 @@ export abstract class Entity {
   constructor(game: Game, id?: number) {
     this._game = game;
     this.id = id || (game.data.props.nextEntityId++);
+    this.init();
   }
 
   public init() {
+  }
+
+  public hydrate() {
   }
 
   public delete() {

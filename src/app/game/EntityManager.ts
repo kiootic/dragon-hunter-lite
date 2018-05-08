@@ -16,7 +16,7 @@ export class EntityManager {
       entity.age = entityProps.age;
       for (const traitType of Object.keys(entityProps.traits)) {
         const TraitType = Trait.types.get(traitType)!;
-        const trait = TraitType.deserialize(entityProps.traits[traitType]);
+        const trait = TraitType.deserialize(entityProps.traits[traitType], entity.traits(TraitType));
         entity.traits.set(trait);
       }
       this.add(entity);
@@ -53,7 +53,7 @@ export class EntityManager {
   }
 
   public add(entity: Entity) {
-    entity.init();
+    entity.hydrate();
     this.entities.set(entity.id, entity);
   }
 

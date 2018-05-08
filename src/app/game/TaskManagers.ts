@@ -12,6 +12,7 @@ export class TaskManager {
   public init() {
     this.add(tasks.PlayerInputTask);
 
+    this.add(tasks.ProjectileTask);
     this.add(tasks.EffectTask);
     this.add(tasks.TerrainEffectTask);
     this.add(tasks.EquipmentEffectTask);

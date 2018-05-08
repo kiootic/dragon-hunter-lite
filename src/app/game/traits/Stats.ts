@@ -41,11 +41,11 @@ export namespace Stats {
     };
   }
 
-  export function deserialize(data: any): Stats {
+  export function deserialize(data: any, trait: Stats): Stats {
     return defaults({
       base: data.base || { hp: 100, maxHp: 100, str: 10, def: 0, spd: 10, vit: 10 },
       effects: data.effects || [],
-    }, make());
+    }, trait);
   }
 
   export function compute(stats: Stats): StatList {

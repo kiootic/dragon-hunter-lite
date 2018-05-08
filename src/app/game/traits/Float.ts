@@ -27,11 +27,11 @@ export namespace Float {
     };
   }
 
-  export function deserialize(data: any): Float {
+  export function deserialize(data: any, trait: Float): Float {
     return defaults({
       z: data.z && vec2.fromValues(data.z[0], data.z[1]),
       gravity: data.gravity === undefined ? true : data.gravity
-    }, make());
+    }, trait);
   }
 }
 Trait.types.set(Float.Type, Float);

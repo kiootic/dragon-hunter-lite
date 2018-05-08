@@ -2,7 +2,7 @@ import { TileObjectSprite } from 'app/game/interfaces';
 import { Message } from 'app/game/messages';
 
 export abstract class PlayFX<Effect extends PlayFX.Type, Target> implements Message {
-  public readonly type = 'play-effect';
+  public readonly type = 'play-fx';
 
   constructor(
     public readonly effect: PlayFX.Type,

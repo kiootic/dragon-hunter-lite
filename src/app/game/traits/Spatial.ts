@@ -3,6 +3,7 @@ import { Trait } from 'app/game/traits';
 import { Camera } from 'app/game/Camera';
 import { vec2 } from 'gl-matrix';
 import { defaults } from 'lodash';
+import { Point } from 'pixi.js';
 
 export interface Spatial extends Trait {
   readonly type: typeof Spatial.Type;
@@ -10,7 +11,8 @@ export interface Spatial extends Trait {
   readonly velocity: vec2;
   readonly scale: vec2;
   readonly size: vec2;
-  solid: boolean;
+  readonly solid: boolean;
+  readonly collidable: boolean;
   readonly sprite: Camera.Sprite & TextureSprite;
 }
 
@@ -18,17 +20,19 @@ export namespace Spatial {
   export declare const _mark: Spatial;
   export const Type = 'spatial';
 
-  export function make(): Spatial {
+  export function make(args?: { solid: boolean, collidable: boolean }): Spatial {
     return {
       type: Spatial.Type,
       position: vec2.fromValues(0, 0),
       velocity: vec2.fromValues(0, 0),
       scale: vec2.fromValues(1, 1),
       size: vec2.fromValues(0.5, 0.5),
-      solid: true,
+      solid: args ? args.solid : true,
+      collidable: args ? args.collidable : true,
       sprite: Object.assign(new TextureSprite(), {
         layer: Camera.Layer.Objects,
-        sortOffset: vec2.fromValues(0, 0)
+        sortOffset: vec2.fromValues(0, 0),
+        anchor: new Point(0.5, 1)
       })
     };
   }
@@ -40,11 +44,11 @@ export namespace Spatial {
     };
   }
 
-  export function deserialize(data: any): Spatial {
+  export function deserialize(data: any, trait: Spatial): Spatial {
     return defaults({
       position: data.pos && vec2.fromValues(data.pos[0], data.pos[1]),
       velocity: data.vel && vec2.fromValues(data.vel[0], data.vel[1])
-    }, make());
+    }, trait);
   }
 }
 Trait.types.set(Spatial.Type, Spatial);

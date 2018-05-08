@@ -9,10 +9,10 @@ export const Animations: Record<string, TextureDef> = {
       'up': { frameId: 'sprites/player/up', numFrames: 8, fps: 15 },
       'down': { frameId: 'sprites/player/down', numFrames: 8, fps: 15 },
 
-      'attack-left': { frameId: 'sprites/player/attack-left', numFrames: 5, fps: 15 },
-      'attack-right': { frameId: 'sprites/player/attack-right', numFrames: 5, fps: 15 },
-      'attack-up': { frameId: 'sprites/player/attack-up', numFrames: 5, fps: 15 },
-      'attack-down': { frameId: 'sprites/player/attack-down', numFrames: 5, fps: 15 },
+      'fist-left': { frameId: 'sprites/player/fist-left', numFrames: 5, fps: 15 },
+      'fist-right': { frameId: 'sprites/player/fist-right', numFrames: 5, fps: 15 },
+      'fist-up': { frameId: 'sprites/player/fist-up', numFrames: 5, fps: 15 },
+      'fist-down': { frameId: 'sprites/player/fist-down', numFrames: 5, fps: 15 },
 
       'sword-left': { frameId: 'sprites/player/sword-left', numFrames: 5, fps: 15 },
       'sword-right': { frameId: 'sprites/player/sword-right', numFrames: 5, fps: 15 },
@@ -24,10 +24,10 @@ export const Animations: Record<string, TextureDef> = {
       'spear-up': { frameId: 'sprites/player/spear-up', numFrames: 7, fps: 10 },
       'spear-down': { frameId: 'sprites/player/spear-down', numFrames: 7, fps: 10 },
 
-      'bow-left': { frameId: 'sprites/player/bow-left', numFrames: 11, fps: 48 },
-      'bow-right': { frameId: 'sprites/player/bow-right', numFrames: 11, fps: 48 },
-      'bow-up': { frameId: 'sprites/player/bow-up', numFrames: 11, fps: 48 },
-      'bow-down': { frameId: 'sprites/player/bow-down', numFrames: 11, fps: 48 },
+      'arrow-left': { frameId: 'sprites/player/arrow-left', numFrames: 11, fps: 48 },
+      'arrow-right': { frameId: 'sprites/player/arrow-right', numFrames: 11, fps: 48 },
+      'arrow-up': { frameId: 'sprites/player/arrow-up', numFrames: 11, fps: 48 },
+      'arrow-down': { frameId: 'sprites/player/arrow-down', numFrames: 11, fps: 48 },
     }
   }
 };

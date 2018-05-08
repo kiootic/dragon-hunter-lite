@@ -106,9 +106,10 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         weapon = {
           type: Weapon.Type.Sword,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 100,
-          cooldown: mat.weight * (1 - mat.toughness) * 10000,
+          cooldown: mat.weight * (1 - mat.toughness) * 5000,
           knockback: mat.weight * (1 + mat.sharpness) * 10,
-          range: 2
+          range: 2.5,
+          color: blendPartColors(parts.slice(0, 2))
         };
         aspects = mix(parts, data);
         effects = computeSolution(aspects);
@@ -130,9 +131,10 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         weapon = {
           type: Weapon.Type.Spear,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 250,
-          cooldown: mat.weight * (1 - mat.toughness) * 20000,
-          knockback: mat.weight * (1 + mat.sharpness) * 15,
-          range: 3.5
+          cooldown: mat.weight * (1 - mat.toughness) * 15000,
+          knockback: mat.weight * (1 + mat.sharpness) * 20,
+          range: 4,
+          color: (parts[0].texture as any).tint || 'ffffff'
         };
         aspects = mix(parts, data);
         effects = computeSolution(aspects);
@@ -153,10 +155,11 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       case AssemblyType.Bow:
         weapon = {
           type: Weapon.Type.Bow,
-          strength: mat.toughness * (1 + mat.weight) * 30,
-          cooldown: mat.weight * (1 - mat.toughness) * 2000,
+          strength: mat.toughness * (1 + mat.weight) * 20,
+          cooldown: mat.weight * (1 - mat.toughness) * 1000,
           knockback: 0,
-          range: 0
+          range: 0,
+          color: 'ffffff'
         };
         aspects = mix(parts, data);
         effects = computeSolution(aspects);
@@ -177,10 +180,11 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       case AssemblyType.Arrow:
         weapon = {
           type: Weapon.Type.Arrow,
-          strength: mat.weight * (1 + mat.sharpness) * 20,
+          strength: mat.weight * (1 + mat.sharpness) * 10,
           cooldown: 0,
           knockback: 0,
-          range: 8 + mat.toughness * 10
+          range: 8 + mat.toughness * 10,
+          color: (parts[0].texture as any).tint || 'ffffff'
         };
         aspects = scaleAspects(mix(parts, data), Math.pow(mat.affinity, 0.5));
         effects = computeSolution(aspects);

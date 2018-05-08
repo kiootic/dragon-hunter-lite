@@ -18,7 +18,7 @@ export class EntityMovementTask extends Task {
       vec2.scale(this.vel, velocity, dt / 1000);
 
       if (solid) {
-        const obstacles = this.game.keyboard.isPressed('Alt') ? [] : Array.from(this.getObstacles(position));
+        const obstacles = Array.from(this.getObstacles(position));
         const shape = new intersect.AABB(
           new intersect.Point(position[0], position[1]),
           new intersect.Point(size[0], size[1]));
@@ -38,7 +38,7 @@ export class EntityMovementTask extends Task {
           vec2.set(float.z, 0, 0);
           vec2.set(velocity, 0, 0);
         }
-      } else {
+      } else if (!float || float.z[0] === 0) {
         if (this.vel[0] === 0) velocity[0] = 0;
         if (this.vel[1] === 0) velocity[1] = 0;
         vec2.scale(velocity, velocity, Math.pow(0.5, t));

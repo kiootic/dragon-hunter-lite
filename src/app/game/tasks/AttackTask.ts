@@ -1,132 +1,63 @@
-import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
-import { ItemDrop } from 'app/game/entities';
-import { TileObjectSprite } from 'app/game/interfaces';
-import { PlayFX, ShowParticles } from 'app/game/messages';
+import { Projectile } from 'app/game/entities/Projectile';
+import { Attack } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { Inventory, PlayerData, Spatial } from 'app/game/traits';
-import { direction } from 'app/utils/animations';
-import { generateDrops } from 'app/utils/drops';
-import { TileObject } from 'common/data';
+import { Spatial } from 'app/game/traits';
+import { Weapon } from 'common/data';
 import { vec2 } from 'gl-matrix';
-import { interaction, DisplayObject, Point, RendererPlugins } from 'pixi.js';
-
-const AttackRadius = 2;
-const AttackCooldown = 500;
 
 export class AttackTask extends Task {
-  private readonly position: vec2;
-  private readonly sprite: TextureSprite;
-  private attackAnimName = '';
-
-  private pressing = false;
-  private readonly interaction: interaction.InteractionManager;
-  private readonly cursorPos = new Point();
-  private readonly targetTile = vec2.fromValues(-1, -1);
-  private readonly targetTileCenter = vec2.create();
-  private readonly dir = vec2.create();
-  private targetSprite?: TileObjectSprite;
-
   constructor(game: Game) {
     super(game);
-    ({ position: this.position, sprite: this.sprite } = game.player.traits(Spatial));
-    this.interaction = (this.game.app.renderer.plugins as RendererPlugins).interaction;
-
-    const handler = (e: interaction.InteractionEvent) => {
-      this.cursorPos.copy(e.data.global);
-      this.pressing = (e.data.buttons & 1) !== 0;
-    };
-    game.view.camera.on('pointermove', handler);
-    game.view.camera.on('pointerdown', handler);
-    game.view.camera.on('pointerup', handler);
-    game.view.camera.on('pointerupoutside', handler);
+    game.messages$.ofType(Attack).subscribe(this.attack);
   }
 
-  isTileObject(obj: DisplayObject): obj is TileObjectSprite {
-    return obj && !!(obj as any as TileObjectSprite).coords;
-  }
+  private readonly position = vec2.create();
+  private readonly direction = vec2.create();
+  private readonly start = vec2.create();
+  private readonly end = vec2.create();
 
-  update(dt: number) {
-    const obj = this.interaction.hitTest(this.cursorPos, this.game.view.camera);
+  private attack = ({ entityId, weapon, targetPosition, effects }: Attack) => {
+    const entity = this.game.entities.get(entityId)!;
+    const spatial = entity.traits.get(Spatial);
+    // compensate for entity display offset
+    vec2.add(this.position, spatial.position, [0, -0.5]);
 
-    if (
-      !this.isTileObject(obj) || !vec2.equals(this.targetTile, obj.coords) ||
-      !this.pressing || vec2.dist(this.position, this.targetTileCenter) >= AttackRadius
-    ) {
-      if (this.targetTile[0] >= 0)
-        this.endAttack(this.targetTile[0], this.targetTile[1], this.targetSprite!);
-      vec2.set(this.targetTile, -1, -1);
-      this.targetSprite = undefined;
-    }
+    if (weapon.type === Weapon.Type.Fist) {
+      const projectile = Projectile.make(
+        this.game, entityId, weapon, effects,
+        targetPosition, targetPosition, 100, 'sprites/projectiles/invisible');
+      this.game.entities.add(projectile);
 
-    if (this.pressing && this.isTileObject(obj) && this.targetTile[0] < 0) {
-      vec2.add(this.targetTileCenter, obj.coords, [0.5, 0.5]);
-      if (vec2.dist(this.position, this.targetTileCenter) < AttackRadius) {
-        if (this.targetTile[0] < 0)
-          this.beginAttack(obj.coords[0], obj.coords[1], obj);
-        vec2.copy(this.targetTile, obj.coords);
-        this.targetSprite = obj;
-      }
-    }
+    } else {
+      let duration;
+      vec2.sub(this.direction, targetPosition, this.position);
 
-    if (this.targetTile[0] >= 0) {
-      vec2.sub(this.dir, this.targetTileCenter, this.position);
-      const data = this.game.player.traits.get(PlayerData);
-      const { slots } = this.game.player.traits.get(Inventory);
-      const active = slots[data.hotbarSelection].item;
+      if (weapon.type === Weapon.Type.Sword) {
+        if (vec2.length(this.direction) > weapon.range) {
+          vec2.normalize(this.direction, this.direction);
+          vec2.scaleAndAdd(targetPosition, this.position, this.direction, weapon.range);
+        } else {
+          vec2.normalize(this.direction, this.direction);
+        }
 
-      const dir = direction(this.dir[1], this.dir[0], 'attack');
-      this.sprite.animName = dir;
-      if (active && active.weapon) {
-        this.attackAnimName = `${active.weapon.type}-${dir}`;
-        const animDuration = Math.min(500, active.weapon.cooldown);
-        data.stunDuration = Math.max(data.stunDuration, animDuration);
-        this.sprite.playActionAnim(this.attackAnimName, animDuration);
+        vec2.scaleAndAdd(this.start, targetPosition, [this.direction[1], -this.direction[0]], 1);
+        vec2.scaleAndAdd(this.end, targetPosition, [-this.direction[1], this.direction[0]], 1);
+        duration = 250;
       } else {
-        this.attackAnimName = `attack-${dir}`;
-        this.sprite.playActionAnim(this.attackAnimName, 500);
-        data.stunDuration = Math.max(data.stunDuration, 500);
+        vec2.normalize(this.direction, this.direction);
+
+        vec2.scaleAndAdd(this.start, this.position, this.direction, 1.5);
+        vec2.scaleAndAdd(this.end, this.start, this.direction, weapon.range);
+        duration = 500;
       }
-      this.attacking(dt, this.targetSprite!);
-    }
-  }
 
-  private objHp = 0;
-  private obj!: TileObject;
-  private cooldown = 0;
-  private displayCenter = vec2.create();
-
-  private beginAttack(x: number, y: number, sprite: TileObjectSprite) {
-    this.obj = this.game.library.objects[this.game.map.getObject(x, y)];
-    if (this.obj.drops) {
-      this.objHp = this.obj.drops.hp;
-    }
-    vec2.add(this.displayCenter, this.targetTileCenter, sprite.jitter);
-    this.cooldown = 0;
-  }
-
-  private endAttack(x: number, y: number, sprite: TileObjectSprite) {
-  }
-
-  private attacking(dt: number, sprite: TileObjectSprite) {
-    this.cooldown -= dt;
-    if (this.cooldown < 0) {
-      this.cooldown = AttackCooldown;
-      this.game.dispatch(new PlayFX.Shake(PlayFX.Type.Shake, sprite));
-      this.game.dispatch(ShowParticles.splash(this.displayCenter, 20, parseInt(this.obj.color, 16), 0));
-      this.objHp--;
-    }
-
-    if (this.obj.drops && this.objHp < 0) {
-      for (const drop of generateDrops(this.obj.drops.table)) {
-        const itemDrop = ItemDrop.make(this.game, drop, this.displayCenter);
-        this.game.entities.add(itemDrop);
-      }
-      const replacement = this.obj.drops.replaceWith;
-      const id = replacement ?
-        this.game.library.objects.find(obj => obj && obj.name === replacement)!.id :
-        0;
-      this.game.map.setObject(this.targetTile[0], this.targetTile[1], id);
+      const projectile = Projectile.make(
+        this.game, entityId, weapon, effects,
+        this.start, this.end, duration,
+        `sprites/projectiles/${weapon.type}`
+      );
+      this.game.entities.add(projectile);
     }
   }
 }

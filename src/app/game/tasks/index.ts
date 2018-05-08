@@ -2,6 +2,7 @@ export * from './Task';
 
 export * from './PlayerInputTask';
 
+export * from './ProjectileTask';
 export * from './EffectTask';
 export * from './TerrainEffectTask';
 export * from './EquipmentEffectTask';

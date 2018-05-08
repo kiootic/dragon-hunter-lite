@@ -2,7 +2,7 @@ import { Message } from 'app/game/messages';
 import { Effect } from 'common/data';
 
 export class ApplyEffects implements Message {
-  public readonly type = 'inventory-swap';
+  public readonly type = 'apply-effects';
 
   constructor(
     public readonly entityId: number,
