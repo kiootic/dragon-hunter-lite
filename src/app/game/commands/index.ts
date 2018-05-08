@@ -5,3 +5,4 @@ export * from './Dump';
 export * from './Dupe';
 export * from './Give';
 export * from './Potion';
+export * from './Spawn';

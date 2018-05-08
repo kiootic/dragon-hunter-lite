@@ -29,5 +29,14 @@ export const Animations: Record<string, TextureDef> = {
       'arrow-up': { frameId: 'sprites/player/arrow-up', numFrames: 11, fps: 48 },
       'arrow-down': { frameId: 'sprites/player/arrow-down', numFrames: 11, fps: 48 },
     }
+  },
+  Skeleton: {
+    type: 'animation',
+    anims: {
+      'left': { frameId: 'sprites/skeleton/left', numFrames: 8, fps: 15 },
+      'right': { frameId: 'sprites/skeleton/right', numFrames: 8, fps: 15 },
+      'up': { frameId: 'sprites/skeleton/up', numFrames: 8, fps: 15 },
+      'down': { frameId: 'sprites/skeleton/down', numFrames: 8, fps: 15 },
+    }
   }
 };
