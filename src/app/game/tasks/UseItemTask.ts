@@ -10,7 +10,7 @@ import { vec2 } from 'gl-matrix';
 import { cloneDeep } from 'lodash';
 import { interaction, Point } from 'pixi.js';
 
-const ConsumeCooldown = 200;
+const ConsumeCooldown = 1000;
 const FistRange = 2.5;
 
 type UseType = 'attack' | 'interact' | null;

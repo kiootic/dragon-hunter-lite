@@ -2,7 +2,7 @@ import { SlotView } from 'app/components';
 import { Game } from 'app/game';
 import { HUDElement } from 'app/game/hud';
 import { Inventory, PlayerData } from 'app/game/traits';
-import { ItemSlot } from 'common/data';
+import { Item, ItemSlot, Weapon } from 'common/data';
 import { Container, Sprite, Texture } from 'pixi.js';
 
 const HotbarOpacity = 0.75;
@@ -42,6 +42,14 @@ export class Hotbar extends Container implements HUDElement {
       view.enabled = false;
       view.toolTipOpacity = 0.9;
       view.alwaysInteractive = true;
+
+      view.bgOverlay.texture = Texture.WHITE;
+      view.bgOverlay.width = 48;
+      view.bgOverlay.height = 0;
+      view.bgOverlay.alpha = 0.2;
+      view.bgOverlay.anchor.set(0, 1);
+      view.bgOverlay.position.set(4, 52);
+
       views.addChild(view);
       view.on('pointerdown', () => this.player.hotbarSelection = this.slots.indexOf(view.slot));
     }
@@ -76,12 +84,36 @@ export class Hotbar extends Container implements HUDElement {
   }
 
   private elapsed = 0;
+  private maxConsumeCooldown = 0;
+  private maxAttackCooldown = 0;
+  private lastConsumeCooldown = 0;
+  private lastAttackCooldown = 0;
   update(dt: number) {
     for (const [slotNum, key] of HotbarKeys) {
       if (this.game.keyboard.isDown(key))
         this.player.hotbarSelection = slotNum;
     }
     this.elapsed += dt;
+
+    if (this.player.consumeCooldown > this.lastConsumeCooldown)
+      this.maxConsumeCooldown = this.player.consumeCooldown;
+    this.lastConsumeCooldown = this.player.consumeCooldown;
+
+    if (this.player.attackCooldown > this.lastAttackCooldown)
+      this.maxAttackCooldown = this.player.attackCooldown;
+    this.lastAttackCooldown = this.player.attackCooldown;
+
+    const consumeCooldownHeight = 48 * (this.player.consumeCooldown / this.maxConsumeCooldown);
+    const attackCooldownHeight = 48 * (this.player.attackCooldown / this.maxAttackCooldown);
+
+    for (const { slot, bgOverlay } of this.slotViews) {
+      if (slot.item && slot.item.weapon && slot.item.weapon.type !== Weapon.Type.Arrow)
+        bgOverlay.height = attackCooldownHeight;
+      else if (slot.item && slot.item.type === Item.Type.Consumable)
+        bgOverlay.height = consumeCooldownHeight;
+      else
+        bgOverlay.height = 0;
+    }
   }
 
   layout(width: number, height: number) {
