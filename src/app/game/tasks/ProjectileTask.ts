@@ -22,6 +22,7 @@ export class ProjectileTask extends Task {
         continue;
       }
       const spatial = entity.traits.get(Spatial);
+      spatial.sprite.visible = entity.age > 100;
 
       // hit test
       const tileObj = this.game.map.getObject(spatial.position[0], spatial.position[1]);

@@ -47,7 +47,7 @@ export class AttackTask extends Task {
       } else {
         vec2.normalize(this.direction, this.direction);
 
-        vec2.scaleAndAdd(this.start, this.position, this.direction, 1.5);
+        vec2.copy(this.start, this.position);
         vec2.scaleAndAdd(this.end, this.start, this.direction, weapon.range);
         duration = 500;
       }

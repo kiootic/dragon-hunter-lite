@@ -50,6 +50,7 @@ export class Projectile extends Entity {
     spatial.sprite.setTexture(data.texture);
     spatial.sprite.anchor.set(1, -0.5);
     spatial.sprite.pivot.set(0, spatial.sprite.height / 2);
+    spatial.sprite.visible = false;
 
     spatial.sprite.rotation = -3 * Math.PI / 4 +
       Math.atan2(data.start[1] - data.end[1], data.start[0] - data.end[0]);
