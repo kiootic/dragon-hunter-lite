@@ -62,7 +62,8 @@ export class Game {
     }
   });
 
-  public dispatch(message: Message) {
+  public dispatch<T extends Message>(message: T) {
     this._message$.next(message);
+    return message;
   }
 }

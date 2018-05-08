@@ -36,7 +36,7 @@ export class Projectile extends Entity {
   }
 
   init() {
-    const spatial = this.traits(Spatial, { solid: false, collidable: true });
+    const spatial = this.traits(Spatial, { solid: false });
     vec2.set(spatial.scale, 4, 4);
     vec2.set(spatial.size, 0.5, 0.5);
 

@@ -12,7 +12,6 @@ export interface Spatial extends Trait {
   readonly scale: vec2;
   readonly size: vec2;
   readonly solid: boolean;
-  readonly collidable: boolean;
   readonly sprite: Camera.Sprite & TextureSprite;
 }
 
@@ -20,7 +19,7 @@ export namespace Spatial {
   export declare const _mark: Spatial;
   export const Type = 'spatial';
 
-  export function make(args?: { solid: boolean, collidable: boolean }): Spatial {
+  export function make(args?: { solid: boolean }): Spatial {
     return {
       type: Spatial.Type,
       position: vec2.fromValues(0, 0),
@@ -28,7 +27,6 @@ export namespace Spatial {
       scale: vec2.fromValues(1, 1),
       size: vec2.fromValues(0.5, 0.5),
       solid: args ? args.solid : true,
-      collidable: args ? args.collidable : true,
       sprite: Object.assign(new TextureSprite(), {
         layer: Camera.Layer.Objects,
         sortOffset: vec2.fromValues(0, 0),

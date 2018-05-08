@@ -7,14 +7,15 @@ export interface ProjectileData extends Trait {
   readonly type: typeof ProjectileData.Type;
 
   readonly sourceEntityId: number;
-  readonly weapon?: Weapon;
+  readonly weapon: Weapon;
   readonly effects: Effect[];
 
   readonly start: vec2;
   readonly end: vec2;
   readonly lifetime: number;
-
   readonly texture: TextureDef;
+
+  readonly hit: Set<string>;
 }
 
 export namespace ProjectileData {
@@ -25,12 +26,13 @@ export namespace ProjectileData {
     return {
       type: ProjectileData.Type,
       sourceEntityId: args ? args.sourceEntityId : 0,
-      weapon: args ? args.weapon : undefined,
+      weapon: args ? args.weapon : undefined as any,
       effects: args ? args.effects : [],
       start: args ? vec2.clone(args.start) : vec2.fromValues(0, 0),
       end: args ? vec2.clone(args.end) : vec2.fromValues(0, 0),
       lifetime: args ? args.lifetime : 0,
-      texture: args ? args.texture : ''
+      texture: args ? args.texture : '',
+      hit: new Set<string>()
     };
   }
 

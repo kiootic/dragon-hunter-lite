@@ -1,5 +1,6 @@
 export interface Weapon {
   readonly type: Weapon.Type;
+  readonly pierce?: boolean;
   readonly strength: number;
   readonly cooldown: number;
   readonly knockback: number;

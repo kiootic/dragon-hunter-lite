@@ -24,7 +24,7 @@ export class ItemDrop extends Entity {
   }
 
   init() {
-    const spatial = this.traits(Spatial, { solid: false, collidable: true });
+    const spatial = this.traits(Spatial, { solid: false });
     vec2.set(spatial.scale, 2, 2);
     vec2.set(spatial.size, 0.25, 0.25);
 

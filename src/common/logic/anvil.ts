@@ -108,6 +108,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 100,
           cooldown: mat.weight * (1 - mat.toughness) * 5000,
           knockback: mat.weight * (1 + mat.sharpness) * 10,
+          pierce: true,
           range: 2.5,
           color: blendPartColors(parts.slice(0, 2))
         };
@@ -133,6 +134,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 250,
           cooldown: mat.weight * (1 - mat.toughness) * 15000,
           knockback: mat.weight * (1 + mat.sharpness) * 20,
+          pierce: true,
           range: 4,
           color: (parts[0].texture as any).tint || 'ffffff'
         };

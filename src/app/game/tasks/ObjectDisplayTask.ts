@@ -2,20 +2,18 @@ import { DisplayTileSize } from 'app';
 import { TextureSprite } from 'app/components';
 import { Game } from 'app/game';
 import { TileObjectSprite } from 'app/game/interfaces';
+import { ObjectSpriteRequest } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Camera } from 'app/game/Camera';
 import { TileObject } from 'common/data';
 import { Noise } from 'common/noise';
 import { vec2 } from 'gl-matrix';
-import { Rectangle } from 'pixi.js';
 import { create as createRand } from 'random-seed';
 
 const ObjectSize = 32;
 const MarginSize = 5;
 
 class ObjectSprite extends TextureSprite implements Camera.Sprite, TileObjectSprite {
-  public readonly runWhenPaused = true;
-
   public readonly jitter = vec2.fromValues(0, 0);
   public readonly sortOffset = vec2.fromValues(0, 0);
   public layer = Camera.Layer.Objects;
@@ -33,14 +31,10 @@ class ObjectSprite extends TextureSprite implements Camera.Sprite, TileObjectSpr
     this.layer = obj.terrain ? Camera.Layer.Terrain : Camera.Layer.Objects;
     this.setTexture(obj.texture, x + y * this.game.map.width);
 
-    const scale = obj.scale || 1;
-
-    const sw = ObjectSize / scale, sh = ObjectSize / scale;
-    this.hitArea = new Rectangle(-sw / 2, -sh, sw, sh);
     this.interactive = obj.interactive || false;
 
-    const displayScale = scale * DisplayTileSize / ObjectSize;
-    this.scale.set(displayScale, displayScale);
+    const scale = (obj.scale || 1) * DisplayTileSize / ObjectSize;
+    this.scale.set(scale, scale);
   }
 }
 
@@ -49,6 +43,8 @@ function tileKey(x: number, y: number) {
 }
 
 export class ObjectDisplayTask extends Task {
+  public readonly runWhenPaused = true;
+
   private readonly sprites = new Map<string, ObjectSprite>();
   private readonly jitterNoiseX: Noise;
   private readonly jitterNoiseY: Noise;
@@ -66,6 +62,10 @@ export class ObjectDisplayTask extends Task {
         this.game.view.camera.removeChild(sprite);
         this.sprites.delete(key);
       }
+    });
+
+    this.game.messages$.ofType(ObjectSpriteRequest).subscribe(request => {
+      request.sprite = this.sprites.get(tileKey(request.x, request.y));
     });
   }
 
@@ -118,8 +118,8 @@ export class ObjectDisplayTask extends Task {
         const sprite = removePool.pop() || new ObjectSprite(this.game);
         sprite.setTile(x, y, obj);
         if (obj.jitter) {
-          sprite.jitter[0] = Math.round((this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (1 / 3));
-          sprite.jitter[1] = Math.round((this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (1 / 3));
+          sprite.jitter[0] = (this.jitterNoiseX.noise2D(x, y) * 2 - 1) * (1 / 3);
+          sprite.jitter[1] = (this.jitterNoiseY.noise2D(x, y) * 2 - 1) * (1 / 3);
         }
 
         if (!sprite.parent)
