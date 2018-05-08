@@ -1,5 +1,5 @@
 export * from './HUDElement';
-export * from './DebugConsole';
+export * from './Console';
 export * from './MiniMap';
 export * from './Hotbar';
 export * from './Status';

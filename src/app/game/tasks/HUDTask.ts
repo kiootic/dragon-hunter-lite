@@ -3,7 +3,7 @@ import * as hud from 'app/game/hud';
 import { Task } from 'app/game/tasks';
 
 const HUDElements: hud.HUDElementType[] = [
-  hud.DebugConsole,
+  hud.Console,
   hud.Hotbar,
   hud.Status,
   hud.MiniMap,
