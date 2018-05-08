@@ -20,12 +20,14 @@ export class EffectTask extends Task {
 
     const entityEffects = stats.effects;
 
-    // replace existing effect if duration of new effect is longer
+    // replace existing effect if duration of new effect is longer / stronger
     for (let i = 0; i < entityEffects.length; i++) {
-      const { type, duration } = entityEffects[i];
-      const effectIndex = effects.findIndex(effect => effect.type === type && effect.duration >= duration);
+      const { type, duration, power } = entityEffects[i];
+      const effectIndex = effects.findIndex(effect => effect.type === type);
       if (effectIndex >= 0) {
-        entityEffects[i] = effects.splice(effectIndex, 1)[0];
+        if (effects[effectIndex].duration > duration || effects[effectIndex].power > power)
+          entityEffects[i] = effects[effectIndex];
+        effects.splice(effectIndex, 1);
       }
     }
 
