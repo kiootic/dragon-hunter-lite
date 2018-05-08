@@ -18,9 +18,13 @@ export class DragDrop {
   constructor(private readonly app: App) {
     this.interaction = (app.renderer.plugins as RendererPlugins).interaction;
     app.stage.addChild(this.overlay);
-    this.interaction.on('pointermove', (e: InteractionEvent) =>
-      e.data.getLocalPosition(this.overlay, this.pointerPos)
-    );
+    this.interaction.on('pointermove', (e: InteractionEvent) => {
+      if (e.data.originalEvent.target !== app.view) {
+        this.cancel();
+        return;
+      }
+      e.data.getLocalPosition(this.overlay, this.pointerPos);
+    });
     this.interaction.on('pointerup', this.end);
   }
 
@@ -42,6 +46,7 @@ export class DragDrop {
     if (this.activeObj && this.activeObj === object) {
       this.overlay.removeChild(this.activeObj);
       this.endDrag$.next(null);
+      this.activeObj = undefined;
     }
   }
 

@@ -20,6 +20,11 @@ export class ToolTip {
     this.interaction = (app.renderer.plugins as RendererPlugins).interaction;
     app.stage.addChild(this.overlay);
     this.interaction.on('pointermove', (e: InteractionEvent) => {
+      if (e.data.originalEvent.target !== app.view) {
+        if (this.panel) this.hide(this.panel);
+        return;
+      }
+
       e.data.getLocalPosition(this.overlay, this.pointerPos);
       this.global.copy(e.data.global);
     });
@@ -27,6 +32,9 @@ export class ToolTip {
 
   public add(target: DisplayObject, show: () => Panel | null) {
     const showToolTip = (e: interaction.InteractionEvent) => {
+      if (e.data.originalEvent.target !== this.app.view)
+        return;
+
       if (e.target === target && !this.app.dragDrop.active) {
         const panel = show();
         if (panel)

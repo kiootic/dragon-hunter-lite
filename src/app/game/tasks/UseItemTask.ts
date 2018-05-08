@@ -31,6 +31,10 @@ export class UseItemTask extends Task {
     this.inventory = game.player.traits.get(Inventory).slots;
 
     const handler = (e: interaction.InteractionEvent) => {
+      if (e.data.originalEvent.target !== this.game.app.view) {
+        this.type = null;
+        return;
+      }
       e.data.getLocalPosition(this.game.view.camera, this.cursorPos);
 
       if ((e.data.buttons & 1) !== 0) this.type = 'attack';
