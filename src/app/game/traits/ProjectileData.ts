@@ -22,7 +22,7 @@ export namespace ProjectileData {
   export declare const _mark: ProjectileData;
   export const Type = 'projectile-data';
 
-  export function make(args?: Pick<ProjectileData, Exclude<keyof ProjectileData, 'type'>>): ProjectileData {
+  export function make(args?: Pick<ProjectileData, Exclude<keyof ProjectileData, 'type' | 'hit'>>): ProjectileData {
     return {
       type: ProjectileData.Type,
       sourceEntityId: args ? args.sourceEntityId : 0,

@@ -6,14 +6,14 @@ function recipe(input: { accepts: string, texture: TextureDef }[], output: Item)
 
 export const makeRecipes = (): Recipe[] => [
   recipe([
-    { accepts: '^bone$', texture: 'sprites/items/bone' },
+    { accepts: '^bone$', texture: { type: 'single', tex: 'sprites/items/bone', tint: 'ccb396' } },
     { accepts: '^leaf$', texture: 'sprites/items/leaf' },
   ], {
       id: 'gel-bone',
       name: 'Bone Gel',
       description: 'alchemical reagent: boost elemental fusion',
       type: Item.Type.Consumable,
-      texture: 'sprites/items/gel'
+      texture: { type: 'single', tex: 'sprites/items/gel', tint: 'ccb396' }
     }),
   recipe([
     { accepts: '^stone$', texture: 'sprites/items/stone' },
@@ -23,11 +23,7 @@ export const makeRecipes = (): Recipe[] => [
       name: 'Stone Gel',
       description: 'alchemical reagent: boost elemental fission',
       type: Item.Type.Consumable,
-      texture: {
-        type: 'single',
-        tex: 'sprites/items/gel',
-        tint: '808080'
-      }
+      texture: { type: 'single', tex: 'sprites/items/gel', tint: '808080' }
     }),
   recipe([
     { accepts: '^solution$', texture: 'sprites/items/solution' },
@@ -38,11 +34,7 @@ export const makeRecipes = (): Recipe[] => [
       name: 'Alchemical Gel',
       description: 'alchemical reagent: purify solution',
       type: Item.Type.Consumable,
-      texture: {
-        type: 'single',
-        tex: 'sprites/items/gel',
-        tint: 'e06060'
-      }
+      texture: { type: 'single', tex: 'sprites/items/gel', tint: 'e06060' }
     }),
   recipe([
     { accepts: '^stone$', texture: 'sprites/items/stone' },
@@ -50,12 +42,10 @@ export const makeRecipes = (): Recipe[] => [
       id: 'scale',
       name: 'Stone Shard',
       type: Item.Type.Material,
-      texture: {
-        type: 'single',
-        tex: 'sprites/items/scale',
-        tint: '808080'
-      },
+      texture: { type: 'single', tex: 'sprites/items/scale', tint: '808080' },
       material: {
+        name: 'Stone',
+        color: '808080',
         weight: 0.1,
         toughness: 0.1,
         sharpness: 0.15,
@@ -63,13 +53,15 @@ export const makeRecipes = (): Recipe[] => [
       },
     }),
   recipe([
-    { accepts: '^bone$', texture: 'sprites/items/bone' },
+    { accepts: '^bone$', texture: { type: 'single', tex: 'sprites/items/bone', tint: 'ccb396' } },
   ], {
       id: 'scale',
       name: 'Bone Shard',
       type: Item.Type.Material,
-      texture: 'sprites/items/scale',
+      texture: { type: 'single', tex: 'sprites/items/scale', tint: 'ccb396' },
       material: {
+        name: 'Bone',
+        color: 'ccb396',
         weight: 0.05,
         toughness: 0.05,
         sharpness: 0.2,
@@ -83,12 +75,10 @@ export const makeRecipes = (): Recipe[] => [
       id: 'rod',
       name: 'Wooden Rod',
       type: Item.Type.Material,
-      texture: {
-        type: 'single',
-        tex: 'sprites/items/rod',
-        tint: 'b3927b'
-      },
+      texture: { type: 'single', tex: 'sprites/items/rod', tint: 'b3927b' },
       material: {
+        name: 'Wood',
+        color: 'b3927b',
         weight: 0.15,
         toughness: 0.15,
         sharpness: 0.05,
@@ -102,12 +92,10 @@ export const makeRecipes = (): Recipe[] => [
       id: 'rod',
       name: 'Stone Rod',
       type: Item.Type.Material,
-      texture: {
-        type: 'single',
-        tex: 'sprites/items/rod',
-        tint: '808080'
-      },
+      texture: { type: 'single', tex: 'sprites/items/rod', tint: '808080' },
       material: {
+        name: 'Stone',
+        color: '808080',
         weight: 0.25,
         toughness: 0.2,
         sharpness: 0.1,
@@ -121,35 +109,31 @@ export const makeRecipes = (): Recipe[] => [
       id: 'skin',
       name: 'Wood Plate',
       type: Item.Type.Material,
-      texture: {
-        type: 'single',
-        tex: 'sprites/items/skin',
-        tint: 'b3927b'
-      },
+      texture: { type: 'single', tex: 'sprites/items/skin', tint: 'b3927b' },
       material: {
+        name: 'Wood',
+        color: 'b3927b',
         weight: 0.2,
         toughness: 0.2,
         sharpness: 0.05,
         affinity: 0.25,
       },
     }),
-    recipe([
-      { accepts: '^leaf$', texture: 'sprites/items/leaf' },
-      { accepts: '^leaf$', texture: 'sprites/items/leaf' },
-    ], {
-        id: 'skin',
-        name: 'Leaf Pelt',
-        type: Item.Type.Material,
-        texture: {
-          type: 'single',
-          tex: 'sprites/items/skin',
-          tint: '00d000'
-        },
-        material: {
-          weight: 0.1,
-          toughness: 0.15,
-          sharpness: 0.05,
-          affinity: 0.15,
-        },
-      }),
+  recipe([
+    { accepts: '^leaf$', texture: 'sprites/items/leaf' },
+    { accepts: '^leaf$', texture: 'sprites/items/leaf' },
+  ], {
+      id: 'skin',
+      name: 'Leaf Pelt',
+      type: Item.Type.Material,
+      texture: { type: 'single', tex: 'sprites/items/skin', tint: '00d000' },
+      material: {
+        name: 'Leaf',
+        color: '00d000',
+        weight: 0.1,
+        toughness: 0.15,
+        sharpness: 0.05,
+        affinity: 0.15,
+      },
+    }),
 ];

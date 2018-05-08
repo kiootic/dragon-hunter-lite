@@ -93,8 +93,10 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
           id: 'bone',
           name: 'Bone',
           type: Item.Type.Material,
-          texture: 'sprites/items/bone',
+          texture: { type: 'single', tex: 'sprites/items/bone', tint: 'ccb396' },
           material: {
+            name: 'Bone',
+            color: 'ccb396',
             weight: 0.1,
             toughness: 0.1,
             sharpness: 0.15,
@@ -141,6 +143,8 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
           type: Item.Type.Material,
           texture: 'sprites/items/leaf',
           material: {
+            name: 'Leaf',
+            color: '00d000',
             weight: 0.05,
             toughness: 0.05,
             sharpness: 0.05,

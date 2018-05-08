@@ -1,10 +1,10 @@
 import { blend } from 'common/color';
-import { Aspect, Effect, Element, Item, Material, TextureDef, Weapon } from 'common/data';
+import { Aspect, Effect, Element, Item, MaterialStats, TextureDef, Weapon } from 'common/data';
 import { mix } from 'common/logic/alchemy';
 import { compute as computeArmors } from 'common/logic/effect/armors';
 import { scaleAspects } from 'common/logic/effect/common';
 import { compute as computeSolution } from 'common/logic/effect/solution';
-import { startCase } from 'lodash';
+import { countBy, startCase } from 'lodash';
 
 export enum AssemblyType {
   Chestplate = 'chestplate',
@@ -17,7 +17,7 @@ export enum AssemblyType {
   Infusion = 'infusion'
 }
 
-const Parts: Record<Exclude<AssemblyType, AssemblyType.Infusion>, Material[]> = {
+const Parts: Record<Exclude<AssemblyType, AssemblyType.Infusion>, MaterialStats[]> = {
   [AssemblyType.Chestplate]: [
     { weight: 0.2, toughness: 0.4, sharpness: 0.4, affinity: 0.2, },
     { weight: 0.2, toughness: 0.4, sharpness: 0.4, affinity: 0.2, },
@@ -73,7 +73,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       return Object.assign({}, parts[1], { aspects, effects });
     }
   } else {
-    const mat: Material = { weight: 0, toughness: 0, sharpness: 0, affinity: 0 };
+    const mat: MaterialStats = { weight: 0, toughness: 0, sharpness: 0, affinity: 0 };
     for (let i = 0; i < parts.length; i++) {
       const material = parts[i].material;
       if (!material) {
@@ -96,13 +96,27 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
     let texture: TextureDef;
     let itemType = Item.Type.Weapon;
     function blendPartColors(parts: Item[]) {
-      return blend(parts.map(({ texture }) => ({
-        color: parseInt((texture as any).tint || 'ffffff', 16)
+      return blend(parts.map(({ material }) => ({
+        color: parseInt(material!.color, 16)
       }))).toString(16);
+    }
+
+    let materialName = '';
+    let matColor = 'ffffff';
+    function mainParts(parts: Item[]) {
+      const materialCounts = countBy(parts.map(part => part.material!.name));
+      let maxMaterial = 0;
+      for (const material of Object.keys(materialCounts))
+        if (materialCounts[material] > maxMaterial) {
+          materialName = material;
+          maxMaterial = materialCounts[material];
+        }
+      matColor = blendPartColors(parts);
     }
 
     switch (type) {
       case AssemblyType.Sword:
+        mainParts(parts.slice(0, 2));
         weapon = {
           type: Weapon.Type.Sword,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 100,
@@ -110,7 +124,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           knockback: mat.weight * (1 + mat.sharpness) * 10,
           pierce: true,
           range: 2.5,
-          color: blendPartColors(parts.slice(0, 2))
+          color: matColor
         };
         aspects = mix(parts, data);
         effects = computeSolution(aspects);
@@ -124,11 +138,12 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           base: {
             type: 'single',
             tex: 'sprites/items/sword',
-            tint: (parts[2].texture as any).tint || 'ffffff'
+            tint: parts[2].material!.color
           }
         };
         break;
       case AssemblyType.Spear:
+        mainParts(parts.slice(0, 1));
         weapon = {
           type: Weapon.Type.Spear,
           strength: mat.sharpness * (1 + mat.weight) * (1 + mat.toughness) * 250,
@@ -136,7 +151,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           knockback: mat.weight * (1 + mat.sharpness) * 20,
           pierce: true,
           range: 4,
-          color: (parts[0].texture as any).tint || 'ffffff'
+          color: matColor
         };
         aspects = mix(parts, data);
         effects = computeSolution(aspects);
@@ -145,7 +160,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           overlay: {
             type: 'single',
             tex: 'sprites/items/spear-head',
-            tint: (parts[0].texture as any).tint || 'ffffff'
+            tint: parts[0].material!.color
           },
           base: {
             type: 'single',
@@ -155,13 +170,14 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         };
         break;
       case AssemblyType.Bow:
+        mainParts([parts[0], parts[1], parts[2], parts[4]]);
         weapon = {
           type: Weapon.Type.Bow,
           strength: mat.toughness * (1 + mat.weight) * 20,
           cooldown: mat.weight * (1 - mat.toughness) * 1000,
           knockback: 0,
           range: 0,
-          color: 'ffffff'
+          color: matColor
         };
         aspects = mix(parts, data);
         effects = computeSolution(aspects);
@@ -180,13 +196,14 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
         };
         break;
       case AssemblyType.Arrow:
+        mainParts(parts.slice(0, 1));
         weapon = {
           type: Weapon.Type.Arrow,
           strength: mat.weight * (1 + mat.sharpness) * 10,
           cooldown: 0,
           knockback: 0,
-          range: 8 + mat.toughness * 10,
-          color: (parts[0].texture as any).tint || 'ffffff'
+          range: 5 + mat.toughness * 15,
+          color: matColor
         };
         aspects = scaleAspects(mix(parts, data), Math.pow(mat.affinity, 0.5));
         effects = computeSolution(aspects);
@@ -195,24 +212,25 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           base: {
             type: 'single',
             tex: 'sprites/items/arrow',
-            tint: (parts[1].texture as any).tint || 'ffffff'
+            tint: parts[1].material!.color
           },
           overlay: {
             type: 'composite',
             base: {
               type: 'single',
               tex: 'sprites/items/arrow-head',
-              tint: (parts[0].texture as any).tint || 'ffffff'
+              tint: parts[0].material!.color
             },
             overlay: {
               type: 'single',
               tex: 'sprites/items/arrow-fletch',
-              tint: (parts[2].texture as any).tint || 'ffffff'
+              tint: parts[2].material!.color
             }
           }
         };
         break;
       case AssemblyType.Chestplate:
+        mainParts(parts);
         itemType = Item.Type.Chestplate;
         [effects, aspects] = computeArmors(parts, mat, 1, data);
         texture = {
@@ -220,32 +238,33 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           base: {
             type: 'single',
             tex: 'sprites/items/chestplate',
-            tint: (parts[3].texture as any).tint || 'ffffff'
+            tint: parts[3].material!.color
           },
           overlay: {
             type: 'composite',
             base: {
               type: 'single',
               tex: 'sprites/items/chestplate-belt',
-              tint: (parts[2].texture as any).tint || 'ffffff'
+              tint: parts[2].material!.color
             },
             overlay: {
               type: 'composite',
               base: {
                 type: 'single',
                 tex: 'sprites/items/chestplate-left',
-                tint: (parts[0].texture as any).tint || 'ffffff'
+                tint: parts[0].material!.color
               },
               overlay: {
                 type: 'single',
                 tex: 'sprites/items/chestplate-right',
-                tint: (parts[1].texture as any).tint || 'ffffff'
+                tint: parts[1].material!.color
               }
             }
           }
         };
         break;
       case AssemblyType.Leggings:
+        mainParts(parts);
         itemType = Item.Type.Leggings;
         [effects, aspects] = computeArmors(parts, mat, 0.7, data);
         texture = {
@@ -253,24 +272,25 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           base: {
             type: 'single',
             tex: 'sprites/items/leggings',
-            tint: (parts[0].texture as any).tint || 'ffffff'
+            tint: parts[0].material!.color
           },
           overlay: {
             type: 'composite',
             base: {
               type: 'single',
               tex: 'sprites/items/leggings-left',
-              tint: (parts[1].texture as any).tint || 'ffffff'
+              tint: parts[1].material!.color
             },
             overlay: {
               type: 'single',
               tex: 'sprites/items/leggings-right',
-              tint: (parts[2].texture as any).tint || 'ffffff'
+              tint: parts[2].material!.color
             }
           }
         };
         break;
       case AssemblyType.Boots:
+        mainParts(parts);
         itemType = Item.Type.Boots;
         [effects, aspects] = computeArmors(parts, mat, 0.4, data);
         texture = {
@@ -278,12 +298,12 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
           base: {
             type: 'single',
             tex: 'sprites/items/boots',
-            tint: (parts[0].texture as any).tint || 'ffffff'
+            tint: parts[0].material!.color
           },
           overlay: {
             type: 'single',
             tex: 'sprites/items/boots-right',
-            tint: (parts[1].texture as any).tint || 'ffffff'
+            tint: parts[1].material!.color
           }
         };
         break;
@@ -296,12 +316,12 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
 
     return {
       id: type,
-      name: startCase(type),
+      name: `${materialName} ${startCase(type)}`,
       type: itemType,
       texture,
       aspects,
       effects,
-      material: mat,
+      material: { name: materialName, color: matColor, ...mat },
       weapon
     };
   }

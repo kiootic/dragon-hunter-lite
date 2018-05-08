@@ -1,4 +1,4 @@
-import { Aspect, Effect, Element, Item, Material } from 'common/data';
+import { Aspect, Effect, Element, Item, MaterialStats } from 'common/data';
 import { mix } from 'common/logic/alchemy';
 import { computeEffects, makeEffect, scaleAspects } from 'common/logic/effect/common';
 import { EffectDef } from 'data/effects';
@@ -57,7 +57,7 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
 }
 
 export function compute(
-  parts: Item[], material: Material,
+  parts: Item[], material: MaterialStats,
   multiplier: number, data: Record<string, Element>
 ): [Effect[], Aspect[]] {
   const materialAspects: Aspect[] = [{
