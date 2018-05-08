@@ -16,7 +16,7 @@ export class SlotView extends Container {
   private dragging = false;
 
   public enabled = true;
-  public showTooltip = true;
+  public toolTipOpacity = 1;
   public alwaysInteractive = false;
   public get empty() { return !this.slot.item; }
 
@@ -41,9 +41,10 @@ export class SlotView extends Container {
     this.interactive = true;
 
     this.game.app.toolTip.add(this, () => {
-      if (this.slot.item && this.showTooltip) {
+      if (this.slot.item && this.toolTipOpacity > 0) {
         if (!toolTip) toolTip = new ItemToolTip(this.game.app, this.slot.item);
         else toolTip.setItem(this.slot.item);
+        toolTip.alpha = this.toolTipOpacity;
         return toolTip;
       } else
         return null;

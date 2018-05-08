@@ -40,7 +40,7 @@ export class Hotbar extends Container implements HUDElement {
     this.slotViews = this.slots.map(slot => new SlotView(game, slot));
     for (const view of this.slotViews) {
       view.enabled = false;
-      view.showTooltip = false;
+      view.toolTipOpacity = 0.9;
       view.alwaysInteractive = true;
       views.addChild(view);
       view.on('pointerdown', () => this.player.hotbarSelection = this.slots.indexOf(view.slot));
