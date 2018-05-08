@@ -71,20 +71,21 @@ export class AttackTask extends Task {
 
     if (this.targetTile[0] >= 0) {
       vec2.sub(this.dir, this.targetTileCenter, this.position);
-      const { hotbarSelection } = this.game.player.traits.get(PlayerData);
+      const data = this.game.player.traits.get(PlayerData);
       const { slots } = this.game.player.traits.get(Inventory);
-      const active = slots[hotbarSelection].item;
+      const active = slots[data.hotbarSelection].item;
 
       const dir = direction(this.dir[1], this.dir[0], 'attack');
       this.sprite.animName = dir;
       if (active && active.weapon) {
         this.attackAnimName = `${active.weapon.type}-${dir}`;
-        const maxDuration = ({ sword: 500, spear: 700, bow: 1200 } as Record<string, number>)[active.weapon.type];
-        const animDuration = Math.min(maxDuration, active.weapon.cooldown);
+        const animDuration = Math.min(500, active.weapon.cooldown);
+        data.stunDuration = Math.max(data.stunDuration, animDuration);
         this.sprite.playActionAnim(this.attackAnimName, animDuration);
       } else {
         this.attackAnimName = `attack-${dir}`;
-        this.sprite.playActionAnim(this.attackAnimName);
+        this.sprite.playActionAnim(this.attackAnimName, 500);
+        data.stunDuration = Math.max(data.stunDuration, 500);
       }
       this.attacking(dt, this.targetSprite!);
     }

@@ -24,10 +24,10 @@ export const Animations: Record<string, TextureDef> = {
       'spear-up': { frameId: 'sprites/player/spear-up', numFrames: 7, fps: 10 },
       'spear-down': { frameId: 'sprites/player/spear-down', numFrames: 7, fps: 10 },
 
-      'bow-left': { frameId: 'sprites/player/bow-left', numFrames: 12, fps: 48 },
-      'bow-right': { frameId: 'sprites/player/bow-right', numFrames: 12, fps: 48 },
-      'bow-up': { frameId: 'sprites/player/bow-up', numFrames: 12, fps: 48 },
-      'bow-down': { frameId: 'sprites/player/bow-down', numFrames: 12, fps: 48 },
+      'bow-left': { frameId: 'sprites/player/bow-left', numFrames: 11, fps: 48 },
+      'bow-right': { frameId: 'sprites/player/bow-right', numFrames: 11, fps: 48 },
+      'bow-up': { frameId: 'sprites/player/bow-up', numFrames: 11, fps: 48 },
+      'bow-down': { frameId: 'sprites/player/bow-down', numFrames: 11, fps: 48 },
     }
   }
 };
