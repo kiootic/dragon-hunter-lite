@@ -6,6 +6,8 @@ import { Inventory, Spatial } from 'app/game/traits';
 import { Item, ItemSlot } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
+const MinInteractAge = 350;
+
 export class InventoryTask extends Task {
   public readonly runWhenPaused = true;
 
@@ -25,7 +27,7 @@ export class InventoryTask extends Task {
       const spatial = itemDrop.traits.get(Spatial);
       const d = vec2.dist(spatial.position, this.playerPos);
 
-      if (itemDrop.age >= 350 || d < 3.5) {
+      if (itemDrop.age >= MinInteractAge && d > 0.5 && d < 3.5) {
         // magnet (faster if nearer)
         vec2.sub(spatial.velocity, this.playerPos, spatial.position);
         const len = vec2.len(spatial.velocity);
@@ -45,7 +47,7 @@ export class InventoryTask extends Task {
       item = entityB;
     } else return;
 
-    if (this.pickUp(item.traits.get(Inventory).slots[0].item!))
+    if (item.age >= MinInteractAge && this.pickUp(item.traits.get(Inventory).slots[0].item!))
       item.delete();
   }
 
