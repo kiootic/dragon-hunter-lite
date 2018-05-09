@@ -18,6 +18,7 @@ type UseType = 'attack' | 'interact' | null;
 export class UseItemTask extends Task {
   private type: UseType = null;
   private readonly playerPos: vec2;
+  private readonly playerVel: vec2;
   private readonly playerSprite: TextureSprite;
   private readonly data: PlayerData;
   private readonly inventory: ItemSlot[];
@@ -27,7 +28,11 @@ export class UseItemTask extends Task {
   constructor(game: Game) {
     super(game);
     this.data = game.player.traits.get(PlayerData);
-    ({ position: this.playerPos, sprite: this.playerSprite } = game.player.traits.get(Spatial));
+    ({
+      position: this.playerPos,
+      velocity: this.playerVel,
+      sprite: this.playerSprite
+    } = game.player.traits.get(Spatial));
     this.inventory = game.player.traits.get(Inventory).slots;
 
     const handler = (e: interaction.InteractionEvent) => {
@@ -142,6 +147,8 @@ export class UseItemTask extends Task {
     this.playerSprite.playActionAnim(animName, duration);
 
     this.game.dispatch(new Attack(this.game.player.id, weapon, this.coords, effects));
+    if (this.data.stunDuration === 0)
+      vec2.set(this.playerVel, 0, 0);
     this.data.stunDuration = Math.max(this.data.stunDuration, duration);
     this.data.attackCooldown = weapon.cooldown || 500;
   }

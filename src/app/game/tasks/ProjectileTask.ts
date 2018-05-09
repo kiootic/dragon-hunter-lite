@@ -41,7 +41,6 @@ export class ProjectileTask extends Task {
     if (this.regenCooldown >= ObjectHPRegenInterval) {
       for (const key of this.objectDamages.keys()) {
         const dmg = (this.objectDamages.get(key) || 0) - 1;
-        console.log(dmg);
         if (dmg <= 0)
           this.objectDamages.delete(key);
         else
