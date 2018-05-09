@@ -27,17 +27,21 @@ export class AttackTask extends Task {
     // compensate for entity display offset
     vec2.add(this.position, spatial.position, [0, -0.5]);
 
+    vec2.sub(this.direction, targetPosition, this.position);
+
     let stunDuration;
     if (weapon.type === Weapon.Type.Fist) {
+      vec2.scaleAndAdd(this.start, targetPosition, this.direction, -0.5);
+      vec2.copy(this.end, targetPosition);
+
       const projectile = Projectile.make(
         this.game, entityId, weapon, effects,
-        targetPosition, targetPosition, 100, 'sprites/projectiles/invisible');
+        this.start, this.end, 100, 'sprites/projectiles/invisible');
       this.game.entities.add(projectile);
       stunDuration = 500;
 
     } else {
       let duration;
-      vec2.sub(this.direction, targetPosition, this.position);
 
       if (weapon.type === Weapon.Type.Sword) {
         if (vec2.length(this.direction) > weapon.range) {

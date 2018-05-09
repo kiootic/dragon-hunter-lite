@@ -7,6 +7,7 @@ export interface EffectDef {
 export namespace EffectDef {
   export enum Type {
     Stunned = 'stunned',
+    Knockback = 'knockback',
 
     Heal = 'heal',
     Damage = 'damage',
@@ -31,6 +32,7 @@ function effect(name: string, description: string, visible = true): EffectDef {
 export const Effects: Record<EffectDef.Type, EffectDef> = {
   // technical effects
   [EffectDef.Type.Stunned]: effect('Stunned', 'Cannot move or attack', false),
+  [EffectDef.Type.Knockback]: effect('Knockback', 'Cannot move', false),
 
   // actual effects
   [EffectDef.Type.Heal]: effect('Heal', 'Recover <power> HP', false),

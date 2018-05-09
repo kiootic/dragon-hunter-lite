@@ -2,7 +2,7 @@ import { TextureSprite } from 'app/components';
 import { Entity } from 'app/game/entities';
 import { EntityCollision, TileCollision } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { Collidable, Float, Spatial } from 'app/game/traits';
+import { Collidable, Float, Spatial, Stats } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
 import { AABB, EPSILON, Point, Sweep } from 'app/utils/intersect';
 import { TileObject } from 'common/data';
@@ -44,6 +44,7 @@ export class EntityMovementTask extends Task {
     const t = dt / 1000;
     for (const entity of this.game.entities.withTrait(Spatial)) {
       const { position, sprite, velocity } = entity.traits.get(Spatial);
+      const stats = entity.traits.get(Stats);
       vec2.scale(this.vel, velocity, dt / 1000);
 
       const collidable = entity.traits.get(Collidable);
@@ -56,7 +57,8 @@ export class EntityMovementTask extends Task {
         vec2.add(position, position, this.vel);
       }
 
-      this.updateDisplay(velocity, this.vel, sprite);
+      if (stats && Stats.canMove(stats))
+        this.updateDisplay(velocity, this.vel, sprite);
 
       const float = entity.traits.get(Float);
       if (float && float.gravity) {

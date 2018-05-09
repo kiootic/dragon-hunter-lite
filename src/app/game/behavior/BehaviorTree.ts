@@ -1,5 +1,6 @@
-import { Action, ActionState, Condition, ConditionState } from 'app/game/behavior';
+import { Action, ActionKind, ActionState, Condition, ConditionState } from 'app/game/behavior';
 import { Entity } from 'app/game/entities';
+import { Stats } from 'app/game/traits';
 
 interface TreeAction extends ActionState {
   _active: boolean;
@@ -37,17 +38,20 @@ export namespace BehaviorTree {
       for (const actionState of conditionState._actions) {
         const action = actions.get(actionState.type)!;
         context.state = actionState;
+        let actionFulfilled = fulfilled;
+        if (action.Kind === ActionKind.Movement)
+          actionFulfilled = actionFulfilled && Stats.canMove(self.traits.get(Stats));
 
-        if (fulfilled && !actionState._active) {
+        if (actionFulfilled && !actionState._active) {
           action.begin && action.begin.call(context);
           actionState._active = true;
         }
-        if (actionState._active)
-          action.tick.call(context, dt);
-        if (!fulfilled && actionState._active) {
+        if (!actionFulfilled && actionState._active) {
           action.end && action.end.call(context);
           actionState._active = false;
         }
+        if (actionState._active)
+          action.tick.call(context, dt);
       }
     }
   }

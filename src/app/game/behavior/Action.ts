@@ -1,6 +1,8 @@
-import { Game } from 'app/game';
 import { BehaviorContext } from 'app/game/behavior';
-import { Entity } from 'app/game/entities';
+
+export enum ActionKind {
+  Movement = 'movement'
+}
 
 export interface ActionState {
   readonly type: string;
@@ -9,6 +11,7 @@ export interface ActionState {
 export interface Action<State extends ActionState> {
   readonly _state: State;
   readonly Type: string;
+  readonly Kind: ActionKind;
 
   begin?(this: BehaviorContext<State>): void;
   tick(this: BehaviorContext<State>, dt: number): void;

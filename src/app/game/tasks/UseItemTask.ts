@@ -103,7 +103,7 @@ export class UseItemTask extends Task {
       type: Weapon.Type.Fist,
       strength: 0,
       cooldown: 0,
-      knockback: 0,
+      knockback: 2.5,
       range: FistRange,
       color: 'ffffff'
     };

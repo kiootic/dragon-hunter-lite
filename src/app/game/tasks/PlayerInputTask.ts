@@ -4,7 +4,6 @@ import { Task } from 'app/game/tasks';
 import { Spatial, Stats, StatList } from 'app/game/traits';
 import { StateOverlay } from 'app/states';
 import { tilePerSecond } from 'common/logic/stats';
-import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
 
 export class PlayerInputTask extends Task {
@@ -21,7 +20,7 @@ export class PlayerInputTask extends Task {
   }
 
   public update(dt: number) {
-    if (!Stats.hasEffect(this.stats, EffectDef.Type.Stunned)) {
+    if (Stats.canMove(this.stats)) {
       vec2.set(this.direction, 0, 0);
       if (this.game.keyboard.isPressed('a')) this.direction[0]--;
       if (this.game.keyboard.isPressed('d')) this.direction[0]++;

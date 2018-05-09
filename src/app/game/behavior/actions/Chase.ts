@@ -1,4 +1,4 @@
-import { ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
+import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
 import { Spatial, Stats } from 'app/game/traits';
 import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
@@ -17,6 +17,7 @@ export interface Chase extends ActionState {
 export namespace Chase {
   export declare const _state: Chase;
   export const Type = 'chase';
+  export const Kind = ActionKind.Movement;
 
   const direction = vec2.create();
   export function tick(this: BehaviorContext<Chase>, dt: number) {

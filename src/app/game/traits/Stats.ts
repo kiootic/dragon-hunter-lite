@@ -1,5 +1,6 @@
 import { Trait } from 'app/game/traits';
 import { Effect } from 'common/data';
+import { EffectDef } from 'data/effects';
 import { defaults } from 'lodash';
 
 export interface StatList {
@@ -59,8 +60,12 @@ export namespace Stats {
     };
   }
 
-  export function hasEffect(stats: Stats, effect: string) {
-    return stats.effects.some(({ type }) => type === effect);
+  export function hasEffect(stats: Stats, ...effects: string[]) {
+    return stats.effects.some(({ type }) => effects.indexOf(type) >= 0);
+  }
+
+  export function canMove(stats: Stats) {
+    return !hasEffect(stats, EffectDef.Type.Stunned, EffectDef.Type.Knockback);
   }
 }
 Trait.types.set(Stats.Type, Stats);
