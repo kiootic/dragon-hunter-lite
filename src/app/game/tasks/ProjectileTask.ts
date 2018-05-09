@@ -51,7 +51,8 @@ export class ProjectileTask extends Task {
   }
 
   private tileCollided = ({ entityId, x, y }: TileCollision) => {
-    const entity = this.game.entities.get(entityId)!;
+    const entity = this.game.entities.get(entityId);
+    if (!entity) return;
     const projectile = entity.traits.get(ProjectileData);
     if (!projectile) return;
 

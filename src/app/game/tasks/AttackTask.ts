@@ -18,7 +18,9 @@ export class AttackTask extends Task {
   private readonly end = vec2.create();
 
   private attack = ({ entityId, weapon, targetPosition, effects }: Attack) => {
-    const entity = this.game.entities.get(entityId)!;
+    const entity = this.game.entities.get(entityId);
+    if (!entity) return;
+
     const spatial = entity.traits.get(Spatial);
     // compensate for entity display offset
     vec2.add(this.position, spatial.position, [0, -0.5]);
