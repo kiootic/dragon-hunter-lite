@@ -1,6 +1,6 @@
 import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
-import { InventorySwap, InventoryUpdated } from 'app/game/messages';
+import { EntityCollision, InventorySwap, InventoryUpdated } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Inventory, Spatial } from 'app/game/traits';
 import { Item, ItemSlot } from 'common/data';
@@ -15,6 +15,7 @@ export class InventoryTask extends Task {
   constructor(game: Game) {
     super(game);
     game.messages$.ofType(InventorySwap).subscribe(this.swapInventory);
+    game.messages$.ofType(EntityCollision).subscribe(this.entityCollided);
     this.playerPos = game.player.traits.get(Spatial).position;
     this.playerInv = game.player.traits.get(Inventory).slots;
   }
@@ -24,20 +25,28 @@ export class InventoryTask extends Task {
       const spatial = itemDrop.traits.get(Spatial);
       const d = vec2.dist(spatial.position, this.playerPos);
 
-      if (itemDrop.age < 350 || d > 3.5) continue;
-
-      if (d > 0.5) {
+      if (itemDrop.age >= 350 || d < 3.5) {
         // magnet (faster if nearer)
         vec2.sub(spatial.velocity, this.playerPos, spatial.position);
         const len = vec2.len(spatial.velocity);
         vec2.normalize(spatial.velocity, spatial.velocity);
         vec2.scale(spatial.velocity, spatial.velocity, 5 / (len * len));
-        continue;
       }
-
-      if (this.pickUp(itemDrop.traits.get(Inventory).slots[0].item!))
-        itemDrop.delete();
     }
+  }
+
+  private entityCollided = ({ entityIdA, entityIdB }: EntityCollision) => {
+    const entityA = this.game.entities.get(entityIdA);
+    const entityB = this.game.entities.get(entityIdB);
+    let item;
+    if (entityA instanceof ItemDrop && entityB === this.game.player) {
+      item = entityA;
+    } else if (entityA === this.game.player && entityB instanceof ItemDrop) {
+      item = entityB;
+    } else return;
+
+    if (this.pickUp(item.traits.get(Inventory).slots[0].item!))
+      item.delete();
   }
 
   private acceptable(item: Item | null, accepts: Item.Type[] | string | null) {
