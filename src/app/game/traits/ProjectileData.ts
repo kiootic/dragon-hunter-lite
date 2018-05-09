@@ -45,6 +45,7 @@ export namespace ProjectileData {
       start: [trait.start[0], trait.start[1]],
       end: [trait.end[0], trait.end[1]],
       texture: trait.texture,
+      hit: Array.from(trait.hit)
     };
   }
 
@@ -57,6 +58,7 @@ export namespace ProjectileData {
       start: data.start && vec2.fromValues(data.start[0], data.start[1]),
       end: data.end && vec2.fromValues(data.end[0], data.end[1]),
       texture: data.texture,
+      hit: data.hit && new Set(data.hit)
     }, trait);
   }
 }
