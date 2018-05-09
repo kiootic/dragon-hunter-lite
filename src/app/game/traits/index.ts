@@ -6,3 +6,4 @@ export * from './Stats';
 export * from './PlayerData';
 export * from './ProjectileData';
 export * from './EnemyData';
+export * from './Behavior';

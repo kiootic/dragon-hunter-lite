@@ -1,6 +1,7 @@
 export * from './Task';
 
 export * from './PlayerInputTask';
+export * from './BehaviorTask';
 
 export * from './ProjectileTask';
 export * from './EffectTask';

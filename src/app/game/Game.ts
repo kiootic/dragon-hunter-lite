@@ -38,9 +38,10 @@ export class Game {
 
   public update(dt: number, paused = false) {
     this._paused = paused;
+    // update tasks first to allow check for entity age = 0
+    this.tasks.update(dt, paused);
     if (!paused)
       this.entities.update(dt);
-    this.tasks.update(dt, paused);
   }
 
   public layout() {
