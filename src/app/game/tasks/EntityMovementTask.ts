@@ -86,6 +86,9 @@ export class EntityMovementTask extends Task {
           sweep.pos.y = collider.pos.y + (collider.half.y + shape.half.y + intersect.EPSILON) * sweep.hit.normal.y;
 
         vec2.mul(this.vel, this.vel, [1 - Math.abs(sweep.hit.normal.x), 1 - Math.abs(sweep.hit.normal.y)]);
+      } else if (sweep.hit) {
+        sweep.pos.x += sweep.hit.delta.x;
+        sweep.pos.y += sweep.hit.delta.y;
       }
       shape.pos = sweep.pos;
     };
