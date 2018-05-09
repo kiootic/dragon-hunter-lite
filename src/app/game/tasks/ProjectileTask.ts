@@ -8,11 +8,16 @@ import { generateDrops } from 'app/utils/drops';
 import { TileObject, Weapon } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
+const ObjectHPRegenInterval = 5000;
+
 export class ProjectileTask extends Task {
   constructor(game: Game) {
     super(game);
     game.messages$.ofType(TileCollision).subscribe(this.tileCollided);
   }
+
+  private regenCooldown = 0;
+  private readonly objectDamages = new Map<string, number>();
 
   private readonly target = vec2.create();
   update(dt: number) {
@@ -30,6 +35,19 @@ export class ProjectileTask extends Task {
       vec2.scaleAndAdd(this.target, projectile.start, this.target, entity.age / projectile.lifetime);
       vec2.sub(spatial.velocity, this.target, spatial.position);
       vec2.scale(spatial.velocity, spatial.velocity, 1000 / dt);
+    }
+
+    this.regenCooldown += dt;
+    if (this.regenCooldown >= ObjectHPRegenInterval) {
+      for (const key of this.objectDamages.keys()) {
+        const dmg = (this.objectDamages.get(key) || 0) - 1;
+        console.log(dmg);
+        if (dmg <= 0)
+          this.objectDamages.delete(key);
+        else
+          this.objectDamages.set(key, dmg);
+      }
+      this.regenCooldown = 0;
     }
   }
 
@@ -50,7 +68,6 @@ export class ProjectileTask extends Task {
     }
   }
 
-  private readonly objectDamages = new Map<string, number>();
   private readonly objectCenter = vec2.create();
   private hitObject(projectile: ProjectileData, x: number, y: number, obj: TileObject) {
     const key = `${x}:${y}`;
