@@ -9,8 +9,8 @@ export class TerrainEffectTask extends Task {
     this.elapsed += dt;
 
     for (const entity of this.game.entities.withTrait(Spatial)) {
-      const { position } = entity.traits(Spatial);
-      const float = entity.traits(Float);
+      const { position } = entity.traits.get(Spatial);
+      const float = entity.traits.get(Float);
       if (float && float.z[0] > 0) continue;
 
       const stats = entity.traits.get(Stats);

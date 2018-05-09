@@ -80,7 +80,7 @@ export class MenuOverlay extends GameOverlay {
     this.content.addChild(this.trash);
     this.trash.bgOverlay.setTexture('sprites/ui/inv-slot-trash');
 
-    const stats = this.game.player.traits(Stats);
+    const stats = this.game.player.traits.get(Stats);
     this.stats = Stats.compute(stats);
     this.base = stats.base;
     this.content.addChild(this.statNames);

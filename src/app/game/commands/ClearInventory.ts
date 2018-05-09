@@ -6,7 +6,7 @@ export class ClearInventory extends Command {
   readonly name = 'clear-inv';
 
   exec() {
-    const { slots } = this.game.player.traits(Inventory);
+    const { slots } = this.game.player.traits.get(Inventory);
     for (const slot of slots) {
       slot.item = null;
       this.game.dispatch(new InventoryUpdated(slot));

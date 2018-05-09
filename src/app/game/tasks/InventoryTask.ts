@@ -15,13 +15,13 @@ export class InventoryTask extends Task {
   constructor(game: Game) {
     super(game);
     game.messages$.ofType(InventorySwap).subscribe(this.swapInventory);
-    this.playerPos = game.player.traits(Spatial).position;
-    this.playerInv = game.player.traits(Inventory).slots;
+    this.playerPos = game.player.traits.get(Spatial).position;
+    this.playerInv = game.player.traits.get(Inventory).slots;
   }
 
   update(dt: number) {
     for (const itemDrop of this.game.entities.ofType(ItemDrop)) {
-      const spatial = itemDrop.traits(Spatial);
+      const spatial = itemDrop.traits.get(Spatial);
       const d = vec2.dist(spatial.position, this.playerPos);
 
       if (itemDrop.age < 350 || d > 3.5) continue;
@@ -35,7 +35,7 @@ export class InventoryTask extends Task {
         continue;
       }
 
-      if (this.pickUp(itemDrop.traits(Inventory).slots[0].item!))
+      if (this.pickUp(itemDrop.traits.get(Inventory).slots[0].item!))
         itemDrop.delete();
     }
   }

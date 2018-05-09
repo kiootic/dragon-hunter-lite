@@ -25,8 +25,8 @@ export class Status extends Container implements HUDElement {
 
   constructor(private readonly game: Game) {
     super();
-    this.stats = Stats.compute(game.player.traits(Stats));
-    this.effects = game.player.traits(Stats).effects;
+    this.stats = Stats.compute(game.player.traits.get(Stats));
+    this.effects = game.player.traits.get(Stats).effects;
     this.effectToolTip = new EffectToolTip(game.app);
 
     this.hpBarBg.tint = 0x808080;

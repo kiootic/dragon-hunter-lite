@@ -29,8 +29,8 @@ export class Hotbar extends Container implements HUDElement {
 
   constructor(private readonly game: Game) {
     super();
-    this.slots = game.player.traits(Inventory).slots.slice(0, 8);
-    this.player = game.player.traits(PlayerData);
+    this.slots = game.player.traits.get(Inventory).slots.slice(0, 8);
+    this.player = game.player.traits.get(PlayerData);
 
     this.bg.tint = 0x404040;
 

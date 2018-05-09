@@ -53,7 +53,7 @@ export class UseItemTask extends Task {
     if (!this.type)
       return;
 
-    const { hotbarSelection } = this.game.player.traits(PlayerData);
+    const { hotbarSelection } = this.game.player.traits.get(PlayerData);
     const slot = this.inventory[hotbarSelection];
 
     if (this.type === 'interact') {

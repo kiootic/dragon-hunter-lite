@@ -8,8 +8,8 @@ export class Dupe extends Command {
   exec(count: string) {
     let numItems = Number(count) || 1;
 
-    const { hotbarSelection: sel } = this.game.player.traits(PlayerData);
-    const { slots } = this.game.player.traits(Inventory);
+    const { hotbarSelection: sel } = this.game.player.traits.get(PlayerData);
+    const { slots } = this.game.player.traits.get(Inventory);
     const item = slots[sel].item;
     if (!item) return;
 
