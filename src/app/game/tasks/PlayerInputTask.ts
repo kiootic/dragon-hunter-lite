@@ -1,28 +1,27 @@
 import { Game } from 'app/game';
 import { MenuOverlay } from 'app/game/overlays/MenuOverlay';
 import { Task } from 'app/game/tasks';
-import { PlayerData, Spatial, Stats, StatList } from 'app/game/traits';
+import { Spatial, Stats, StatList } from 'app/game/traits';
 import { StateOverlay } from 'app/states';
 import { tilePerSecond } from 'common/logic/stats';
+import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
 
 export class PlayerInputTask extends Task {
   private readonly vel: vec2;
-  private readonly stats: StatList;
+  private readonly stats: Stats;
+  private readonly statList: StatList;
   private readonly direction = vec2.create();
-  private readonly data: PlayerData;
 
   constructor(game: Game) {
     super(game);
     this.vel = game.player.traits.get(Spatial).velocity;
-    this.stats = Stats.compute(game.player.traits.get(Stats));
-    this.data = game.player.traits.get(PlayerData);
+    this.stats = game.player.traits.get(Stats);
+    this.statList = Stats.compute(this.stats);
   }
 
   public update(dt: number) {
-    if (this.data.stunDuration > 0) {
-      this.data.stunDuration = Math.max(0, this.data.stunDuration - dt);
-    } else {
+    if (!Stats.hasEffect(this.stats, EffectDef.Type.Stunned)) {
       vec2.set(this.direction, 0, 0);
       if (this.game.keyboard.isPressed('a')) this.direction[0]--;
       if (this.game.keyboard.isPressed('d')) this.direction[0]++;
@@ -30,7 +29,7 @@ export class PlayerInputTask extends Task {
       if (this.game.keyboard.isPressed('s')) this.direction[1]++;
 
       vec2.normalize(this.direction, this.direction);
-      vec2.scale(this.vel, this.direction, tilePerSecond(this.stats.spd));
+      vec2.scale(this.vel, this.direction, tilePerSecond(this.statList.spd));
     }
 
     if (this.game.keyboard.isDown('Escape')) {

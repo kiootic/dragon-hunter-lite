@@ -58,5 +58,9 @@ export namespace Stats {
       get vit() { return stats.base.vit + stats.boost.vit + stats.bonus.vit; },
     };
   }
+
+  export function hasEffect(stats: Stats, effect: string) {
+    return stats.effects.some(({ type }) => type === effect);
+  }
 }
 Trait.types.set(Stats.Type, Stats);

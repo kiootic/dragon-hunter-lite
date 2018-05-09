@@ -3,9 +3,10 @@ import { Game } from 'app/game';
 import { ApplyEffects, InventoryUpdated } from 'app/game/messages';
 import { Attack } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { Inventory, PlayerData, Spatial } from 'app/game/traits';
+import { Inventory, PlayerData, Spatial, Stats } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
 import { Item, ItemSlot, Weapon } from 'common/data';
+import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
 import { cloneDeep } from 'lodash';
 import { interaction, Point } from 'pixi.js';
@@ -21,6 +22,7 @@ export class UseItemTask extends Task {
   private readonly playerVel: vec2;
   private readonly playerSprite: TextureSprite;
   private readonly data: PlayerData;
+  private readonly stats: Stats;
   private readonly inventory: ItemSlot[];
 
   private readonly cursorPos = new Point();
@@ -28,6 +30,7 @@ export class UseItemTask extends Task {
   constructor(game: Game) {
     super(game);
     this.data = game.player.traits.get(PlayerData);
+    this.stats = game.player.traits.get(Stats);
     ({
       position: this.playerPos,
       velocity: this.playerVel,
@@ -91,6 +94,8 @@ export class UseItemTask extends Task {
   private attack(slot: ItemSlot) {
     if (this.data.attackCooldown > 0)
       return;
+    if (Stats.hasEffect(this.stats, EffectDef.Type.Stunned))
+      return;
 
     let item = slot.item;
     // arrow is treated as fist attack
@@ -147,9 +152,7 @@ export class UseItemTask extends Task {
     this.playerSprite.playActionAnim(animName, duration);
 
     this.game.dispatch(new Attack(this.game.player.id, weapon, this.coords, effects));
-    if (this.data.stunDuration === 0)
-      vec2.set(this.playerVel, 0, 0);
-    this.data.stunDuration = Math.max(this.data.stunDuration, duration);
+    vec2.set(this.playerVel, 0, 0);
     this.data.attackCooldown = weapon.cooldown || 500;
   }
 }

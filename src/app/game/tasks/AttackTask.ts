@@ -1,9 +1,11 @@
 import { Game } from 'app/game';
 import { Projectile } from 'app/game/entities/Projectile';
-import { Attack } from 'app/game/messages';
+import { ApplyEffects, Attack } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
 import { Weapon } from 'common/data';
+import { makeEffect } from 'common/logic/effect/common';
+import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
 
 export class AttackTask extends Task {
@@ -25,11 +27,13 @@ export class AttackTask extends Task {
     // compensate for entity display offset
     vec2.add(this.position, spatial.position, [0, -0.5]);
 
+    let stunDuration;
     if (weapon.type === Weapon.Type.Fist) {
       const projectile = Projectile.make(
         this.game, entityId, weapon, effects,
         targetPosition, targetPosition, 100, 'sprites/projectiles/invisible');
       this.game.entities.add(projectile);
+      stunDuration = 500;
 
     } else {
       let duration;
@@ -53,6 +57,7 @@ export class AttackTask extends Task {
         vec2.scaleAndAdd(this.end, this.start, this.direction, weapon.range);
         duration = 500;
       }
+      stunDuration = Math.min(weapon.type === Weapon.Type.Spear ? 1000 : 500, weapon.cooldown);
 
       const projectile = Projectile.make(
         this.game, entityId, weapon, effects,
@@ -60,6 +65,12 @@ export class AttackTask extends Task {
         `sprites/projectiles/${weapon.type}`
       );
       this.game.entities.add(projectile);
+    }
+
+    if (entity === this.game.player) {
+      this.game.dispatch(new ApplyEffects(entity.id, [
+        makeEffect(EffectDef.Type.Stunned, 0, stunDuration)
+      ]));
     }
   }
 }

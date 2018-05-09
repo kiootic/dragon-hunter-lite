@@ -4,6 +4,7 @@ import { Game } from 'app/game';
 import { HUDElement } from 'app/game/hud';
 import { Stats, StatList } from 'app/game/traits';
 import { Effect } from 'common/data';
+import { Effects, EffectDef } from 'data/effects';
 import { Container, Sprite, Texture } from 'pixi.js';
 
 const HPBarWidth = 256;
@@ -66,7 +67,9 @@ export class Status extends Container implements HUDElement {
     else if (percentage < 0.6) this.hpBarFill.tint = 0xa0a000;
     else this.hpBarFill.tint = 0x00a000;
 
-    const showEffects = this.effects.filter(({duration}) => duration > 0);
+    const showEffects = this.effects.filter(
+      ({ type, duration }) => duration > 0 && Effects[type as EffectDef.Type].visible
+      );
     while (this.effectIcons.length < showEffects.length) {
       const icon = Object.assign(new Sprite(), { effectIndex: 0 });
       icon.interactive = true;

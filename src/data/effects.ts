@@ -1,10 +1,13 @@
 export interface EffectDef {
   readonly name: string;
   readonly description: string;
+  readonly visible: boolean;
 }
 
 export namespace EffectDef {
   export enum Type {
+    Stunned = 'stunned',
+
     Heal = 'heal',
     Damage = 'damage',
     Regen = 'regen',
@@ -21,53 +24,25 @@ export namespace EffectDef {
   }
 }
 
+function effect(name: string, description: string, visible = true): EffectDef {
+  return { name, description, visible };
+}
+
 export const Effects: Record<EffectDef.Type, EffectDef> = {
-  [EffectDef.Type.Heal]: {
-    name: 'Heal',
-    description: 'Recover <power> HP'
-  },
-  [EffectDef.Type.Damage]: {
-    name: 'Damage',
-    description: 'Damage <power> HP'
-  },
-  [EffectDef.Type.Regen]: {
-    name: 'Regeneration',
-    description: 'Recover <power> HP regularly'
-  },
-  [EffectDef.Type.Poison]: {
-    name: 'Poison',
-    description: 'Lose <power> HP regularly'
-  },
-  [EffectDef.Type.Strength]: {
-    name: 'Strength',
-    description: 'Increase strength by <power>'
-  },
-  [EffectDef.Type.Weakness]: {
-    name: 'Weakness',
-    description: 'Decrease strength by <power>'
-  },
-  [EffectDef.Type.Resistance]: {
-    name: 'Resistance',
-    description: 'Increase defense by <power>'
-  },
-  [EffectDef.Type.DefBreak]: {
-    name: 'Defense Break',
-    description: 'Decrease defense by <power>'
-  },
-  [EffectDef.Type.Speed]: {
-    name: 'Speed',
-    description: 'Increase speed by <power>'
-  },
-  [EffectDef.Type.Slowness]: {
-    name: 'Slowness',
-    description: 'Decrease speed by <power>'
-  },
-  [EffectDef.Type.VitalityUp]: {
-    name: 'Vitality Up',
-    description: 'Increase vitality by <power>'
-  },
-  [EffectDef.Type.VitalityDown]: {
-    name: 'Vitality Down',
-    description: 'Decrease vitality by <power>'
-  },
+  // technical effects
+  [EffectDef.Type.Stunned]: effect('Stunned', 'Cannot move or attack', false),
+
+  // actual effects
+  [EffectDef.Type.Heal]: effect('Heal', 'Recover <power> HP', false),
+  [EffectDef.Type.Damage]: effect('Damage', 'Damage <power> HP', false),
+  [EffectDef.Type.Regen]: effect('Regeneration', 'Recover <power> HP regularly'),
+  [EffectDef.Type.Poison]: effect('Poison', 'Lose <power> HP regularly'),
+  [EffectDef.Type.Strength]: effect('Strength', 'Increase strength by <power>'),
+  [EffectDef.Type.Weakness]: effect('Weakness', 'Decrease strength by <power>'),
+  [EffectDef.Type.Resistance]: effect('Resistance', 'Increase defense by <power>'),
+  [EffectDef.Type.DefBreak]: effect('Defense Break', 'Decrease defense by <power>'),
+  [EffectDef.Type.Speed]: effect('Speed', 'Increase speed by <power>'),
+  [EffectDef.Type.Slowness]: effect('Slowness', 'Decrease speed by <power>'),
+  [EffectDef.Type.VitalityUp]: effect('Vitality Up', 'Increase vitality by <power>'),
+  [EffectDef.Type.VitalityDown]: effect('Vitality Down', 'Decrease vitality by <power>'),
 };
