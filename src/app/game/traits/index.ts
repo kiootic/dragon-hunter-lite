@@ -7,3 +7,4 @@ export * from './PlayerData';
 export * from './ProjectileData';
 export * from './EnemyData';
 export * from './Behavior';
+export * from './Collidable';

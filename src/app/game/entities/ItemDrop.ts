@@ -1,6 +1,6 @@
 import { Game } from 'app/game';
 import { Entity } from 'app/game/entities';
-import { Float, Inventory, Spatial } from 'app/game/traits';
+import { Collidable, Float, Inventory, Spatial } from 'app/game/traits';
 import { Item } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
@@ -24,9 +24,12 @@ export class ItemDrop extends Entity {
   }
 
   init() {
-    const spatial = this.traits(Spatial, { solid: false });
+    const spatial = this.traits(Spatial);
     vec2.set(spatial.scale, 2, 2);
-    vec2.set(spatial.size, 0.25, 0.25);
+
+    const collidable = this.traits(Collidable);
+    vec2.set(collidable.size, 0.25, 0.25);
+    collidable.mass = 0;
 
     this.traits(Float);
     this.traits(Inventory, 1);

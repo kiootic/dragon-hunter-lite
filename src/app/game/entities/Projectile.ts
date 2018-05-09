@@ -1,6 +1,6 @@
 import { Game } from 'app/game';
 import { Entity } from 'app/game/entities';
-import { Float, ProjectileData, Spatial } from 'app/game/traits';
+import { Collidable, Float, ProjectileData, Spatial } from 'app/game/traits';
 import { Camera } from 'app/game/Camera';
 import { Effect, Weapon } from 'common/data';
 import { vec2 } from 'gl-matrix';
@@ -36,9 +36,12 @@ export class Projectile extends Entity {
   }
 
   init() {
-    const spatial = this.traits(Spatial, { solid: false });
+    const spatial = this.traits(Spatial);
     vec2.set(spatial.scale, 4, 4);
-    vec2.set(spatial.size, 0.5, 0.5);
+
+    const collidable = this.traits(Collidable);
+    vec2.set(collidable.size, 0.5, 0.5);
+    collidable.mass = 0;
 
     this.traits(Float);
   }
