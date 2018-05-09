@@ -11,7 +11,7 @@ export interface Spatial extends Trait {
   readonly velocity: vec2;
   readonly scale: vec2;
   readonly size: vec2;
-  readonly solid: boolean;
+  solid: boolean;
   readonly sprite: Camera.Sprite & TextureSprite;
 }
 

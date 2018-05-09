@@ -1,4 +1,5 @@
 import { Command } from 'app/game/commands';
+import { Inventory, PlayerData } from 'app/game/traits';
 import { instantiate, randomValue, RandomValue } from 'common/random';
 import { Elements } from 'data/elements';
 import { padStart } from 'lodash';
@@ -43,6 +44,12 @@ export class Dump extends Command {
  ${padStart(item.aspects![1].element, 13, ' ')}`);
           }
         }
+      } break;
+      case 'item': {
+        const { slots } = this.game.player.traits.get(Inventory);
+        const { hotbarSelection } = this.game.player.traits.get(PlayerData);
+        const { item } = slots[hotbarSelection];
+        this.log(JSON.stringify(item, null, 4));
       } break;
       default:
         this.log('unknown dump type: ' + type);
