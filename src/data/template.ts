@@ -14,7 +14,7 @@ export function makeFlower(name: string, type: number, color: string, elements: 
     },
     color,
     jitter: true,
-    interactive: true,
+    collidable: true,
     drops: {
       hp: 0,
       replaceWith: null,
@@ -48,6 +48,7 @@ export function makeBush(): ObjectDef {
     color: '416652',
     scale: 1.5,
     jitter: true,
+    collidable: true,
     obstacle: true,
   };
 }
@@ -63,8 +64,8 @@ export function makeBerryBush(name: string, depleted: string, type: number, colo
     color: '416652',
     scale: 1.5,
     jitter: true,
+    collidable: true,
     obstacle: true,
-    interactive: true,
     drops: {
       hp: 1,
       replaceWith: depleted,

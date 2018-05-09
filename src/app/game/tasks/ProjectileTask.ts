@@ -1,6 +1,6 @@
 import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
-import { ObjectSpriteRequest, PlayFX, ShowParticles } from 'app/game/messages';
+import { ObjectSpriteRequest, PlayFX, ShowParticles, TileCollision } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { ProjectileData } from 'app/game/traits';
 import { Spatial } from 'app/game/traits';
@@ -11,6 +11,7 @@ import { vec2 } from 'gl-matrix';
 export class ProjectileTask extends Task {
   constructor(game: Game) {
     super(game);
+    game.messages$.ofType(TileCollision).subscribe(this.tileCollided);
   }
 
   private readonly target = vec2.create();
@@ -24,26 +25,28 @@ export class ProjectileTask extends Task {
       const spatial = entity.traits.get(Spatial);
       spatial.sprite.visible = entity.age > 100;
 
-      // hit test
-      const tileObj = this.game.map.getObject(spatial.position[0], spatial.position[1]);
-      const tileObjDef = this.game.library.objects[tileObj];
-      if (tileObjDef) {
-        if (tileObjDef.drops && (projectile.weapon.type !== Weapon.Type.Arrow || tileObjDef.obstacle)) {
-          this.hitObject(projectile,
-            Math.floor(spatial.position[0]), Math.floor(spatial.position[1]),
-            tileObjDef
-          );
-        }
-        if (tileObjDef.obstacle && projectile.weapon.pierce !== true) {
-          entity.delete();
-        }
-      }
-
       // update velocity
       vec2.sub(this.target, projectile.end, projectile.start);
       vec2.scaleAndAdd(this.target, projectile.start, this.target, entity.age / projectile.lifetime);
       vec2.sub(spatial.velocity, this.target, spatial.position);
       vec2.scale(spatial.velocity, spatial.velocity, 1000 / dt);
+    }
+  }
+
+  private tileCollided = ({ entityId, x, y }: TileCollision) => {
+    const entity = this.game.entities.get(entityId)!;
+    const projectile = entity.traits.get(ProjectileData);
+    if (!projectile) return;
+
+    const tileObj = this.game.map.getObject(x, y);
+    const tileObjDef = this.game.library.objects[tileObj];
+    if (!tileObjDef) return;
+
+    if (tileObjDef.drops && (projectile.weapon.type !== Weapon.Type.Arrow || tileObjDef.obstacle)) {
+      this.hitObject(projectile, x, y, tileObjDef);
+    }
+    if (tileObjDef.obstacle && projectile.weapon.pierce !== true) {
+      entity.delete();
     }
   }
 

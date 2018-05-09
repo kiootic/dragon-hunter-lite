@@ -10,8 +10,8 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '4d6211',
     scale: 3,
     jitter: true,
+    collidable: true,
     obstacle: true,
-    interactive: true,
     drops: {
       hp: 5,
       replaceWith: null,
@@ -31,8 +31,8 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '01ac1d',
     scale: 3,
     jitter: true,
+    collidable: true,
     obstacle: true,
-    interactive: true,
     drops: {
       hp: 5,
       replaceWith: null,
@@ -56,8 +56,8 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '004b01',
     scale: 3,
     jitter: true,
+    collidable: true,
     obstacle: true,
-    interactive: true,
     drops: {
       hp: 5,
       replaceWith: null,
@@ -83,8 +83,8 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: 'cccccc',
     jitter: true,
     terrain: true,
+    collidable: true,
     obstacle: true,
-    interactive: true,
     drops: {
       hp: 3,
       replaceWith: null,
@@ -112,6 +112,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: 'cccccc',
     scale: 2,
     jitter: true,
+    collidable: true,
     obstacle: true,
   },
   'pillar': {
@@ -121,6 +122,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     },
     color: '606060',
     scale: 2,
+    collidable: true,
     obstacle: true,
   },
 
@@ -132,7 +134,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     },
     color: '416652',
     jitter: true,
-    interactive: true,
+    collidable: true,
     drops: {
       hp: 0,
       replaceWith: null,
@@ -160,6 +162,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '416652',
     scale: 1.5,
     jitter: true,
+    collidable: true,
     obstacle: true,
   },
   'bush': {
@@ -167,14 +170,15 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '416652',
     scale: 1.5,
     jitter: true,
+    collidable: true,
     obstacle: true,
   },
   'stone': {
     texture: 'sprites/objects/stone',
     color: '505050',
     jitter: true,
+    collidable: true,
     obstacle: true,
-    interactive: true,
     drops: {
       hp: 8,
       replaceWith: null,
@@ -197,7 +201,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
     color: '505050',
     jitter: true,
     terrain: true,
-    interactive: true,
+    collidable: true,
     drops: {
       hp: 1,
       replaceWith: null,
