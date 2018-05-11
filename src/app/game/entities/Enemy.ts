@@ -21,7 +21,7 @@ export class Enemy extends Entity {
     vec2.set(spatial.scale, 2, 2);
 
     const collidable = this.traits(Collidable);
-    vec2.set(collidable.size, 0.25, 0.25);
+    vec2.set(collidable.size, 0.4, 0.4);
 
     this.traits(Stats);
     this.traits(EnemyData);

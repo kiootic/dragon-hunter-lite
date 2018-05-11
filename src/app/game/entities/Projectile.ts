@@ -40,7 +40,7 @@ export class Projectile extends Entity {
     vec2.set(spatial.scale, 4, 4);
 
     const collidable = this.traits(Collidable);
-    vec2.set(collidable.size, 0.1, 0.1);
+    vec2.set(collidable.size, 0.25, 0.25);
     collidable.mass = 0;
 
     this.traits(Float);
