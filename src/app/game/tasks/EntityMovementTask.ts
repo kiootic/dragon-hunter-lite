@@ -18,15 +18,25 @@ interface ObjectAABB extends AABB {
   readonly obstacle: boolean;
 }
 class TileAABB extends AABB implements ObjectAABB {
+  public readonly x: number;
+  public readonly y: number;
   public readonly obstacle: boolean;
-  constructor(public readonly x: number, public readonly y: number, objectDef?: TileObject) {
-    super(pt(x + 0.5, y + 0.5), (!objectDef || objectDef.terrain) ? pt(0.5, 0.5) : pt(0.4, 0.4));
+
+  constructor(x: number, y: number, objectDef?: TileObject) {
+    super(
+      pt(x + 0.5, y + ((objectDef && !objectDef.terrain) ? 0 : 0.5)),
+      (!objectDef || objectDef.terrain) ? pt(0.5, 0.5) : pt(0.4, 0.4)
+    );
+    this.x = x;
+    this.y = y;
     this.obstacle = !objectDef || (!!objectDef.obstacle);
   }
 }
+
 class EntityAABB extends AABB {
   public readonly entity: Entity;
   public readonly obstacle: boolean;
+
   constructor(entity: Entity) {
     const { position } = entity.traits.get(Spatial);
     const { size, mass } = entity.traits.get(Collidable);

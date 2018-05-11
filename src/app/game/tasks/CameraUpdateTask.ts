@@ -16,7 +16,7 @@ export class CameraUpdateTask extends Task {
   }
 
   public update(dt: number) {
-    vec2.scaleAndAdd(this.cameraOffset, [0, -DisplayTileSize], this.position, DisplayTileSize);
+    vec2.scale(this.cameraOffset, this.position, DisplayTileSize);
     vec2.floor(this.game.view.camera.offset, this.cameraOffset);
   }
 }

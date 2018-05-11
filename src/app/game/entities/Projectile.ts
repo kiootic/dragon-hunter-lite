@@ -51,8 +51,7 @@ export class Projectile extends Entity {
     const data = this.traits.get(ProjectileData);
     spatial.sprite.layer = Camera.Layer.Projectiles;
     spatial.sprite.setTexture(data.texture);
-    spatial.sprite.anchor.set(1, -0.5);
-    spatial.sprite.pivot.set(0, spatial.sprite.height / 2);
+    spatial.sprite.anchor.set(0, 0);
     spatial.sprite.visible = false;
 
     spatial.sprite.rotation = -3 * Math.PI / 4 +

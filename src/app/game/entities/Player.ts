@@ -12,6 +12,7 @@ export class Player extends Entity {
   init() {
     const spatial = this.traits(Spatial);
     vec2.set(spatial.scale, 2, 2);
+    vec2.set(spatial.offset, 0, -0.25);
 
     const collidable = this.traits(Collidable);
     vec2.set(collidable.size, 0.25, 0.25);

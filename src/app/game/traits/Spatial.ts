@@ -3,13 +3,13 @@ import { Trait } from 'app/game/traits';
 import { Camera } from 'app/game/Camera';
 import { vec2 } from 'gl-matrix';
 import { defaults } from 'lodash';
-import { Point } from 'pixi.js';
 
 export interface Spatial extends Trait {
   readonly type: typeof Spatial.Type;
   readonly position: vec2;
   readonly velocity: vec2;
   readonly scale: vec2;
+  readonly offset: vec2;
   readonly sprite: Camera.Sprite & TextureSprite;
 }
 
@@ -23,10 +23,10 @@ export namespace Spatial {
       position: vec2.fromValues(0, 0),
       velocity: vec2.fromValues(0, 0),
       scale: vec2.fromValues(1, 1),
+      offset: vec2.fromValues(0, 0),
       sprite: Object.assign(new TextureSprite(), {
         layer: Camera.Layer.Objects,
         sortOffset: vec2.fromValues(0, 0),
-        anchor: new Point(0.5, 1)
       })
     };
   }

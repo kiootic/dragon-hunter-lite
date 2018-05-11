@@ -14,7 +14,6 @@ export class AttackTask extends Task {
     game.messages$.ofType(Attack).subscribe(this.attack);
   }
 
-  private readonly position = vec2.create();
   private readonly direction = vec2.create();
   private readonly start = vec2.create();
   private readonly end = vec2.create();
@@ -23,11 +22,8 @@ export class AttackTask extends Task {
     const entity = this.game.entities.get(entityId);
     if (!entity) return;
 
-    const spatial = entity.traits.get(Spatial);
-    // compensate for entity display offset
-    vec2.add(this.position, spatial.position, [0, -0.5]);
-
-    vec2.sub(this.direction, targetPosition, this.position);
+    const {position} = entity.traits.get(Spatial);
+    vec2.sub(this.direction, targetPosition, position);
 
     let stunDuration;
     if (weapon.type === Weapon.Type.Fist) {
@@ -46,7 +42,7 @@ export class AttackTask extends Task {
       if (weapon.type === Weapon.Type.Sword) {
         if (vec2.length(this.direction) > weapon.range) {
           vec2.normalize(this.direction, this.direction);
-          vec2.scaleAndAdd(targetPosition, this.position, this.direction, weapon.range);
+          vec2.scaleAndAdd(targetPosition, position, this.direction, weapon.range);
         } else {
           vec2.normalize(this.direction, this.direction);
         }
@@ -57,7 +53,7 @@ export class AttackTask extends Task {
       } else {
         vec2.normalize(this.direction, this.direction);
 
-        vec2.copy(this.start, this.position);
+        vec2.copy(this.start, position);
         vec2.scaleAndAdd(this.end, this.start, this.direction, weapon.range);
         duration = 500;
       }
