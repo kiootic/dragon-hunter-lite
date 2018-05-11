@@ -58,13 +58,15 @@ export class EntityMovementTask extends Task {
       vec2.scale(this.vel, velocity, dt / 1000);
 
       const collidable = entity.traits.get(Collidable);
+      let hits: ObjectAABB[];
       if (collidable) {
         const objects = Array.from(this.getAABBs(position, entity));
         const shape = new EntityAABB(entity);
-        this.resolve(objects, shape);
+        hits = this.resolve(objects, shape);
         vec2.set(position, shape.pos.x, shape.pos.y);
       } else {
         vec2.add(position, position, this.vel);
+        hits = [];
       }
 
       if (stats && Stats.canMove(stats))
@@ -84,6 +86,13 @@ export class EntityMovementTask extends Task {
         vec2.scale(velocity, velocity, Math.pow(0.5, t));
         if (Math.abs(velocity[0]) < StaticThreshold) velocity[0] = 0;
         if (Math.abs(velocity[1]) < StaticThreshold) velocity[1] = 0;
+      }
+
+      for (const collider of hits) {
+        if (collider instanceof EntityAABB)
+          this.entityCollided(entity, collider.entity);
+        else if (collider instanceof TileAABB)
+          this.tileCollided(entity, collider.x, collider.y);
       }
     }
 
@@ -125,7 +134,7 @@ export class EntityMovementTask extends Task {
     }
   }
 
-  private readonly collidedAABBs = new Map<AABB, number>();
+  private readonly collidedAABBs = new Map<ObjectAABB, number>();
   private resolve(objects: ObjectAABB[], self: EntityAABB) {
     const performSweep = (delta: Point) => {
       let nearest = new Sweep();
@@ -158,7 +167,7 @@ export class EntityMovementTask extends Task {
       self.pos = sweep.pos;
     };
 
-    let collisionTime;
+    let collisionTime: number;
     if (!self.obstacle) {
       // no collision resolution for non-obstacles
       const sweep = performSweep(pt(this.vel[0], this.vel[1]));
@@ -176,14 +185,9 @@ export class EntityMovementTask extends Task {
       collisionTime = Math.min(sweepX.time, sweepY.time);
     }
 
-    for (const [collider, time] of this.collidedAABBs)
-      if (time <= collisionTime) {
-        if (collider instanceof EntityAABB)
-          this.entityCollided(self.entity, collider.entity);
-        else if (collider instanceof TileAABB)
-          this.tileCollided(self.entity, collider.x, collider.y);
-      }
+    const hit = [...this.collidedAABBs].filter(([, time]) => time <= collisionTime).map(([collider]) => collider);
     this.collidedAABBs.clear();
+    return hit;
   }
 
   private tileCollided(entity: Entity, x: number, y: number) {

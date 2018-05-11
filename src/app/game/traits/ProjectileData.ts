@@ -7,6 +7,7 @@ export interface ProjectileData extends Trait {
   readonly type: typeof ProjectileData.Type;
 
   readonly sourceEntityId: number;
+  readonly damage: number;
   readonly weapon: Weapon;
   readonly effects: Effect[];
 
@@ -27,6 +28,7 @@ export namespace ProjectileData {
       type: ProjectileData.Type,
       sourceEntityId: args ? args.sourceEntityId : 0,
       weapon: args ? args.weapon : undefined as any,
+      damage: args ? args.damage : 0,
       effects: args ? args.effects : [],
       start: args ? vec2.clone(args.start) : vec2.fromValues(0, 0),
       end: args ? vec2.clone(args.end) : vec2.fromValues(0, 0),
@@ -40,6 +42,7 @@ export namespace ProjectileData {
     return {
       sourceEntityId: trait.sourceEntityId,
       weapon: trait.weapon,
+      damage: trait.damage,
       effects: trait.effects,
       lifetime: trait.lifetime,
       start: [trait.start[0], trait.start[1]],
@@ -53,6 +56,7 @@ export namespace ProjectileData {
     return defaults({
       sourceEntityId: data.sourceEntityId,
       weapon: data.weapon,
+      damage: data.damage,
       effects: data.effects,
       lifetime: data.lifetime,
       start: data.start && vec2.fromValues(data.start[0], data.start[1]),

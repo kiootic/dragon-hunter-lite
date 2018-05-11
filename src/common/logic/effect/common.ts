@@ -3,8 +3,8 @@ import { MaxAspects } from 'common/logic/alchemy';
 import { Effects, EffectDef } from 'data/effects';
 import { fromPairs, round } from 'lodash';
 
-export function scaleAspects(aspects:Aspect[], scale: number) {
-  return aspects.map(({element,amount}) => ({element, amount:amount * scale}));
+export function scaleAspects(aspects: Aspect[], scale: number) {
+  return aspects.map(({ element, amount }) => ({ element, amount: amount * scale }));
 }
 
 export function makeEffect(effect: EffectDef.Type, power: number, duration: number, element?: string): Effect {
@@ -31,7 +31,7 @@ function computeStrength(amount: number, total: number) {
 }
 
 type EffectComputer = (element: string, strength: number, strengths: Record<string, number>) => Effect | undefined;
-export function computeEffects(aspects: Aspect[], compute: EffectComputer): Effect[] {
+export function computeEffects(aspects: Aspect[], compute: EffectComputer, threshold = StrengthThreshold): Effect[] {
   let total = 0;
   for (const { amount } of aspects) total += amount;
 
@@ -42,7 +42,7 @@ export function computeEffects(aspects: Aspect[], compute: EffectComputer): Effe
   const effects: Effect[] = [];
   for (const element of Object.keys(strengths)) {
     const strength = strengths[element];
-    if (strength < StrengthThreshold) continue;
+    if (strength < threshold) continue;
 
     const effect = compute(element, strength, strengths);
     if (effect)

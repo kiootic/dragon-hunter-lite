@@ -1,8 +1,9 @@
 import { Game } from 'app/game';
 import { Entity } from 'app/game/entities';
-import { Collidable, Float, ProjectileData, Spatial } from 'app/game/traits';
+import { Collidable, Float, ProjectileData, Spatial, Stats } from 'app/game/traits';
 import { Camera } from 'app/game/Camera';
 import { Effect, Weapon } from 'common/data';
+import { computeDamage } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
 
 export class Projectile extends Entity {
@@ -23,8 +24,11 @@ export class Projectile extends Entity {
     float.z[0] = 0.001;
     float.gravity = false;
 
+    const { str } = Stats.compute(game.entities.get(sourceEntityId)!.traits.get(Stats));
+    const damage = computeDamage(weapon.strength, str);
+
     entity.traits.set(ProjectileData.make({
-      sourceEntityId, weapon, effects,
+      sourceEntityId, weapon, damage, effects,
       start, end, lifetime,
       texture: {
         type: 'single',

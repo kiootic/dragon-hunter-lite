@@ -1,12 +1,13 @@
 import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
-import { ApplyEffects, EntityCollision, ObjectSpriteRequest, PlayFX, ShowParticles, TileCollision } from 'app/game/messages';
+import { ApplyEffects, EntityCollision, ObjectSpriteRequest, PlayFX, ShowParticles, TileCollision, UpdateHP } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { ProjectileData, Stats } from 'app/game/traits';
 import { Spatial } from 'app/game/traits';
 import { generateDrops } from 'app/utils/drops';
 import { Effect, TileObject, Weapon } from 'common/data';
 import { makeEffect } from 'common/logic/effect/common';
+import { knockbackSpeed } from 'common/logic/stats';
 import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
 
@@ -138,9 +139,10 @@ export class ProjectileTask extends Task {
     if (projectile.weapon.type === Weapon.Type.Sword)
       vec2.set(this.knockbackDirection, this.knockbackDirection[1], -this.knockbackDirection[0]);
     const { velocity: targetVel } = targetEntity.traits.get(Spatial);
-    vec2.scale(targetVel, this.knockbackDirection, 5 + projectile.weapon.knockback * 1.5);
+    vec2.scale(targetVel, this.knockbackDirection, knockbackSpeed(projectile.weapon.knockback));
     effects.push(makeEffect(EffectDef.Type.Knockback, 0, 100));
 
+    this.game.dispatch(new UpdateHP(targetEntity.id, -projectile.damage));
     this.game.dispatch(new ApplyEffects(targetEntity.id, effects));
 
     if (!projectile.weapon.pierce) {

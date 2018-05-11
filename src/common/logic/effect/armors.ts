@@ -62,18 +62,19 @@ export function compute(
 ): [Effect[], Aspect[]] {
   const materialAspects: Aspect[] = [{
     element: ElementDef.Type.Defense,
-    amount: material.toughness * (1 + Math.pow(material.weight, 0.75)) * 2500 * multiplier
+    amount: material.toughness * (1 + Math.pow(material.weight, 0.75)) * 1000 * multiplier
   }, {
     element: ElementDef.Type.Capture,
-    amount: material.weight * 250 * multiplier
+    amount: material.weight * 10 * multiplier
+  }, {
+    element: ElementDef.Type.Energy,
+    amount: material.sharpness * 100 * multiplier
   }];
-  console.log('defense', materialAspects[0].amount);
-  console.log('capture', materialAspects[1].amount);
 
   const affinity = Math.pow(material.affinity, 0.5);
   const aspects = mix([
     ...parts.map(item => ({ aspects: scaleAspects(item.aspects || [], affinity) })),
     { aspects: materialAspects }
   ], data);
-  return [computeEffects(aspects, computeEffect), aspects];
+  return [computeEffects(aspects, computeEffect, 0.01), aspects];
 }

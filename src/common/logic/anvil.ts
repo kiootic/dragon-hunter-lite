@@ -266,7 +266,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       case AssemblyType.Leggings:
         mainParts(parts);
         itemType = Item.Type.Leggings;
-        [effects, aspects] = computeArmors(parts, mat, 0.7, data);
+        [effects, aspects] = computeArmors(parts, mat, 0.5, data);
         texture = {
           type: 'composite',
           base: {
@@ -292,7 +292,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       case AssemblyType.Boots:
         mainParts(parts);
         itemType = Item.Type.Boots;
-        [effects, aspects] = computeArmors(parts, mat, 0.4, data);
+        [effects, aspects] = computeArmors(parts, mat, 0.2, data);
         texture = {
           type: 'composite',
           base: {
