@@ -9,6 +9,7 @@ export * from './TerrainEffectTask';
 export * from './EquipmentEffectTask';
 export * from './EntityHPTask';
 export * from './EntityMovementTask';
+export * from './DeathTask';
 
 export * from './UseItemTask';
 export * from './AttackTask';

@@ -9,3 +9,4 @@ export * from './Attack';
 export * from './ObjectSpriteRequest';
 export * from './EntityCollision';
 export * from './TileCollision';
+export * from './Death';
