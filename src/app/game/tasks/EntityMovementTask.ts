@@ -24,7 +24,7 @@ class TileAABB extends AABB implements ObjectAABB {
 
   constructor(x: number, y: number, objectDef?: TileObject) {
     super(
-      pt(x + 0.5, y + ((objectDef && !objectDef.terrain) ? 0 : 0.5)),
+      pt(x + 0.5, y),
       (!objectDef || objectDef.terrain) ? pt(0.5, 0.5) : pt(0.4, 0.4)
     );
     this.x = x;
