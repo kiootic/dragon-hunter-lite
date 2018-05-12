@@ -16,7 +16,7 @@ export class TerrainEffectTask extends Task {
       const stats = entity.traits.get(Stats);
       if (!stats) continue;
 
-      const terrainId = this.game.map.getTerrain(position[0], position[1]);
+      const terrainId = this.game.map.getTerrain(position[0], position[1] + 0.5);
       const terrain = this.game.library.terrains[terrainId];
       if (!terrain) continue;
 

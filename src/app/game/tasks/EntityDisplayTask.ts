@@ -60,7 +60,7 @@ export class EntityDisplayTask extends Task {
       sprite.scale.set(scale[0], scale[1]);
 
       const z = float ? float.z[0] : 0;
-      const terrain = this.game.library.terrains[this.game.map.getTerrain(position[0], position[1])];
+      const terrain = this.game.library.terrains[this.game.map.getTerrain(position[0], position[1] + 0.5)];
       const liquid = terrain && terrain.liquid;
       sprite.clip = liquid && z === 0 ? [0, 1 / 6] : undefined;
 
