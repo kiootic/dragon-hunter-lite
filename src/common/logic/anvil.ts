@@ -66,7 +66,7 @@ export function assemble(type: AssemblyType, parts: Item[], data: Record<string,
       return null;
     }
     if (parts[1].type === Item.Type.Weapon) {
-      const aspects = scaleAspects(mix(parts, data), material.affinity);
+      const aspects = mix(parts, data);
       return Object.assign({}, parts[1], { effects: computeSolution(aspects) });
     } else {
       const [effects, aspects] = computeArmors(parts, material, 1, data);

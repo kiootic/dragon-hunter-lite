@@ -19,7 +19,7 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
     case ElementDef.Type.Defense: {
       let amount = strength * 50;
 
-      if (strengths[ElementDef.Type.Void] > 0.3)
+      if (strengths[ElementDef.Type.Void] > strength * 0.5)
         return makeEffect(EffectDef.Type.DefBreak, amount, 0);
       else
         return makeEffect(EffectDef.Type.Resistance, amount, 0);

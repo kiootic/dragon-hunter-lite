@@ -5,11 +5,12 @@ import { Task } from 'app/game/tasks';
 import { ProjectileData, Stats } from 'app/game/traits';
 import { Spatial } from 'app/game/traits';
 import { generateDrops } from 'app/utils/drops';
-import { Effect, TileObject, Weapon } from 'common/data';
+import { TileObject, Weapon } from 'common/data';
 import { makeEffect } from 'common/logic/effect/common';
 import { knockbackSpeed } from 'common/logic/stats';
 import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
+import { cloneDeep } from 'lodash';
 
 const ObjectHPRegenInterval = 5000;
 
@@ -131,7 +132,7 @@ export class ProjectileTask extends Task {
     if (projectile.sourceEntityId === this.game.player.id && targetEntity === this.game.player)
       return;
 
-    const effects: Effect[] = [];
+    const effects = cloneDeep(projectile.effects);
 
     // knockback
     vec2.sub(this.knockbackDirection, projectile.end, projectile.start);

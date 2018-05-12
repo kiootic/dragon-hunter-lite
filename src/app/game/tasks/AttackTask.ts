@@ -22,7 +22,7 @@ export class AttackTask extends Task {
     const entity = this.game.entities.get(entityId);
     if (!entity) return;
 
-    const {position} = entity.traits.get(Spatial);
+    const { position } = entity.traits.get(Spatial);
     vec2.sub(this.direction, targetPosition, position);
 
     let stunDuration;

@@ -5,7 +5,7 @@ import { Attack } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Inventory, PlayerData, Spatial, Stats } from 'app/game/traits';
 import { direction } from 'app/utils/animations';
-import { Item, ItemSlot, Weapon } from 'common/data';
+import { Effect, Item, ItemSlot, Weapon } from 'common/data';
 import { EffectDef } from 'data/effects';
 import { vec2 } from 'gl-matrix';
 import { cloneDeep } from 'lodash';
@@ -101,7 +101,7 @@ export class UseItemTask extends Task {
     // arrow is treated as fist attack
     let weapon = item && item.weapon && item.weapon.type !== Weapon.Type.Arrow ? item.weapon : {
       type: Weapon.Type.Fist,
-      strength: 0,
+      strength: 5,
       cooldown: 0,
       knockback: 2.5,
       range: FistRange,
@@ -136,7 +136,9 @@ export class UseItemTask extends Task {
     let duration = 500;
     if (weapon.type === Weapon.Type.Spear) duration = Math.min(1000, weapon.cooldown);
     else if (weapon.type !== Weapon.Type.Fist) duration = Math.min(500, weapon.cooldown);
-    const effects = item && item.weapon ? (item.effects || []) : [];
+    let effects: Effect[] = [];
+    if (item && item.weapon && item.material && item.material.affinity > Math.random())
+      effects = item.effects || [];
 
     this.game.view.camera.toMapCoords(this.cursorPos, this.coords);
     vec2.sub(this.direction, this.coords, this.playerPos);

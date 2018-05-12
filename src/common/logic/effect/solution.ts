@@ -12,7 +12,7 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
         amount *= 0.5;
 
       let duration = 0;
-      if (strengths[ElementDef.Type.Time] >= 0.2) {
+      if (strengths[ElementDef.Type.Time] > strength * 0.5) {
         duration = strengths[ElementDef.Type.Time] * 30000;
         amount = amount / duration * 1500;
         return makeEffect(EffectDef.Type.Regen, amount, duration);
@@ -27,7 +27,7 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
         amount *= 0.3;
 
       let duration = 0;
-      if (strengths[ElementDef.Type.Time] >= 0.2) {
+      if (strengths[ElementDef.Type.Time] > strength * 0.5) {
         duration = strengths[ElementDef.Type.Time] * 20000;
         amount = amount / duration * 1500;
         return makeEffect(EffectDef.Type.Poison, amount, duration);
@@ -38,7 +38,7 @@ function computeEffect(element: string, strength: number, strengths: Record<stri
     case ElementDef.Type.Defense: {
       let amount = strength * 50;
 
-      if (strengths[ElementDef.Type.Void] > 0.3)
+      if (strengths[ElementDef.Type.Void] > strength * 0.5)
         return makeEffect(EffectDef.Type.DefBreak, amount, 10000);
       else
         return makeEffect(EffectDef.Type.Resistance, amount, 10000);
