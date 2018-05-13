@@ -1,16 +1,9 @@
 import { Trait } from 'app/game/traits';
-import { Effect } from 'common/data';
+import { Effect , StatList} from 'common/data';
 import { EffectDef } from 'data/effects';
 import { defaults } from 'lodash';
 
-export interface StatList {
-  hp: number;
-  maxHp: number;
-  str: number;
-  def: number;
-  spd: number;
-  vit: number;
-}
+export { StatList } from 'common/data';
 
 export interface Stats extends Trait {
   readonly type: typeof Stats.Type;

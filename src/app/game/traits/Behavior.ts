@@ -4,7 +4,7 @@ import { defaults } from 'lodash';
 
 export interface Behavior extends Trait {
   readonly type: typeof Behavior.Type;
-  readonly behaviors: BehaviorTree;
+  behaviors: BehaviorTree;
 }
 
 export namespace Behavior {

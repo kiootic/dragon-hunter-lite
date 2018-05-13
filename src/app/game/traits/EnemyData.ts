@@ -1,10 +1,11 @@
 import { Trait } from 'app/game/traits';
-import { DropTable } from 'common/data';
+import { DropTable, TextureDef } from 'common/data';
 import { defaults } from 'lodash';
 
 export interface EnemyData extends Trait {
   readonly type: typeof EnemyData.Type;
-  animation: string;
+  name: string;
+  texture: TextureDef;
   drops: DropTable;
 }
 
@@ -12,24 +13,27 @@ export namespace EnemyData {
   export declare const _mark: EnemyData;
   export const Type = 'enemy-data';
 
-  export function make(animation: string): EnemyData {
+  export function make(): EnemyData {
     return {
       type: EnemyData.Type,
-      animation,
+      name: '',
+      texture: '',
       drops: { numDrops: { type: 'constant', value: 0 }, items: [] }
     };
   }
 
   export function serialize(trait: EnemyData) {
     return {
-      animation: trait.animation,
+      name: trait.name,
+      texture: trait.texture,
       drops: trait.drops,
     };
   }
 
   export function deserialize(data: any, trait: EnemyData): EnemyData {
     return defaults({
-      animation: data.animation || 0,
+      name: data.name,
+      texture: data.texture,
       drops: data.drops,
     }, trait);
   }

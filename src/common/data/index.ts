@@ -11,3 +11,5 @@ export * from './Aspect';
 export * from './Effect';
 export * from './Material';
 export * from './Weapon';
+export * from './EnemyDef';
+export * from './StatList';
