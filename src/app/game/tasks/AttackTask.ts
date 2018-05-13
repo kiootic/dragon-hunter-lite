@@ -18,7 +18,7 @@ export class AttackTask extends Task {
   private readonly start = vec2.create();
   private readonly end = vec2.create();
 
-  private attack = ({ entityId, weapon, targetPosition, effects }: Attack) => {
+  private attack = ({ entityId, weapon, targetPosition, effects, duration }: Attack) => {
     const entity = this.game.entities.get(entityId);
     if (!entity) return;
 
@@ -37,8 +37,6 @@ export class AttackTask extends Task {
       stunDuration = 500;
 
     } else {
-      let duration;
-
       if (weapon.type === Weapon.Type.Sword) {
         if (vec2.length(this.direction) > weapon.range) {
           vec2.normalize(this.direction, this.direction);
@@ -49,13 +47,13 @@ export class AttackTask extends Task {
 
         vec2.scaleAndAdd(this.start, targetPosition, [this.direction[1], -this.direction[0]], 1);
         vec2.scaleAndAdd(this.end, targetPosition, [-this.direction[1], this.direction[0]], 1);
-        duration = 250;
+        duration = duration || 250;
       } else {
         vec2.normalize(this.direction, this.direction);
 
         vec2.copy(this.start, position);
         vec2.scaleAndAdd(this.end, this.start, this.direction, weapon.range);
-        duration = 500;
+        duration = duration || 500;
       }
       stunDuration = Math.min(weapon.type === Weapon.Type.Spear ? 1000 : 500, weapon.cooldown);
 
@@ -68,6 +66,7 @@ export class AttackTask extends Task {
     }
 
     if (entity === this.game.player) {
+      // TODO: stun + knockback can cause extra long knockback
       this.game.dispatch(new ApplyEffects(entity.id, [
         makeEffect(EffectDef.Type.Stunned, 0, stunDuration)
       ]));

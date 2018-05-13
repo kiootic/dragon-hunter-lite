@@ -10,5 +10,6 @@ export class Attack implements Message {
     public readonly weapon: Weapon,
     public readonly targetPosition: vec2,
     public readonly effects: Effect[],
+    public readonly duration?: number,
   ) { }
 }

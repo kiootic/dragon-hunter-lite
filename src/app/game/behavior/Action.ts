@@ -1,7 +1,9 @@
 import { BehaviorContext } from 'app/game/behavior';
 
 export enum ActionKind {
-  Movement = 'movement'
+  Movement = 'movement',
+  Attack = 'attack',
+  Effect = 'effect',
 }
 
 export interface ActionState {
@@ -14,6 +16,6 @@ export interface Action<State extends ActionState> {
   readonly Kind: ActionKind;
 
   begin?(this: BehaviorContext<State>): void;
-  tick(this: BehaviorContext<State>, dt: number): void;
+  tick(this: BehaviorContext<State>, dt: number): boolean;
   end?(this: BehaviorContext<State>): void;
 }

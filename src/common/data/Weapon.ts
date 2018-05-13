@@ -14,6 +14,10 @@ export namespace Weapon {
     Spear = 'spear',
     Bow = 'bow',
     Arrow = 'arrow',
-    Fist = 'fist'
+    Fist = 'fist',
+
+    Bolt = 'bolt',
+    Orb = 'orb',
+    Invisible = 'invisible'
   }
 }

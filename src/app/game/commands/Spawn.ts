@@ -1,9 +1,9 @@
-import { Chase } from 'app/game/behavior/actions';
+import { Chase, Escape, Shoot, Wander } from 'app/game/behavior/actions';
 import { HP } from 'app/game/behavior/conditions';
 import { Command } from 'app/game/commands';
 import { Enemy, Entity } from 'app/game/entities';
 import { Behavior, EnemyData, Spatial, Stats } from 'app/game/traits';
-import { Item } from 'common/data';
+import { Item, Weapon } from 'common/data';
 
 export class Spawn extends Command {
   readonly name = 'spawn';
@@ -14,13 +14,29 @@ export class Spawn extends Command {
       case 'skeleton':
         entity = Enemy.make(this.game, 'Skeleton', this.game.player.traits.get(Spatial).position);
         entity.traits.set(Behavior.make({
-          conditions: [
-            Object.assign(HP.greaterThan(0), {
-              _actions: [
-                Object.assign(Chase.make(), { _active: false })
-              ]
-            })
-          ]
+          activeStateIndex: -1,
+          states: [{
+            condition: HP.greaterThan(0.7),
+            actions: [
+              Chase.make(),
+              Wander.make(),
+              Shoot.make({
+                type: Weapon.Type.Bolt,
+                pierce: true,
+                strength: 5,
+                cooldown: 500,
+                knockback: 10,
+                range: 1,
+                color: '000000'
+              }, [], 100)
+            ]
+          }, {
+            condition: HP.lessThan(0.5),
+            actions: [
+              Escape.make(),
+              Wander.make()
+            ]
+          }]
         }));
         entity.traits.get(EnemyData).drops = {
           numDrops: { type: 'exponential', min: 2, max: 5, rate: 0.7 },

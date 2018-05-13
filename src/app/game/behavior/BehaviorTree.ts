@@ -2,15 +2,14 @@ import { Action, ActionKind, ActionState, Condition, ConditionState } from 'app/
 import { Entity } from 'app/game/entities';
 import { Stats } from 'app/game/traits';
 
-interface TreeAction extends ActionState {
-  _active: boolean;
-}
-interface TreeCondition extends ConditionState {
-  _actions: TreeAction[];
+interface BehaviorState {
+  readonly condition: ConditionState;
+  readonly actions: ActionState[];
 }
 
 export interface BehaviorTree {
-  readonly conditions: TreeCondition[];
+  readonly states: BehaviorState[];
+  activeStateIndex: number;
 }
 
 export namespace BehaviorTree {
@@ -30,29 +29,47 @@ export namespace BehaviorTree {
       self,
       state: undefined as any
     };
-    for (const conditionState of tree.conditions) {
-      const condition = conditions.get(conditionState.type)!;
-      context.state = conditionState;
 
+    // state transitions
+    let active = tree.activeStateIndex;
+    for (let i = 0; i < tree.states.length; i++) {
+      const condition = conditions.get(tree.states[i].condition.type)!;
+      context.state = tree.states[i].condition;
       const fulfilled = condition.isFulfilled.call(context);
-      for (const actionState of conditionState._actions) {
+      if (fulfilled)
+        active = i;
+    }
+    if (active < 0) active = 0;
+
+    // activate/deactivate state
+    if (active !== tree.activeStateIndex) {
+      if (tree.activeStateIndex >= 0)
+        for (const actionState of tree.states[tree.activeStateIndex].actions) {
+          const action = actions.get(actionState.type)!;
+          context.state = actionState;
+          action.end && action.end.call(context);
+        }
+
+      for (const actionState of tree.states[active].actions) {
         const action = actions.get(actionState.type)!;
         context.state = actionState;
-        let actionFulfilled = fulfilled;
-        if (action.Kind === ActionKind.Movement)
-          actionFulfilled = actionFulfilled && Stats.canMove(self.traits.get(Stats));
-
-        if (actionFulfilled && !actionState._active) {
-          action.begin && action.begin.call(context);
-          actionState._active = true;
-        }
-        if (!actionFulfilled && actionState._active) {
-          action.end && action.end.call(context);
-          actionState._active = false;
-        }
-        if (actionState._active)
-          action.tick.call(context, dt);
+        action.begin && action.begin.call(context);
       }
+      tree.activeStateIndex = active;
+    }
+
+    // perform state actions
+    let moved = false;
+    for (const actionState of tree.states[active].actions) {
+      const action = actions.get(actionState.type)!;
+      context.state = actionState;
+
+      if (action.Kind === ActionKind.Movement && (moved || !Stats.canMove(self.traits.get(Stats))))
+        continue;
+
+      const ok = action.tick.call(context, dt);
+      if (ok && action.Kind === ActionKind.Movement)
+        moved = true;
     }
   }
 }

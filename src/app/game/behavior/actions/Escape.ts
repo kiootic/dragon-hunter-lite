@@ -3,25 +3,22 @@ import { Spatial, Stats } from 'app/game/traits';
 import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
 
-const ChaseInterval = 250;
-const ChaseRadius = 8;
+const EscapeRadius = 8;
 
-export interface Chase extends ActionState {
-  readonly type: typeof Chase.Type;
+export interface Escape extends ActionState {
+  readonly type: typeof Escape.Type;
 
   readonly targetId: number;
-
-  interval: number;
   readonly velocity: [number, number];
 }
 
-export namespace Chase {
-  export declare const _state: Chase;
-  export const Type = 'chase';
+export namespace Escape {
+  export declare const _state: Escape;
+  export const Type = 'escape';
   export const Kind = ActionKind.Movement;
 
   const direction = vec2.create();
-  export function tick(this: BehaviorContext<Chase>, dt: number) {
+  export function tick(this: BehaviorContext<Escape>, dt: number) {
     const { position, velocity } = this.self.traits.get(Spatial);
 
     const target = this.state.targetId ? this.game.entities.get(this.state.targetId) : this.game.player;
@@ -31,30 +28,22 @@ export namespace Chase {
 
     vec2.subtract(direction, targetPosition, position);
     const distance = vec2.length(direction);
-    if (distance > ChaseRadius) return false;
-
-    if (this.state.interval > 0) {
-      this.state.interval -= dt;
-      vec2.copy(velocity, this.state.velocity);
-      return true;
-    }
-    this.state.interval = ChaseInterval;
+    if (distance > EscapeRadius) return false;
 
     const { spd } = Stats.compute(this.self.traits.get(Stats));
     vec2.normalize(direction, direction);
-    vec2.scale(velocity, direction, tilePerSecond(spd));
+    vec2.scale(velocity, direction, -tilePerSecond(spd * 0.5));
     this.state.velocity[0] = velocity[0];
     this.state.velocity[1] = velocity[1];
     return true;
   }
 
-  export function make(targetId = 0): Chase {
+  export function make(targetId = 0): Escape {
     return {
       type: Type,
       targetId,
-      interval: 0,
       velocity: [0, 0]
     };
   }
 }
-BehaviorTree.registerAction(Chase);
+BehaviorTree.registerAction(Escape);
