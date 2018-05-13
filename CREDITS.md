@@ -37,6 +37,11 @@ https://forums.tigsource.com/index.php?topic=14166.0
 
 License: CC-BY-NC-SA
 
+### Bosses
+https://forums.tigsource.com/index.php?topic=8834.0
+
+License: CC-BY-NC-SA
+
 ### Character Generator
 http://gaurav.munjal.us/Universal-LPC-Spritesheet-Character-Generator/
 

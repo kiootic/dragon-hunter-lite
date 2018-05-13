@@ -53,7 +53,7 @@ export class EntityMovementTask extends Task {
   public update(dt: number) {
     const t = dt / 1000;
     for (const entity of this.game.entities.withTrait(Spatial)) {
-      const { position, sprite, velocity } = entity.traits.get(Spatial);
+      const { position, sprite, velocity, horizontalAnim } = entity.traits.get(Spatial);
       const stats = entity.traits.get(Stats);
       vec2.scale(this.vel, velocity, dt / 1000);
 
@@ -70,7 +70,7 @@ export class EntityMovementTask extends Task {
       }
 
       if (stats && Stats.canMove(stats))
-        this.updateDisplay(velocity, this.vel, sprite);
+        this.updateDisplay(velocity, this.vel, sprite, horizontalAnim);
 
       const float = entity.traits.get(Float);
       if (float && float.gravity) {
@@ -206,14 +206,14 @@ export class EntityMovementTask extends Task {
     this.game.dispatch(new EntityCollision(aId, bId));
   }
 
-  private updateDisplay(intendedVel: vec2, actualVel: vec2, sprite: TextureSprite) {
+  private updateDisplay(intendedVel: vec2, actualVel: vec2, sprite: TextureSprite, horizontal: boolean) {
     if (!sprite.animName)
       sprite.animName = 'down';
 
     sprite.still = actualVel[0] === 0 && actualVel[1] === 0;
 
     if (intendedVel[0] !== 0 || intendedVel[1] !== 0) {
-      sprite.animName = direction(intendedVel[1], intendedVel[0], 'movement');
+      sprite.animName = direction(intendedVel[1], intendedVel[0], horizontal ? 'horizontal' : 'movement');
     }
   }
 }

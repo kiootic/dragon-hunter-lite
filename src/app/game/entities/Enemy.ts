@@ -11,9 +11,7 @@ export class Enemy extends Entity {
 
   public static make(game: Game, def: EnemyDef, position: vec2) {
     const entity = new Enemy(game);
-    entity.traits.get(EnemyData).name = def.name;
-    entity.traits.get(EnemyData).texture = def.texture;
-    entity.traits.get(EnemyData).drops = def.drops;
+    entity.traits.get(EnemyData).def = def;
     entity.traits.get(Behavior).behaviors = def.behaviors;
     Object.assign(entity.traits.get(Stats).base, def.stats);
     vec2.copy(entity.traits.get(Spatial).position, position);
@@ -21,11 +19,9 @@ export class Enemy extends Entity {
   }
 
   init() {
-    const spatial = this.traits(Spatial);
-    vec2.set(spatial.scale, 2, 2);
+    this.traits(Spatial);
 
-    const collidable = this.traits(Collidable);
-    vec2.set(collidable.size, 0.4, 0.4);
+    this.traits(Collidable);
 
     this.traits(Stats);
     this.traits(EnemyData);
@@ -34,7 +30,15 @@ export class Enemy extends Entity {
 
   hydrate() {
     const data = this.traits.get(EnemyData);
-    this.traits.get(Spatial).sprite.setTexture(data.texture, this.id);
+
+    const spatial = this.traits.get(Spatial);
+    spatial.sprite.setTexture(data.def.texture, this.id);
+    spatial.horizontalAnim = data.def.horizontalAnim;
+    vec2.set(spatial.scale, data.def.scale * 2, data.def.scale * 2);
+    vec2.set(spatial.offset, data.def.offset[0], data.def.offset[1]);
+
+    const collidable = this.traits.get(Collidable);
+    vec2.set(collidable.size, 0.4 * data.def.scale, 0.4 * data.def.scale);
   }
 }
 Entity.types.set(Enemy.Type, Enemy);

@@ -20,7 +20,7 @@ export class DeathTask extends Task {
     const enemy = entity.traits.get(EnemyData);
     if (enemy) {
       const { position } = entity.traits.get(Spatial);
-      for (const drop of generateDrops(enemy.drops)) {
+      for (const drop of generateDrops(enemy.def.drops)) {
         const itemDrop = ItemDrop.make(this.game, drop, position);
         this.game.entities.add(itemDrop);
       }

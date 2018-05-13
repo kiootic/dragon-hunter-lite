@@ -38,5 +38,12 @@ export const Animations: Record<string, TextureDef> = {
       'up': { frameId: 'sprites/skeleton/up', numFrames: 8, fps: 15 },
       'down': { frameId: 'sprites/skeleton/down', numFrames: 8, fps: 15 },
     }
+  },
+  Dragon: {
+    type: 'animation',
+    anims: {
+      'left': { frameId: 'sprites/dragons/left', numFrames: 1, fps: 1 },
+      'right': { frameId: 'sprites/dragons/right', numFrames: 1, fps: 1 },
+    }
   }
 };

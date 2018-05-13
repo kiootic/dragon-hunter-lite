@@ -10,6 +10,7 @@ export interface Spatial extends Trait {
   readonly velocity: vec2;
   readonly scale: vec2;
   readonly offset: vec2;
+  horizontalAnim: boolean;
   readonly sprite: Camera.Sprite & TextureSprite;
 }
 
@@ -24,6 +25,7 @@ export namespace Spatial {
       velocity: vec2.fromValues(0, 0),
       scale: vec2.fromValues(1, 1),
       offset: vec2.fromValues(0, 0),
+      horizontalAnim: false,
       sprite: Object.assign(new TextureSprite(), {
         layer: Camera.Layer.Objects,
         sortOffset: vec2.fromValues(0, 0),
