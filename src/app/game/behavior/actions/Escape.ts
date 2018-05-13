@@ -3,7 +3,7 @@ import { computeVelocity } from 'app/game/behavior/utils';
 import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
 
-const EscapeRadius = 8;
+const EscapeRadius = 5;
 
 export interface Escape extends ActionState {
   readonly type: typeof Escape.Type;

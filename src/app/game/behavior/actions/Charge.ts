@@ -4,6 +4,7 @@ import { Spatial, Stats } from 'app/game/traits';
 import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
 
+const SpeedMultiplier = 5;
 
 export interface Charge extends ActionState {
   readonly type: typeof Charge.Type;
@@ -39,11 +40,11 @@ export namespace Charge {
     const { position: targetPosition } = target.traits.get(Spatial);
     vec2.subtract(direction, targetPosition, position);
     const { spd } = Stats.compute(this.self.traits.get(Stats));
-    this.state.interval = Math.min(3000, (vec2.length(direction) + 5) / (tilePerSecond(spd) * 10) * 1000);
+    this.state.interval = Math.min(3000, (vec2.length(direction) + 5) / (tilePerSecond(spd) * SpeedMultiplier) * 1000);
     this.state.cooldown = Math.max(2500, this.state.interval);
 
     vec2.normalize(direction, direction);
-    vec2.scale(direction, direction, 10);
+    vec2.scale(direction, direction, SpeedMultiplier);
     computeVelocity(velocity, direction, this.self);
     this.state.direction[0] = direction[0];
     this.state.direction[1] = direction[1];

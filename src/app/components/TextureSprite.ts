@@ -90,6 +90,7 @@ export class TextureSprite extends Sprite implements TexSprite {
           this.frame = -1;
           this.currentTex = Texture.EMPTY;
           this.animBeginTime = this.elapsed;
+          if (textureDef.tint) this.tint = parseInt(textureDef.tint, 16);
           break;
         case 'liquid':
           this.currentTex = Texture.fromFrame(textureDef.tex);

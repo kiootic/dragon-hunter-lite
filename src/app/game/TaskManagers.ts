@@ -16,6 +16,7 @@ export class TaskManager {
 
     this.add(tasks.PlayerInputTask);
     this.add(tasks.BehaviorTask);
+    this.add(tasks.DragonTask);
 
     this.add(tasks.ProjectileTask);
     this.add(tasks.EntityHPTask);

@@ -1,3 +1,6 @@
+import { lch } from 'chroma-js';
+import { randomValue, RandomValue } from 'common/random';
+
 export function blend(colors: { color: number, weight?: number }[]) {
   const rgb = [0, 0, 0];
   let total = 0;
@@ -14,4 +17,11 @@ export function blend(colors: { color: number, weight?: number }[]) {
     (Math.floor(rgb[1] / total) << 8) +
     (Math.floor(rgb[2] / total) << 0)
   );
+}
+
+export function random(lightness: RandomValue, chroma: RandomValue, random = Math.random) {
+  const h = random() * 360;
+  const l = randomValue(lightness, random) * 100;
+  const c = randomValue(chroma, random) * 100;
+  return lch(l, c, h).hex().substr(1);
 }

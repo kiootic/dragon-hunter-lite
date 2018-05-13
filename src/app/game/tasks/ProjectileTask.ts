@@ -145,7 +145,7 @@ export class ProjectileTask extends Task {
       effects.push(makeEffect(EffectDef.Type.Knockback, 0, 100));
     }
 
-    const damage = Math.max(0, projectile.damage - Stats.compute(stats).def);
+    const damage = Math.max(Math.ceil(projectile.damage * 0.1), projectile.damage - Stats.compute(stats).def);
     this.game.dispatch(new UpdateHP(targetEntity.id, -damage));
     this.game.dispatch(new ApplyEffects(targetEntity.id, effects));
 

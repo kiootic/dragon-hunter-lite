@@ -25,6 +25,7 @@ export interface AnimationDef {
 export interface TextureAnimation {
   type: 'animation';
   anims: Record<string, AnimationDef>;
+  tint?: string;
 }
 
 export interface TextureTiled {

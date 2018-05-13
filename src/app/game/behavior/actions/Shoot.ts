@@ -4,7 +4,7 @@ import { Spatial } from 'app/game/traits';
 import { Effect, Weapon } from 'common/data';
 import { vec2 } from 'gl-matrix';
 
-const ShootRadius = 10;
+const ShootRadius = 12;
 
 export interface Shoot extends ActionState {
   readonly type: typeof Shoot.Type;
@@ -54,7 +54,10 @@ export namespace Shoot {
     return true;
   }
 
-  export function make(weapon: Weapon, effects: Effect[], duration: number, numShoots = 1, angle = 15): Shoot {
+  export function make(
+    weapon: Weapon, effects: Effect[], duration: number,
+    numShoots = 1, angle = 15, delay = 0
+  ): Shoot {
     return {
       type: Type,
       weapon,
@@ -62,7 +65,7 @@ export namespace Shoot {
       duration,
       numShoots,
       angle: angle * Math.PI / 180,
-      cooldown: 0
+      cooldown: delay
     };
   }
 }

@@ -66,7 +66,7 @@ export class EntityDisplayTask extends Task {
 
       vec2.add(this.tr, position, offset);
       this.game.view.camera.toCameraPoint(this.tr, sprite.position, z);
-      vec2.set(sprite.sortOffset, 0, z + 1);
+      vec2.sub(sprite.sortOffset, [0, z + 1], offset);
       sprite.pivot.set(sprite.width / 2 / scale[0], sprite.height / 2 / scale[1]);
     }
   }
