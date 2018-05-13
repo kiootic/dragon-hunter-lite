@@ -1,6 +1,6 @@
 import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
-import { Spatial, Stats } from 'app/game/traits';
-import { tilePerSecond } from 'common/logic/stats';
+import { computeVelocity } from 'app/game/behavior/utils';
+import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
 
 const ChaseInterval = 250;
@@ -12,7 +12,7 @@ export interface Chase extends ActionState {
   readonly targetId: number;
 
   interval: number;
-  readonly velocity: [number, number];
+  readonly direction: [number, number];
 }
 
 export namespace Chase {
@@ -35,16 +35,15 @@ export namespace Chase {
 
     if (this.state.interval > 0) {
       this.state.interval -= dt;
-      vec2.copy(velocity, this.state.velocity);
+      computeVelocity(velocity, this.state.direction, this.self);
       return true;
     }
     this.state.interval = ChaseInterval;
 
-    const { spd } = Stats.compute(this.self.traits.get(Stats));
     vec2.normalize(direction, direction);
-    vec2.scale(velocity, direction, tilePerSecond(spd));
-    this.state.velocity[0] = velocity[0];
-    this.state.velocity[1] = velocity[1];
+    computeVelocity(velocity, this.state.direction, this.self);
+    this.state.direction[0] = direction[0];
+    this.state.direction[1] = direction[1];
     return true;
   }
 
@@ -53,7 +52,7 @@ export namespace Chase {
       type: Type,
       targetId,
       interval: 0,
-      velocity: [0, 0]
+      direction: [0, 0]
     };
   }
 }

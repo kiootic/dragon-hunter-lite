@@ -22,7 +22,7 @@ export function fadeIn(obj: DisplayObject) {
 
 function dir(dy: number, dx: number, left: number, right: number) {
   const angle = Math.atan2(dy, dx);
-  if (Math.abs(angle) > Math.PI * left)
+  if (Math.abs(angle) >= Math.PI * left)
     return 'left';
   else if (Math.abs(angle) < Math.PI * right)
     return 'right';

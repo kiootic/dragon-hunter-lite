@@ -208,7 +208,7 @@ export class EntityMovementTask extends Task {
 
   private updateDisplay(intendedVel: vec2, actualVel: vec2, sprite: TextureSprite, horizontal: boolean) {
     if (!sprite.animName)
-      sprite.animName = 'down';
+      sprite.animName = horizontal ? 'left' : 'down';
 
     sprite.still = actualVel[0] === 0 && actualVel[1] === 0;
 

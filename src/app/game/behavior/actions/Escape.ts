@@ -1,6 +1,6 @@
 import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
-import { Spatial, Stats } from 'app/game/traits';
-import { tilePerSecond } from 'common/logic/stats';
+import { computeVelocity } from 'app/game/behavior/utils';
+import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
 
 const EscapeRadius = 8;
@@ -9,7 +9,6 @@ export interface Escape extends ActionState {
   readonly type: typeof Escape.Type;
 
   readonly targetId: number;
-  readonly velocity: [number, number];
 }
 
 export namespace Escape {
@@ -17,7 +16,6 @@ export namespace Escape {
   export const Type = 'escape';
   export const Kind = ActionKind.Movement;
 
-  const direction = vec2.create();
   export function tick(this: BehaviorContext<Escape>, dt: number) {
     const { position, velocity } = this.self.traits.get(Spatial);
 
@@ -26,23 +24,20 @@ export namespace Escape {
 
     const { position: targetPosition } = target.traits.get(Spatial);
 
-    vec2.subtract(direction, targetPosition, position);
-    const distance = vec2.length(direction);
+    vec2.subtract(velocity, targetPosition, position);
+    const distance = vec2.length(velocity);
     if (distance > EscapeRadius) return false;
 
-    const { spd } = Stats.compute(this.self.traits.get(Stats));
-    vec2.normalize(direction, direction);
-    vec2.scale(velocity, direction, -tilePerSecond(spd * 0.5));
-    this.state.velocity[0] = velocity[0];
-    this.state.velocity[1] = velocity[1];
+    vec2.normalize(velocity, velocity);
+    vec2.scale(velocity,velocity, -0.5);
+    computeVelocity(velocity, velocity, this.self);
     return true;
   }
 
   export function make(targetId = 0): Escape {
     return {
       type: Type,
-      targetId,
-      velocity: [0, 0]
+      targetId
     };
   }
 }

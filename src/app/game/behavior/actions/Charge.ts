@@ -1,9 +1,9 @@
 import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
+import { computeVelocity } from 'app/game/behavior/utils';
 import { Spatial, Stats } from 'app/game/traits';
 import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
 
-const ChargeCooldown = 2000;
 
 export interface Charge extends ActionState {
   readonly type: typeof Charge.Type;
@@ -12,7 +12,7 @@ export interface Charge extends ActionState {
 
   interval: number;
   cooldown: number;
-  readonly velocity: [number, number];
+  readonly direction: [number, number];
 }
 
 export namespace Charge {
@@ -29,23 +29,24 @@ export namespace Charge {
 
     if (this.state.interval > 0) {
       this.state.interval -= dt;
-      vec2.copy(velocity, this.state.velocity);
+      computeVelocity(velocity, this.state.direction, this.self);
       return true;
     } else if (this.state.cooldown > 0) {
       this.state.cooldown -= dt;
       return false;
     }
-    this.state.cooldown = ChargeCooldown;
 
     const { position: targetPosition } = target.traits.get(Spatial);
-    const { spd } = Stats.compute(this.self.traits.get(Stats));
-    const speed = tilePerSecond(spd * 10);
     vec2.subtract(direction, targetPosition, position);
-    this.state.interval = (vec2.length(direction) + 5) / speed * 1000;
+    const { spd } = Stats.compute(this.self.traits.get(Stats));
+    this.state.interval = Math.min(3000, (vec2.length(direction) + 5) / (tilePerSecond(spd) * 10) * 1000);
+    this.state.cooldown = Math.max(2500, this.state.interval);
+
     vec2.normalize(direction, direction);
-    vec2.scale(velocity, direction, speed);
-    this.state.velocity[0] = velocity[0];
-    this.state.velocity[1] = velocity[1];
+    vec2.scale(direction, direction, 10);
+    computeVelocity(velocity, direction, this.self);
+    this.state.direction[0] = direction[0];
+    this.state.direction[1] = direction[1];
     return true;
   }
 
@@ -55,7 +56,7 @@ export namespace Charge {
       targetId,
       interval: 0,
       cooldown: 0,
-      velocity: [0, 0]
+      direction: [0, 0]
     };
   }
 }
