@@ -1,7 +1,9 @@
 import * as a from 'app/game/behavior/actions';
 import * as c from 'app/game/behavior/conditions';
 import { EnemyDef, Item, Weapon } from 'common/data';
+import { makeEffect } from 'common/logic/effect/common';
 import { Animations } from 'data/animations';
+import { EffectDef } from 'data/effects';
 
 export const Enemies: Record<string, EnemyDef> = {
   skeleton: {
@@ -73,6 +75,40 @@ export const Enemies: Record<string, EnemyDef> = {
       def: 0,
       spd: 5,
       vit: 0
+    }
+  },
+  egg: {
+    name: 'Egg',
+    texture: 'sprites/dragons/egg',
+    scale: 1,
+    horizontalAnim: false,
+    offset: [0, -0.25],
+    behaviors: {
+      activeStateIndex: -1,
+      states: [{
+        condition: c.HP.greaterThan(0.99),
+        actions: [
+          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000)], 500)
+        ]
+      }, {
+        condition: c.HP.lessThan(0.99),
+        actions: [
+          a.Spawn.make('dragon', 0),
+          a.Suicide.make()
+        ]
+      }]
+    },
+    drops: {
+      numDrops: { type: 'constant', value: 0 },
+      items: []
+    },
+    stats: {
+      hp: 10000,
+      maxHp: 10000,
+      str: 0,
+      def: 0,
+      spd: 0,
+      vit: 10
     }
   },
   dragon: {

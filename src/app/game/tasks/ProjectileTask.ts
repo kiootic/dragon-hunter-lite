@@ -135,13 +135,15 @@ export class ProjectileTask extends Task {
     const effects = cloneDeep(projectile.effects);
 
     // knockback
-    vec2.sub(this.knockbackDirection, projectile.end, projectile.start);
-    vec2.normalize(this.knockbackDirection, this.knockbackDirection);
-    if (projectile.weapon.type === Weapon.Type.Sword)
-      vec2.set(this.knockbackDirection, this.knockbackDirection[1], -this.knockbackDirection[0]);
-    const { velocity: targetVel } = targetEntity.traits.get(Spatial);
-    vec2.scale(targetVel, this.knockbackDirection, knockbackSpeed(projectile.weapon.knockback));
-    effects.push(makeEffect(EffectDef.Type.Knockback, 0, 100));
+    if (!Stats.hasEffect(stats, EffectDef.Type.KnockbackResist)) {
+      vec2.sub(this.knockbackDirection, projectile.end, projectile.start);
+      vec2.normalize(this.knockbackDirection, this.knockbackDirection);
+      if (projectile.weapon.type === Weapon.Type.Sword)
+        vec2.set(this.knockbackDirection, this.knockbackDirection[1], -this.knockbackDirection[0]);
+      const { velocity: targetVel } = targetEntity.traits.get(Spatial);
+      vec2.scale(targetVel, this.knockbackDirection, knockbackSpeed(projectile.weapon.knockback));
+      effects.push(makeEffect(EffectDef.Type.Knockback, 0, 100));
+    }
 
     this.game.dispatch(new UpdateHP(targetEntity.id, -projectile.damage));
     this.game.dispatch(new ApplyEffects(targetEntity.id, effects));

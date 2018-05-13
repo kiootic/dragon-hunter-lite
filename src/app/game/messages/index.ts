@@ -10,3 +10,4 @@ export * from './ObjectSpriteRequest';
 export * from './EntityCollision';
 export * from './TileCollision';
 export * from './Death';
+export * from './SpawnEnemy';

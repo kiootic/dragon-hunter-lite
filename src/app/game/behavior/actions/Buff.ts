@@ -24,7 +24,7 @@ export namespace Buff {
     }
     this.state.cooldown = this.state.cooldown;
 
-    this.game.dispatch(new ApplyEffects(this.state.targetId || this.self.id, this.state.effects));
+    this.game.dispatch(new ApplyEffects(this.state.targetId || this.self.id, this.state.effects.slice()));
     return true;
   }
 

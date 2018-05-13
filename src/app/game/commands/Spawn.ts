@@ -1,6 +1,6 @@
 import { Enemies } from 'app/game/behavior/enemies';
 import { Command } from 'app/game/commands';
-import { Enemy } from 'app/game/entities';
+import { SpawnEnemy } from 'app/game/messages';
 import { Spatial } from 'app/game/traits';
 
 export class Spawn extends Command {
@@ -8,11 +8,15 @@ export class Spawn extends Command {
 
   exec(type: string) {
     const enemyDef = Enemies[type.toLowerCase()];
-    if (!enemyDef)
+    if (!enemyDef) {
       this.log('unknown type: ' + type);
+      return;
+    }
 
-    const entity = Enemy.make(this.game, enemyDef, this.game.player.traits.get(Spatial).position);
-    this.game.entities.add(entity);
+    this.game.dispatch(new SpawnEnemy(
+      type.toLowerCase(),
+      this.game.player.traits.get(Spatial).position
+    ));
   }
 }
 Command.register(new Spawn());
