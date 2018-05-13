@@ -24,6 +24,9 @@ export class InventoryTask extends Task {
 
   update(dt: number) {
     for (const itemDrop of this.game.entities.ofType(ItemDrop)) {
+      const { slots } = itemDrop.traits.get(Inventory);
+      if (!this.canPickUp(slots[0].item!)) continue;
+
       const spatial = itemDrop.traits.get(Spatial);
       const d = vec2.dist(spatial.position, this.playerPos);
 
@@ -57,6 +60,14 @@ export class InventoryTask extends Task {
       return !!item.id.match(accepts);
     else
       return accepts.indexOf(item.type) >= 0;
+  }
+
+  private canPickUp(item: Item) {
+    for (const slot of this.playerInv) {
+      if (slot.item) continue;
+      if (this.acceptable(item, slot.accepts)) return true;
+    }
+    return false;
   }
 
   private pickUp(item: Item) {
