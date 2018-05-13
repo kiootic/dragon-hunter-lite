@@ -145,7 +145,8 @@ export class ProjectileTask extends Task {
       effects.push(makeEffect(EffectDef.Type.Knockback, 0, 100));
     }
 
-    this.game.dispatch(new UpdateHP(targetEntity.id, -projectile.damage));
+    const damage = Math.max(0, projectile.damage - Stats.compute(stats).def);
+    this.game.dispatch(new UpdateHP(targetEntity.id, -damage));
     this.game.dispatch(new ApplyEffects(targetEntity.id, effects));
 
     if (!projectile.weapon.pierce) {
