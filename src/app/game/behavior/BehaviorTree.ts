@@ -23,6 +23,17 @@ export namespace BehaviorTree {
     conditions.set(condition.Type, condition);
   }
 
+  export function dump(tree: BehaviorTree) {
+    return tree.states.map(state => {
+      const texts :string[] = [];
+      texts.push(`When ${conditions.get(state.condition.type)!.dump(state.condition)}:`);
+      for (const action of state.actions) {
+        texts.push('  ' + actions.get(action.type)!.dump(action));
+      }
+      return texts.join('\n');
+    }).join('\n\n');
+  }
+
   export function run(self: Entity, dt: number, tree: BehaviorTree) {
     const context = {
       game: self.game,

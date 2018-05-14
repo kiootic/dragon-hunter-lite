@@ -22,6 +22,10 @@ export namespace Buff {
     return cloneDeep(state);
   }
 
+  export function dump(state: Buff) {
+    return 'Buff target with effects';
+  }
+
   export function tick(this: BehaviorContext<Buff>, dt: number) {
     if (this.state.cooldown > 0) {
       this.state.cooldown -= dt;

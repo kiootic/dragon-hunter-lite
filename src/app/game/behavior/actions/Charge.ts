@@ -26,6 +26,10 @@ export namespace Charge {
     return cloneDeep(state);
   }
 
+  export function dump(state: Charge) {
+    return 'Charge towards target';
+  }
+
   const direction = vec2.create();
   export function tick(this: BehaviorContext<Charge>, dt: number) {
     const { position, velocity } = this.self.traits.get(Spatial);

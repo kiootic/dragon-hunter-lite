@@ -66,6 +66,16 @@ export namespace Shoot {
     return newState;
   }
 
+  export function dump(state: Shoot) {
+    const texts: any[] = [];
+    texts.push(`Shoot ${state.numShoots} projectiles of damage ${state.weapon.strength.toFixed(1)}`);
+    if (state.numShoots > 1) {
+      texts.push(`with angle ${(state.angle * 180 / Math.PI).toFixed(1)}`);
+    }
+    texts.push(`, reaches ${state.weapon.range.toFixed(1)} in ${(state.duration / 1000).toFixed(2)} seconds`);
+    return texts.join(' ');
+  }
+
   const direction = vec2.create();
   const target = vec2.create();
   export function tick(this: BehaviorContext<Shoot>, dt: number) {

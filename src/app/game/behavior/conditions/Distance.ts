@@ -21,6 +21,10 @@ export namespace Distance {
     };
   }
 
+  export function dump(state: Distance) {
+    return `distance with target is ${state.isGreater ? 'greater' : 'less'} than ${state.threshold.toFixed(1)}`;
+  }
+
   const dist = vec2.create();
   export function isFulfilled(this: BehaviorContext<Distance>) {
     const target = this.state.targetId ? this.game.entities.get(this.state.targetId) : this.game.player;

@@ -25,6 +25,10 @@ export namespace Chase {
     return cloneDeep(state);
   }
 
+  export function dump(state: Chase) {
+    return 'Chase target';
+  }
+
   const direction = vec2.create();
   export function tick(this: BehaviorContext<Chase>, dt: number) {
     const { position, velocity } = this.self.traits.get(Spatial);

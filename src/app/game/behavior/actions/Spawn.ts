@@ -21,6 +21,10 @@ export namespace Spawn {
     return cloneDeep(state);
   }
 
+  export function dump(state: Spawn) {
+    return `Spawn ${state.enemyType}`;
+  }
+
   export function tick(this: BehaviorContext<Spawn>, dt: number) {
     if (this.state.cooldown > 0) {
       this.state.cooldown -= dt;

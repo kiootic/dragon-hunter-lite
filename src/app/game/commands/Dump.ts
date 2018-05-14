@@ -1,5 +1,6 @@
+import { BehaviorTree } from 'app/game/behavior';
 import { Command } from 'app/game/commands';
-import { Inventory, PlayerData } from 'app/game/traits';
+import { EnemyData, Inventory, PlayerData } from 'app/game/traits';
 import { instantiate, randomValue, RandomValue } from 'common/random';
 import { Elements } from 'data/elements';
 import { padStart } from 'lodash';
@@ -50,6 +51,32 @@ export class Dump extends Command {
         const { hotbarSelection } = this.game.player.traits.get(PlayerData);
         const { item } = slots[hotbarSelection];
         this.log(JSON.stringify(item, null, 4));
+      } break;
+      case 'dragons': {
+        this.log('| id |       name       |  HP  | STR | SPD | score |');
+        for (const dragon of this.game.data.custom.dragons.dragons) {
+          this.log(`\
+ ${padStart(dragon.dragonId, 4, ' ')}\
+ ${padStart(dragon.name, 18, ' ')}\
+ ${padStart(dragon.stats.maxHp.toFixed(1), 6, ' ')}\
+ ${padStart(dragon.stats.str.toFixed(1), 5, ' ')}\
+ ${padStart(dragon.stats.spd.toFixed(1), 5, ' ')}\
+ ${padStart(dragon.score.toFixed(4), 7, ' ')}`);
+        }
+      } break;
+      case 'behaviors': {
+        const { lastAttackId } = this.game.player.traits.get(PlayerData);
+        const target = this.game.entities.get(lastAttackId);
+        if (!target) {
+          this.log('target entity does not exist.');
+          break;
+        }
+        const enemy = target.traits.get(EnemyData);
+        if (!enemy) {
+          this.log('target entity is not enemy.');
+          break;
+        }
+        this.log(BehaviorTree.dump(enemy.def.behaviors));
       } break;
       default:
         this.log('unknown dump type: ' + type);

@@ -22,6 +22,10 @@ export namespace Wander {
     return cloneDeep(state);
   }
 
+  export function dump(state: Wander) {
+    return 'Wander around';
+  }
+
   export function tick(this: BehaviorContext<Wander>, dt: number) {
     const { velocity } = this.self.traits.get(Spatial);
 

@@ -12,4 +12,5 @@ export interface Condition<State extends ConditionState> {
 
   isFulfilled(this: BehaviorContext<State>): boolean;
   mutate(state: State): State;
+  dump(state: State): string;
 }

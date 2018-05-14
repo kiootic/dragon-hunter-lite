@@ -16,6 +16,8 @@ export interface Action<State extends ActionState> {
   readonly Kind: ActionKind;
 
   mutate(state: State): State;
+  dump(state: State): string;
+
   begin?(this: BehaviorContext<State>): void;
   tick(this: BehaviorContext<State>, dt: number): boolean;
   end?(this: BehaviorContext<State>): void;

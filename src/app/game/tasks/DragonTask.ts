@@ -21,6 +21,7 @@ interface DragonDef extends EnemyDef {
   maxDPS: number;
   minPlayerHP: number;
   age: number;
+  score: number;
 }
 
 function randomRange(max: number) {
@@ -33,6 +34,7 @@ const DragonDefTemplate: DragonDef = {
   color: '',
   minPlayerHP: 100000,
   age: 0,
+  score: 0,
 
   name: '',
   texture: Animations.Dragon,
@@ -177,9 +179,9 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
     const ageScore = clamp(Math.abs(dragonDef.age - 60 * 1000) / 60000, 0, 1);
     const dpsScore = clamp(Math.abs(dragonDef.maxDPS - 20) / 10, 0, 1);
     const hpScore = clamp(Math.abs(dragonDef.minPlayerHP - 50) / 50, 0, 1);
-    console.log('evalulate', dragonDef.age, dragonDef.maxDPS, dragonDef.minPlayerHP);
     const finalScore = 1 - (ageScore + dpsScore + hpScore) / 3;
     console.log(`evaluate ${instance.dragonId}: ${finalScore}`);
+    dragonDef.score = finalScore;
     return finalScore;
   }
 
@@ -191,7 +193,6 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
     target.stats.hp = target.stats.maxHp;
     target.stats.str = meanBy(instances, dragon => dragon.stats.str) * (1 - dpsScore / 2);
     target.stats.spd = meanBy(instances, dragon => dragon.stats.spd) * (1 - hpScore / 2);
-    console.log('stats scores', ageScore, dpsScore, hpScore);
     console.log('stats', target.stats);
   }
 

@@ -6,6 +6,7 @@ export interface PlayerData extends Trait {
   hotbarSelection: number;
   consumeCooldown: number;
   attackCooldown: number;
+  lastAttackId: number;
 }
 
 export namespace PlayerData {
@@ -17,7 +18,8 @@ export namespace PlayerData {
       type: PlayerData.Type,
       hotbarSelection: 0,
       consumeCooldown: 0,
-      attackCooldown: 0
+      attackCooldown: 0,
+      lastAttackId: 0
     };
   }
 
@@ -26,6 +28,7 @@ export namespace PlayerData {
       hotbarSelection: trait.hotbarSelection,
       consumeCooldown: trait.consumeCooldown,
       attackCooldown: trait.attackCooldown,
+      lastAttackId: trait.lastAttackId,
     };
   }
 
@@ -34,6 +37,7 @@ export namespace PlayerData {
       hotbarSelection: data.hotbarSelection || 0,
       consumeCooldown: data.consumeCooldown || 0,
       attackCooldown: data.attackCooldown || 0,
+      lastAttackId: data.lastAttackId || 0,
     }, trait);
   }
 }

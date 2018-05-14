@@ -14,6 +14,10 @@ export namespace Suicide {
     return cloneDeep(state);
   }
 
+  export function dump(state: Suicide) {
+    return 'Destroy self';
+  }
+
   export function tick(this: BehaviorContext<Suicide>, dt: number) {
     this.self.delete();
     return true;

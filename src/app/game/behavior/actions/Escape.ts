@@ -21,6 +21,9 @@ export namespace Escape {
     return cloneDeep(state);
   }
 
+  export function dump(state: Escape) {
+    return 'Escape from target';
+  }
 
   export function tick(this: BehaviorContext<Escape>, dt: number) {
     const { position, velocity } = this.self.traits.get(Spatial);

@@ -20,6 +20,10 @@ export namespace HP {
     };
   }
 
+  export function dump(state: HP) {
+    return `HP of target is ${state.isGreater ? 'greater' : 'less'} than ${(state.threshold * 100).toFixed(1)}%`;
+  }
+
   export function isFulfilled(this: BehaviorContext<HP>) {
     const target = this.state.targetId ? this.game.entities.get(this.state.targetId) : this.self;
     if (!target) return false;

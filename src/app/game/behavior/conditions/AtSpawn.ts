@@ -13,6 +13,10 @@ export namespace AtSpawn {
     return cloneDeep(state);
   }
 
+  export function dump(state: AtSpawn) {
+    return 'at spawn';
+  }
+
   export function isFulfilled(this: BehaviorContext<AtSpawn>) {
     return this.self.age === 0;
   }

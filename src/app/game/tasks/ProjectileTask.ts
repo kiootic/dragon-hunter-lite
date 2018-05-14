@@ -2,7 +2,7 @@ import { Game } from 'app/game';
 import { ItemDrop } from 'app/game/entities';
 import { ApplyEffects, EntityCollision, ObjectSpriteRequest, PlayFX, ShowParticles, TileCollision, UpdateHP } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { ProjectileData, Stats } from 'app/game/traits';
+import { PlayerData, ProjectileData, Stats } from 'app/game/traits';
 import { Spatial } from 'app/game/traits';
 import { generateDrops } from 'app/utils/drops';
 import { TileObject, Weapon } from 'common/data';
@@ -151,6 +151,9 @@ export class ProjectileTask extends Task {
 
     if (!projectile.weapon.pierce) {
       projectileEntity.delete();
+    }
+    if (projectile.sourceEntityId === this.game.player.id) {
+      this.game.player.traits.get(PlayerData).lastAttackId = targetEntity.id;
     }
   }
 }

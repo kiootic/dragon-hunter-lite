@@ -21,5 +21,5 @@ export function generate(
   report('done!', 1);
   const mapData = data.finalizeMap();
 
-  return new GameSave('', library, mapData, data.entities, data.game);
+  return new GameSave('', library, mapData, data.entities, {}, data.game);
 }
