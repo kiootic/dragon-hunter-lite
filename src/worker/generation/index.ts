@@ -1,4 +1,4 @@
-import { GameSave } from 'common/data';
+import { EnemyDef, GameSave } from 'common/data';
 import { generateBiomes } from 'worker/generation/biomeGen';
 import { GameData } from 'worker/generation/data';
 import { decorateMap } from 'worker/generation/decoration';
@@ -8,12 +8,12 @@ import { generateProps } from 'worker/generation/propsGen';
 import { ProgressReporter } from 'worker/generation/ProgressReporter';
 
 export function generate(
-  width: number, height: number, seed: string,
+  width: number, height: number, seed: string, enemies: Record<string, EnemyDef>,
   report: ProgressReporter = () => { }
 ) {
   const library = generateLibrary(seed, report);
 
-  const data = new GameData(width, height, seed, library);
+  const data = new GameData(width, height, seed, enemies, library);
   generateBiomes(data, report);
   generateFeatures(data, report);
   decorateMap(data, report);

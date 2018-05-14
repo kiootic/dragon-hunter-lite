@@ -1,6 +1,7 @@
 import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
 import { SpawnEnemy } from 'app/game/messages';
 import { Spatial } from 'app/game/traits';
+import { vec2 } from 'gl-matrix';
 import { cloneDeep } from 'lodash';
 
 export interface Spawn extends ActionState {
@@ -25,17 +26,17 @@ export namespace Spawn {
     return `Spawn ${state.enemyType}`;
   }
 
+  const position = vec2.create();
   export function tick(this: BehaviorContext<Spawn>, dt: number) {
     if (this.state.cooldown > 0) {
       this.state.cooldown -= dt;
       return false;
     }
-    this.state.cooldown = this.state.cooldown;
+    this.state.cooldown = this.state.interval;
 
-    this.game.dispatch(new SpawnEnemy(
-      this.state.enemyType,
-      this.self.traits.get(Spatial).position
-    ));
+    vec2.random(position);
+    vec2.add(position, this.self.traits.get(Spatial).position, position);
+    this.game.dispatch(new SpawnEnemy(this.state.enemyType, position));
     return true;
   }
 

@@ -4,8 +4,8 @@ export default function () {
   onmessage = ev => {
     switch (ev.data.action) {
       case 'generate': {
-        const { width, height, seed } = ev.data;
-        const gameSave = generate(width, height, seed, (message, progress) => {
+        const { width, height, seed, enemies } = ev.data;
+        const gameSave = generate(width, height, seed, enemies, (message, progress) => {
           postMessage({ action: 'progress', message, progress });
         });
         postMessage({ action: 'completed', save: gameSave.save() });

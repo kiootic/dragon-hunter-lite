@@ -20,7 +20,7 @@ export namespace EnemyData {
 
   export function serialize(trait: EnemyData) {
     return {
-      name: trait.def,
+      def: trait.def,
     };
   }
 

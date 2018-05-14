@@ -1,4 +1,4 @@
-import { DataLibrary } from 'common/data';
+import { DataLibrary, EnemyDef } from 'common/data';
 import { EntityProps, GameProps } from 'common/data/props';
 import { MapProps } from 'common/map/MapProps';
 import { SerializedMap } from 'common/map/SerializedMap';
@@ -31,7 +31,8 @@ export class GameData {
 
   constructor(
     public readonly width: number, public readonly height: number,
-    public readonly seed: string, public readonly library: DataLibrary
+    public readonly seed: string, public readonly enemies: Record<string, EnemyDef>,
+    public readonly library: DataLibrary
   ) {
     this.terrains = new Uint16Array(width * height);
     this.objects = new Uint16Array(width * height);
@@ -44,6 +45,8 @@ export class GameData {
         .map(item => ({ [item!.name]: item!.id }))
       );
     }
+
+    this.game.nextEntityId = 2;
 
     this.terrainLookup = makeLookup(library.terrains);
     this.objectLookup = makeLookup(library.objects);

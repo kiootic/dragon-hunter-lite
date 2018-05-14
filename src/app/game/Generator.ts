@@ -1,5 +1,7 @@
+import { Enemies } from 'app/game/behavior/enemies';
 import { GameSave } from 'common/data';
 import work from 'webworkify-webpack';
+
 export interface ProgressReporter {
   (message: string | null, progress: number): void;
 }
@@ -28,7 +30,8 @@ export class Generator {
         action: 'generate',
         width: this.width,
         height: this.height,
-        seed: this.seed
+        seed: this.seed,
+        enemies: Enemies
       });
     });
     this.worker.terminate();

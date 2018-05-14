@@ -9,6 +9,4 @@ export function generateProps(data: GameData, report: ProgressReporter) {
   const player = InitialPlayer();
   player.traits.spatial.pos = data.map.spawn;
   data.entities.push(player);
-
-  data.game.nextEntityId = 2;
 }

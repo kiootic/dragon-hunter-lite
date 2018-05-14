@@ -1,4 +1,5 @@
 import { Noise } from 'common/noise';
+import { makeEnemy } from 'data/enemy';
 import { vec2 } from 'gl-matrix';
 import { Biome, GameData } from 'worker/generation/data';
 import { poissonDisk, rasterizeLine, withProgress } from 'worker/generation/utils';
@@ -10,6 +11,7 @@ const BeachSize = 16;
 const RiverSegments = 16;
 const RiverRoughness = 24;
 const SpawnMargins = 0.2;
+const EggSparity = 128;
 
 const featureProps: { [type: number]: Biome.Feature[] } = {
   [Biome.Type.Barren]: [
@@ -161,6 +163,8 @@ function generateBiomeFeatures(data: GameData, report: ProgressReporter) {
             }
           }
         );
+        data.entities.push(makeEnemy(data.game.nextEntityId++, data.enemies.spawner, [x, y]));
+        data.setObject(x, y, null);
       } break;
       case Biome.Feature.Ruins: {
         rasterizeBiome(data, biome,
@@ -176,6 +180,8 @@ function generateBiomeFeatures(data: GameData, report: ProgressReporter) {
             data.random.intBetween(-EdgeJitter, EdgeJitter)
           ]
         );
+        data.entities.push(makeEnemy(data.game.nextEntityId++, data.enemies.spawner, [x, y]));
+        data.setObject(x, y, null);
       } break;
     }
     biome.feature = feature;
@@ -249,8 +255,22 @@ function rasterizeRivers(data: GameData, report: ProgressReporter) {
   }
 }
 
+function generateEggs(data: GameData, report: ProgressReporter) {
+  const locations = poissonDisk(data.width, data.height, EggSparity, data.random);
+  const spawn = data.map.spawn;
+  for (const location of locations) {
+    const dx = location[0] - spawn[0], dy = location[1] - spawn[1];
+    // should not be too close to spawn
+    if (dx * dx + dy * dy < 64 * 64)
+      continue;
+    data.entities.push(makeEnemy(data.game.nextEntityId++, data.enemies.egg, location));
+    data.setObject(location[0], location[1], null);
+  }
+}
+
 export function generateFeatures(data: GameData, report: ProgressReporter) {
   report('generating features...', 0);
   generateBiomeFeatures(data, report);
   rasterizeRivers(data, report);
+  generateEggs(data, report);
 }

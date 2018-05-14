@@ -4,7 +4,7 @@ import { Enemies } from 'app/game/behavior/enemies';
 import { Enemy } from 'app/game/entities';
 import { SpawnEnemy } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
-import { Behavior, Spatial } from 'app/game/traits';
+import { Behavior } from 'app/game/traits';
 import { filter } from 'rxjs/operators/filter';
 
 export class BehaviorTask extends Task {
@@ -17,7 +17,7 @@ export class BehaviorTask extends Task {
 
   private spawn = ({ enemyType, position }: SpawnEnemy) => {
     const enemyDef = Enemies[enemyType];
-    const entity = Enemy.make(this.game, enemyDef, this.game.player.traits.get(Spatial).position);
+    const entity = Enemy.make(this.game, enemyDef, position);
     this.game.entities.add(entity);
   }
 
