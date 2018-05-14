@@ -1,8 +1,7 @@
-import { cloneDeep, shuffle, sortBy, times } from 'lodash';
+import { shuffle, sortBy, times } from 'lodash';
 
-export const BatchSize = 8;
+export const BatchSize = 4;
 export const SelectionSize = 0.5;
-export const MutationChance = 0.5;
 
 export interface GeneticAlgorithm<Instance> {
   seed(): Instance
@@ -29,9 +28,7 @@ export function nextGeneration<Instance>(algo: GeneticAlgorithm<Instance>, batch
   });
 
   // mutation
-  const newParents = parents.map(instance =>
-    Math.random() < MutationChance ? algo.mutate(instance) : cloneDeep(instance)
-  );
+  const newParents = parents.map(instance => algo.mutate(instance));
 
   return shuffle([...newParents, ...children]);
 }

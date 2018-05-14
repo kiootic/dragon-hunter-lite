@@ -14,6 +14,13 @@ export namespace Distance {
   export declare const _state: Distance;
   export const Type = 'distance';
 
+  export function mutate(state: Distance) {
+    return {
+      ...state,
+      threshold: state.threshold + (Math.random() * 4 - 2)
+    };
+  }
+
   const dist = vec2.create();
   export function isFulfilled(this: BehaviorContext<Distance>) {
     const target = this.state.targetId ? this.game.entities.get(this.state.targetId) : this.game.player;

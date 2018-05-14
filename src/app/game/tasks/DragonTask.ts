@@ -122,13 +122,14 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
       const dragonDef = this.data.dragons[dragonId];
       dragonDef.minPlayerHP = Math.min(dragonDef.minPlayerHP, playerHP);
       if (this.interval <= 0)
-        dragonDef.maxDPS = Math.max(dragonDef.maxDPS, (playerHP - this.lastPlayerHP) / 1000);
+        dragonDef.maxDPS = Math.max(dragonDef.maxDPS, Math.max(0, this.lastPlayerHP - playerHP));
       dragonDef.age = enemy.age;
     }
 
-    this.lastPlayerHP = playerHP;
-    if (this.interval <= 0)
+    if (this.interval <= 0) {
+      this.lastPlayerHP = playerHP;
       this.interval = 1000;
+    }
   }
 
   private makeRandomState(color: string) {
@@ -172,22 +173,24 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
 
   evaluate(instance: DragonDef): number {
     const dragonDef = this.data.dragons[instance.dragonId];
-    const ageScore = clamp(Math.abs(dragonDef.age - 2 * 60 * 1000) / 60000, 0, 1);
-    const dpsScore = clamp(Math.abs(dragonDef.maxDPS - 10) / 50, 0, 1);
-    const hpScore = clamp(Math.abs(dragonDef.minPlayerHP - 50) / 100, 0, 1);
+    const ageScore = clamp(Math.abs(dragonDef.age - 60 * 1000) / 60000, 0, 1);
+    const dpsScore = clamp(Math.abs(dragonDef.maxDPS - 20) / 10, 0, 1);
+    const hpScore = clamp(Math.abs(dragonDef.minPlayerHP - 50) / 50, 0, 1);
+    console.log('evalulate', dragonDef.age, dragonDef.maxDPS, dragonDef.minPlayerHP);
     const finalScore = 1 - (ageScore + dpsScore + hpScore) / 3;
     console.log(`evaluate ${instance.dragonId}: ${finalScore}`);
     return finalScore;
   }
 
-  computeStats(instances: DragonDef[], target: DragonDef) {
-    const ageScore = clamp(meanBy(instances, dragon => dragon.age - 2 * 60 * 1000) / 60000, -1, 1);
-    const dpsScore = clamp(meanBy(instances, dragon => dragon.maxDPS - 10) / 50, -1, 1);
-    const hpScore = clamp(meanBy(instances, dragon => dragon.minPlayerHP - 50) / 100, -1, 1);
-    target.stats.maxHp = meanBy(instances, dragon => dragon.stats.maxHp) * (1 - ageScore / 4);
+  adjustStats(instances: DragonDef[], target: DragonDef) {
+    const ageScore = clamp(meanBy(instances, dragon => dragon.age - 60 * 1000) / 60000, -1, 1);
+    const dpsScore = clamp(meanBy(instances, dragon => dragon.maxDPS - 20) / 10, -1, 1);
+    const hpScore = clamp(meanBy(instances, dragon => dragon.minPlayerHP - 50) / 50, -1, 1);
+    target.stats.maxHp = meanBy(instances, dragon => dragon.stats.maxHp) * (1 - ageScore / 2);
     target.stats.hp = target.stats.maxHp;
-    target.stats.str = meanBy(instances, dragon => dragon.stats.str) * (1 - dpsScore / 4);
-    target.stats.spd = meanBy(instances, dragon => dragon.stats.spd) * (1 - hpScore / 4);
+    target.stats.str = meanBy(instances, dragon => dragon.stats.str) * (1 - dpsScore / 2);
+    target.stats.spd = meanBy(instances, dragon => dragon.stats.spd) * (1 - hpScore / 2);
+    console.log('stats scores', ageScore, dpsScore, hpScore);
     console.log('stats', target.stats);
   }
 
@@ -201,7 +204,7 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
     ];
     const states = shuffle(candidateStates).slice(candidateStates.length / 2);
     newDragon.behaviors.states = [newDragon.behaviors.states[0], ...states];
-    this.computeStats([a, b], newDragon);
+    this.adjustStats([a, b], newDragon);
     return newDragon;
   }
 
@@ -215,14 +218,14 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
       const state = newDragon.behaviors.states[stateIndex];
       state.condition = BehaviorTree.conditions.get(state.condition.type)!.mutate(state.condition);
 
-      const actionIndex = Math.floor(Math.random() * (state.actions.length + 1));
+      const actionIndex = Math.floor(Math.random() * state.actions.length);
       const action = state.actions[actionIndex];
       state.actions[actionIndex] = BehaviorTree.actions.get(action.type)!.mutate(action);
     } else {
       const state = this.makeRandomState(newDragon.color);
       instance.behaviors.states.push(state);
     }
-    this.computeStats([instance], newDragon);
+    this.adjustStats([instance], newDragon);
     return newDragon;
   }
 

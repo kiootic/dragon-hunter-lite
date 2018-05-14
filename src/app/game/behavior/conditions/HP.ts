@@ -13,6 +13,13 @@ export namespace HP {
   export declare const _state: HP;
   export const Type = 'hp';
 
+  export function mutate(state: HP) {
+    return {
+      ...state,
+      threshold: state.threshold + (Math.random() * 0.2 - 0.1)
+    };
+  }
+
   export function isFulfilled(this: BehaviorContext<HP>) {
     const target = this.state.targetId ? this.game.entities.get(this.state.targetId) : this.self;
     if (!target) return false;
