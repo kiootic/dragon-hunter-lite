@@ -2,7 +2,7 @@ import { Button, SlotView, TextureSprite, TextButton } from 'app/components';
 import { StyledText } from 'app/components/StyledText';
 import { TextToolTip } from 'app/components/TextToolTip';
 import { Game } from 'app/game';
-import { Alchemy, Anvil, MenuPanel, Workbench } from 'app/game/menu';
+import { Alchemy, Anvil, EnemyInfo, MenuPanel, Workbench } from 'app/game/menu';
 import { GameOverlay } from 'app/game/overlays';
 import { Inventory, Stats, StatList } from 'app/game/traits';
 import * as vex from 'vex-js';
@@ -40,6 +40,7 @@ export class MenuOverlay extends GameOverlay {
     this.tabs.push(new Workbench(game));
     this.tabs.push(new Alchemy(game));
     this.tabs.push(new Anvil(game));
+    this.tabs.push(new EnemyInfo(game));
     this.activeTab = this.tabs[0];
     this.activeTab.active = true;
     this.addChild(this.activeTab);
@@ -140,6 +141,10 @@ export class MenuOverlay extends GameOverlay {
       button.position.set(x, y);
       button.layout(50, 50);
       x += 50 + 16;
+      if (x + 50 >= 256) {
+        x = buttonX;
+        y += 50 + 16;
+      }
     }
     y += 50 + 16;
 
