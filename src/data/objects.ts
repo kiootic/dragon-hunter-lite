@@ -1,5 +1,8 @@
 import { Item, TileObject } from 'common/data';
+import { makeEffect } from 'common/logic/effect/common';
 import { simpleDrops } from 'data/drops';
+import { EffectDef } from 'data/effects';
+import { ElementDef } from 'data/elements';
 
 export type ObjectDef = Pick<TileObject, Exclude<keyof TileObject, 'id' | 'name'>>;
 
@@ -142,7 +145,7 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
         template: {
           id: 'leaf',
           name: 'Leaf',
-          type: Item.Type.Material,
+          type: Item.Type.Consumable,
           texture: 'sprites/items/leaf',
           material: {
             name: 'Leaf',
@@ -152,6 +155,12 @@ export const makeObjects = (): Record<string, ObjectDef> => ({
             sharpness: 0.05,
             affinity: 0.1,
           },
+          aspects: [
+            { element: ElementDef.Type.Life, amount: 50 }
+          ],
+          effects: [
+            makeEffect(EffectDef.Type.Heal, 5, 0)
+          ],
         },
         substs: []
       })

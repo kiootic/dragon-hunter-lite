@@ -31,6 +31,9 @@ export function makeFlower(name: string, type: number, color: string, elements: 
           aspects: [
             { element: elements[0], amount: 0 },
             { element: elements[1], amount: 0 }
+          ],
+          effects: [
+            makeEffect(EffectDef.Type.Heal, 10, 0)
           ]
         },
         substs: [
@@ -80,7 +83,7 @@ export function makeBerryBush(name: string, depleted: string, type: number, colo
             { element: elements[1], amount: 0 }
           ],
           effects: [
-            makeEffect(EffectDef.Type.Heal, 5, 0)
+            makeEffect(EffectDef.Type.Heal, 10, 0)
           ]
         },
         substs: [

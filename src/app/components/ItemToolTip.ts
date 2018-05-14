@@ -46,7 +46,7 @@ export class ItemToolTip extends TextToolTip {
     }
     if (this.item.effects && this.item.effects.length > 0) {
       texts.push('');
-      if (this.item.material) {
+      if (this.item.material && this.item.weapon) {
         const affinity = this.item.material.affinity;
         if (affinity < 0.2) texts.push('<details>rarely inflicts effects:</details>');
         else if (affinity < 0.5) texts.push('<details>sometimes inflicts effects:</details>');
