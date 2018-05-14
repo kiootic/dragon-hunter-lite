@@ -1,6 +1,6 @@
 import { cloneDeep, shuffle, sortBy, times } from 'lodash';
 
-export const BatchSize = 10;
+export const BatchSize = 8;
 export const SelectionSize = 0.5;
 export const MutationChance = 0.5;
 
@@ -21,10 +21,12 @@ export function nextGeneration<Instance>(algo: GeneticAlgorithm<Instance>, batch
     .slice(BatchSize * SelectionSize);
 
   // crossover
-  const randomParent = () => parents[Math.floor(Math.random() * parents.length)];
-  const children = times(BatchSize - parents.length, () =>
-    algo.crossover(randomParent(), randomParent())
-  );
+  const children = times(BatchSize - parents.length, () => {
+    const parentsCopys = parents.slice();
+    const a = parentsCopys.splice(Math.floor(Math.random() * parentsCopys.length), 1)[0];
+    const b = parentsCopys.splice(Math.floor(Math.random() * parentsCopys.length), 1)[0];
+    return algo.crossover(a, b);
+  });
 
   // mutation
   const newParents = parents.map(instance =>

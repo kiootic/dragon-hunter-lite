@@ -13,8 +13,8 @@ export interface BehaviorTree {
 }
 
 export namespace BehaviorTree {
-  const actions = new Map<string, Action<any>>();
-  const conditions = new Map<string, Condition<any>>();
+  export const actions = new Map<string, Action<any>>();
+  export const conditions = new Map<string, Condition<any>>();
 
   export function registerAction(action: Action<any>) {
     actions.set(action.Type, action);

@@ -2,6 +2,7 @@ import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game
 import { computeVelocity } from 'app/game/behavior/utils';
 import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
+import { cloneDeep } from 'lodash';
 
 const ChaseInterval = 250;
 const ChaseRadius = 8;
@@ -19,6 +20,10 @@ export namespace Chase {
   export declare const _state: Chase;
   export const Type = 'chase';
   export const Kind = ActionKind.Movement;
+
+  export function mutate(state: Chase) {
+    return cloneDeep(state);
+  }
 
   const direction = vec2.create();
   export function tick(this: BehaviorContext<Chase>, dt: number) {

@@ -2,6 +2,7 @@ import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game
 import { Spatial, Stats } from 'app/game/traits';
 import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
+import { cloneDeep } from 'lodash';
 
 const WanderInterval = 200;
 
@@ -16,6 +17,10 @@ export namespace Wander {
   export declare const _state: Wander;
   export const Type = 'wander';
   export const Kind = ActionKind.Movement;
+
+  export function mutate(state: Wander) {
+    return cloneDeep(state);
+  }
 
   export function tick(this: BehaviorContext<Wander>, dt: number) {
     const { velocity } = this.self.traits.get(Spatial);

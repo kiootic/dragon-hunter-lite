@@ -11,4 +11,5 @@ export interface Condition<State extends ConditionState> {
   readonly Type: string;
 
   isFulfilled(this: BehaviorContext<State>): boolean;
+  mutate(state: State): State;
 }

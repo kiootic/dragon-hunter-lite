@@ -3,6 +3,7 @@ import { computeVelocity } from 'app/game/behavior/utils';
 import { Spatial, Stats } from 'app/game/traits';
 import { tilePerSecond } from 'common/logic/stats';
 import { vec2 } from 'gl-matrix';
+import { cloneDeep } from 'lodash';
 
 const SpeedMultiplier = 5;
 
@@ -20,6 +21,10 @@ export namespace Charge {
   export declare const _state: Charge;
   export const Type = 'charge';
   export const Kind = ActionKind.Movement;
+
+  export function mutate(state: Charge) {
+    return cloneDeep(state);
+  }
 
   const direction = vec2.create();
   export function tick(this: BehaviorContext<Charge>, dt: number) {

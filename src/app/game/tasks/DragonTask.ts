@@ -1,25 +1,39 @@
 import { Game } from 'app/game';
-import { ActionState } from 'app/game/behavior';
+import { ActionState, BehaviorTree } from 'app/game/behavior';
 import { Shoot, Wander } from 'app/game/behavior/actions';
 import { HP } from 'app/game/behavior/conditions';
 import { Attacks, Conditions, Movements } from 'app/game/behavior/genes';
 import { Enemy } from 'app/game/entities';
 import { SpawnEnemy } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
+import { EnemyData, Stats } from 'app/game/traits';
 import { random as randomColor } from 'common/color';
 import { EnemyDef, Weapon } from 'common/data';
 import { begin, nextGeneration, GeneticAlgorithm } from 'common/logic/genetic';
 import { generateName } from 'common/markov';
 import { Animations } from 'data/animations';
-import { cloneDeep } from 'lodash';
+import { clamp, cloneDeep, meanBy, shuffle } from 'lodash';
 import { filter } from 'rxjs/operators/filter';
 
 interface DragonDef extends EnemyDef {
-  id: number;
+  dragonId: number;
+  color: string;
+  maxDPS: number;
+  minPlayerHP: number;
+  age: number;
+}
+
+function randomRange(max: number) {
+  return Math.floor(Math.random() * max);
 }
 
 const DragonDefTemplate: DragonDef = {
-  id: 0,
+  dragonId: 0,
+  maxDPS: 0,
+  color: '',
+  minPlayerHP: 100000,
+  age: 0,
+
   name: '',
   texture: Animations.Dragon,
   scale: 2,
@@ -49,9 +63,15 @@ function touchShoot() {
   }, [], 100);
 }
 
+interface GeneticSave {
+  readonly dragons: DragonDef[];
+  nextId: number;
+}
+
 export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
-  private thisGeneration: DragonDef[];
-  private instancePool: DragonDef[];
+  private thisGeneration: DragonDef[] = [];
+  private instancePool: DragonDef[] = [];
+  private data: GeneticSave;
 
   constructor(game: Game) {
     super(game);
@@ -59,20 +79,73 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
       .pipe(filter(msg => msg.enemyType === 'dragon'))
       .subscribe(this.spawn);
 
-    this.thisGeneration = begin(this);
+    this.data = this.game.data.custom.dragons || (this.game.data.custom.dragons = {
+      dragons: [],
+      nextId: 0
+    });
+    this.nextGen(begin(this));
+  }
+
+  private nextGen(generation: DragonDef[]) {
+    this.thisGeneration = generation.map(dragon => {
+      dragon.dragonId = this.data.nextId++;
+      this.data.dragons[dragon.dragonId] = dragon;
+      return dragon;
+    });
     this.instancePool = this.thisGeneration.slice();
   }
 
   private spawn = ({ position }: SpawnEnemy) => {
     if (this.instancePool.length === 0) {
-      this.thisGeneration = nextGeneration(this, this.thisGeneration);
-      this.instancePool = this.thisGeneration.slice();
+      this.nextGen(nextGeneration(this, this.thisGeneration));
     }
 
     const def = this.instancePool.pop()!;
-    console.log(JSON.stringify(def, null, 4));
     const entity = Enemy.make(this.game, def, position);
     this.game.entities.add(entity);
+  }
+
+  private interval = 0;
+  private lastPlayerHP = -1;
+  update(dt: number) {
+    this.interval -= dt;
+
+    const playerHP = this.game.player.traits.get(Stats).base.hp;
+    if (this.lastPlayerHP < 0) this.lastPlayerHP = playerHP;
+
+    for (const enemy of this.game.entities.withTrait(EnemyData)) {
+      const { def } = enemy.traits.get(EnemyData);
+      const dragonId = (def as DragonDef).dragonId;
+      if (typeof dragonId !== 'number')
+        continue;
+
+      const dragonDef = this.data.dragons[dragonId];
+      dragonDef.minPlayerHP = Math.min(dragonDef.minPlayerHP, playerHP);
+      if (this.interval <= 0)
+        dragonDef.maxDPS = Math.max(dragonDef.maxDPS, (playerHP - this.lastPlayerHP) / 1000);
+      dragonDef.age = enemy.age;
+    }
+
+    this.lastPlayerHP = playerHP;
+    if (this.interval <= 0)
+      this.interval = 1000;
+  }
+
+  private makeRandomState(color: string) {
+    const state = {
+      condition: Conditions[Math.floor(Math.random() * Conditions.length)](),
+      actions: [] as ActionState[]
+    };
+
+    const numAttacks = 1 + randomRange(2);
+    for (let j = 0; j < numAttacks; j++)
+      state.actions.push(Attacks[randomRange(Attacks.length)](color));
+    state.actions.push(Movements[randomRange(Movements.length)]());
+
+    // basic actions
+    state.actions.push(touchShoot());
+    state.actions.push(Wander.make());
+    return state;
   }
 
   seed() {
@@ -83,40 +156,74 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
 
     const instance = cloneDeep(DragonDefTemplate);
     instance.name = generateName(6, 12);
+    instance.color = color;
     instance.texture = Object.assign({}, Animations.Dragon, { tint: color });
 
-    function randomRange(max: number) {
-      return Math.floor(Math.random() * max);
-    }
     for (let i = 0; i < 4; i++) {
+      const state = this.makeRandomState(color);
       // first state is basic state
-      const state = {
-        condition: i === 0 ? HP.greaterThan(0) : Conditions[Math.floor(Math.random() * Conditions.length)](),
-        actions: [] as ActionState[]
-      };
-
-      const numAttacks = 1 + randomRange(2);
-      for (let j = 0; j < numAttacks; j++)
-        state.actions.push(Attacks[randomRange(Attacks.length)](color));
-      state.actions.push(Movements[randomRange(Movements.length)]());
-
-      // basic actions
-      state.actions.push(touchShoot());
-      state.actions.push(Wander.make());
-
+      if (i === 0)
+        state.condition = HP.greaterThan(0);
       instance.behaviors.states.push(state);
     }
 
     return instance;
   }
-  evaluate(instance: any): number {
-    return 0;
+
+  evaluate(instance: DragonDef): number {
+    const dragonDef = this.data.dragons[instance.dragonId];
+    const ageScore = clamp(Math.abs(dragonDef.age - 2 * 60 * 1000) / 60000, 0, 1);
+    const dpsScore = clamp(Math.abs(dragonDef.maxDPS - 10) / 50, 0, 1);
+    const hpScore = clamp(Math.abs(dragonDef.minPlayerHP - 50) / 100, 0, 1);
+    const finalScore = 1 - (ageScore + dpsScore + hpScore) / 3;
+    console.log(`evaluate ${instance.dragonId}: ${finalScore}`);
+    return finalScore;
   }
-  crossover(a: any, b: any) {
-    return cloneDeep(a);
+
+  computeStats(instances: DragonDef[], target: DragonDef) {
+    const ageScore = clamp(meanBy(instances, dragon => dragon.age - 2 * 60 * 1000) / 60000, -1, 1);
+    const dpsScore = clamp(meanBy(instances, dragon => dragon.maxDPS - 10) / 50, -1, 1);
+    const hpScore = clamp(meanBy(instances, dragon => dragon.minPlayerHP - 50) / 100, -1, 1);
+    target.stats.maxHp = meanBy(instances, dragon => dragon.stats.maxHp) * (1 - ageScore / 4);
+    target.stats.hp = target.stats.maxHp;
+    target.stats.str = meanBy(instances, dragon => dragon.stats.str) * (1 - dpsScore / 4);
+    target.stats.spd = meanBy(instances, dragon => dragon.stats.spd) * (1 - hpScore / 4);
+    console.log('stats', target.stats);
   }
-  mutate(instance: any) {
-    return cloneDeep(instance);
+
+  crossover(a: DragonDef, b: DragonDef) {
+    console.log(`crossover: ${a.dragonId} ${b.dragonId}`);
+    const newDragon = this.seed();
+
+    const candidateStates = [
+      ...cloneDeep(a.behaviors.states.slice(1)),
+      ...cloneDeep(b.behaviors.states.slice(1))
+    ];
+    const states = shuffle(candidateStates).slice(candidateStates.length / 2);
+    newDragon.behaviors.states = [newDragon.behaviors.states[0], ...states];
+    this.computeStats([a, b], newDragon);
+    return newDragon;
+  }
+
+  mutate(instance: DragonDef) {
+    console.log(`mutate: ${instance.dragonId}`);
+    const newDragon = this.seed();
+    newDragon.behaviors = cloneDeep(instance.behaviors);
+
+    const stateIndex = Math.floor(Math.random() * (newDragon.behaviors.states.length + 1));
+    if (stateIndex < newDragon.behaviors.states.length) {
+      const state = newDragon.behaviors.states[stateIndex];
+      state.condition = BehaviorTree.conditions.get(state.condition.type)!.mutate(state.condition);
+
+      const actionIndex = Math.floor(Math.random() * (state.actions.length + 1));
+      const action = state.actions[actionIndex];
+      state.actions[actionIndex] = BehaviorTree.actions.get(action.type)!.mutate(action);
+    } else {
+      const state = this.makeRandomState(newDragon.color);
+      instance.behaviors.states.push(state);
+    }
+    this.computeStats([instance], newDragon);
+    return newDragon;
   }
 
 }

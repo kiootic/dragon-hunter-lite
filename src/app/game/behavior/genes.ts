@@ -17,7 +17,9 @@ export const Attacks: ((color: string) => ActionState)[] = [
     knockback: 10,
     range: 5 + random(-2, 2),
     color
-  }, [], 1000 + random(-500, 1000), Math.floor(random(1, 3)), random(5, 20), Math.random() * 2000),
+  }, [], 1000 + random(-500, 1000),
+    Math.floor(random(1, 3)), random(5, 20),
+    random(0, 10), Math.random() * 2000),
 
   // ring
   (color: string) => {
@@ -30,7 +32,9 @@ export const Attacks: ((color: string) => ActionState)[] = [
       knockback: 10,
       range: 5 + random(-2, 2),
       color
-    }, [], 1000 + random(-500, 1000), numShoots, 360 / numShoots, Math.random() * 2000);
+    }, [], 1000 + random(-500, 1000),
+      numShoots, 360 / numShoots,
+      random(0, 10), Math.random() * 2000);
   },
 ];
 

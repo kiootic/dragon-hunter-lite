@@ -1,6 +1,7 @@
 import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
 import { ApplyEffects } from 'app/game/messages';
 import { Effect } from 'common/data';
+import { cloneDeep } from 'lodash';
 
 export interface Buff extends ActionState {
   readonly type: typeof Buff.Type;
@@ -16,6 +17,10 @@ export namespace Buff {
   export declare const _state: Buff;
   export const Type = 'buff';
   export const Kind = ActionKind.Effect;
+
+  export function mutate(state: Buff) {
+    return cloneDeep(state);
+  }
 
   export function tick(this: BehaviorContext<Buff>, dt: number) {
     if (this.state.cooldown > 0) {

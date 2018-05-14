@@ -1,6 +1,7 @@
 import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game/behavior';
 import { SpawnEnemy } from 'app/game/messages';
 import { Spatial } from 'app/game/traits';
+import { cloneDeep } from 'lodash';
 
 export interface Spawn extends ActionState {
   readonly type: typeof Spawn.Type;
@@ -15,6 +16,10 @@ export namespace Spawn {
   export declare const _state: Spawn;
   export const Type = 'spawn';
   export const Kind = ActionKind.Effect;
+
+  export function mutate(state: Spawn) {
+    return cloneDeep(state);
+  }
 
   export function tick(this: BehaviorContext<Spawn>, dt: number) {
     if (this.state.cooldown > 0) {

@@ -2,6 +2,7 @@ import { ActionKind, ActionState, BehaviorContext, BehaviorTree } from 'app/game
 import { computeVelocity } from 'app/game/behavior/utils';
 import { Spatial } from 'app/game/traits';
 import { vec2 } from 'gl-matrix';
+import { cloneDeep } from 'lodash';
 
 const EscapeRadius = 5;
 
@@ -15,6 +16,11 @@ export namespace Escape {
   export declare const _state: Escape;
   export const Type = 'escape';
   export const Kind = ActionKind.Movement;
+
+  export function mutate(state: Escape) {
+    return cloneDeep(state);
+  }
+
 
   export function tick(this: BehaviorContext<Escape>, dt: number) {
     const { position, velocity } = this.self.traits.get(Spatial);

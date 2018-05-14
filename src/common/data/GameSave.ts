@@ -10,13 +10,14 @@ export class GameSave {
     public library: DataLibrary,
     public map: SerializedMap,
     public entities: EntityProps[],
+    public custom: any,
     public readonly props: GameProps
   ) {
   }
 
   public static load(data: any) {
-    const { id, library, map, entities, props } = data;
-    return new GameSave(id, library, map, entities, props);
+    const { id, library, map, entities, custom, props } = data;
+    return new GameSave(id, library, map, entities, custom || {}, props);
   }
 
   public save(): any {
@@ -25,7 +26,8 @@ export class GameSave {
       library: this.library,
       map: this.map,
       entities: this.entities,
-      props: this.props
+      custom: this.custom,
+      props: this.props,
     };
   }
 

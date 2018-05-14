@@ -3,6 +3,7 @@ import { Attack } from 'app/game/messages';
 import { Spatial } from 'app/game/traits';
 import { Effect, Weapon } from 'common/data';
 import { vec2 } from 'gl-matrix';
+import { clamp, cloneDeep } from 'lodash';
 
 const ShootRadius = 12;
 
@@ -11,9 +12,11 @@ export interface Shoot extends ActionState {
 
   readonly numShoots: number;
   readonly angle: number;
+  readonly offset: number;
   readonly weapon: Weapon;
   readonly effects: Effect[];
   readonly duration: number;
+  readonly delay: number;
 
   cooldown: number;
 }
@@ -22,6 +25,46 @@ export namespace Shoot {
   export declare const _state: Shoot;
   export const Type = 'shoot';
   export const Kind = ActionKind.Attack;
+
+  export function mutate(state: Shoot) {
+    const isRing = Math.abs((state.angle * state.numShoots) - Math.PI * 2) < 0.0001;
+    const mutateType = Math.floor(Math.random() * 3);
+    const newState = cloneDeep(state);
+
+    switch (mutateType) {
+      case 0: // cooldown
+        Object.assign(newState, {
+          duration: clamp(newState.duration * (1 + (Math.random() * 2 - 1) * 0.25), 500, 5000),
+          delay: clamp(newState.delay * (1 + (Math.random() * 2 - 1) * 0.25), 0, 5000),
+        });
+        break;
+      case 1: // shoots
+        const numShoots = clamp(newState.numShoots + Math.floor(Math.random() * 6 - 3), 0, 10);
+        Object.assign(newState, {
+          numShoots,
+          angle: isRing ? Math.PI * 2 / numShoots : newState.angle
+        });
+        break;
+      case 2: // angle
+        Object.assign(newState, {
+          angle: clamp(newState.angle + (Math.random() - 0.5), 0, Math.PI * 2 / newState.numShoots)
+        });
+        break;
+      case 3: // range
+        Object.assign(newState.weapon, {
+          range: clamp(newState.weapon.range + (Math.random() * 4 - 2), 2, 15)
+        });
+        break;
+      case 4: // strength
+        Object.assign(newState.weapon, {
+          strength: clamp(newState.weapon.strength + (Math.random() * 6 - 3), 1, 50)
+        });
+        break;
+    }
+    Object.assign(newState.weapon, { type: Math.random() < 0.5 ? Weapon.Type.Bolt : Weapon.Type.Orb });
+    newState.cooldown = newState.delay;
+    return newState;
+  }
 
   const direction = vec2.create();
   const target = vec2.create();
@@ -56,7 +99,7 @@ export namespace Shoot {
 
   export function make(
     weapon: Weapon, effects: Effect[], duration: number,
-    numShoots = 1, angle = 15, delay = 0
+    numShoots = 1, angle = 15, offset = 0, delay = 0
   ): Shoot {
     return {
       type: Type,
@@ -65,6 +108,8 @@ export namespace Shoot {
       duration,
       numShoots,
       angle: angle * Math.PI / 180,
+      offset,
+      delay,
       cooldown: delay
     };
   }
