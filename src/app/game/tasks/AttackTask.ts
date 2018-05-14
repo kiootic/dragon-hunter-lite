@@ -1,5 +1,5 @@
 import { Game } from 'app/game';
-import { Projectile } from 'app/game/entities/Projectile';
+import { Projectile } from 'app/game/entities';
 import { ApplyEffects, Attack } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { Spatial } from 'app/game/traits';
