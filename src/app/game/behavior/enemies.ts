@@ -88,7 +88,7 @@ export const Enemies: Record<string, EnemyDef> = {
       states: [{
         condition: c.HP.greaterThan(0.99),
         actions: [
-          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000)], 500)
+          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000000)], 500000)
         ]
       }, {
         condition: c.HP.lessThan(0.99),
@@ -122,12 +122,12 @@ export const Enemies: Record<string, EnemyDef> = {
       states: [{
         condition: c.HP.greaterThan(0),
         actions: [
-          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000)], 500),
+          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000000)], 500000),
         ]
       }, {
         condition: c.Distance.lessThan(8),
         actions: [
-          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000)], 500),
+          a.Buff.make([makeEffect(EffectDef.Type.KnockbackResist, 0, 1000000)], 500000),
           a.Spawn.make('skeleton', 10000),
           a.Shoot.make({
             type: Weapon.Type.Bolt,

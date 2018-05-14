@@ -1,4 +1,4 @@
-import { App, MapSize } from 'app';
+import { App, MapSize, Seed } from 'app';
 import { Text, TextButton } from 'app/components';
 import { Generator } from 'app/game/Generator';
 import { GameState } from 'app/states/GameState';
@@ -90,7 +90,7 @@ export class StateTitle extends GameState {
   async newGame() {
     this.newButton.isEnabled = false;
     this.saveButtons.forEach(btn => btn.isEnabled = false);
-    const data = await new Generator(MapSize, MapSize, '1').generate((message, progress) => {
+    const data = await new Generator(MapSize, MapSize, Seed || performance.now().toString()).generate((message, progress) => {
       if (message)
         this.loadMessage.text = message;
       this.loadBar.width = (this.app.screen.width / 2) * progress;

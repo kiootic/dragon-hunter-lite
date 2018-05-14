@@ -40,12 +40,18 @@ export class EntityManager {
     });
   }
 
-  public ofType<T extends Entity>(entityType: EntityType<T>) {
-    return Array.from(this.entities.values()).filter(entity => entity.type === entityType.Type);
+  public *ofType<T extends Entity>(entityType: EntityType<T>) {
+    for (const entity of this.entities.values()) {
+      if (entity.type === entityType.Type)
+        yield entity;
+    }
   }
 
-  public withTrait<T extends Trait>(traitType: TraitType<T>) {
-    return Array.from(this.entities.values()).filter(entity => entity.traits.get(traitType));
+  public *withTrait<T extends Trait>(traitType: TraitType<T>) {
+    for (const entity of this.entities.values()) {
+      if (entity.traits.get(traitType))
+        yield entity;
+    }
   }
 
   public get(id: number) {

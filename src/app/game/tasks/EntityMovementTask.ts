@@ -44,6 +44,15 @@ class EntityAABB extends AABB {
     this.entity = entity;
     this.obstacle = mass > 0;
   }
+
+  update() {
+    const { position } = this.entity.traits.get(Spatial);
+    const { size } = this.entity.traits.get(Collidable);
+    this.pos.x = position[0];
+    this.pos.y = position[1];
+    this.half.x = size[0];
+    this.half.y = size[1];
+  }
 }
 
 export class EntityMovementTask extends Task {
@@ -52,6 +61,20 @@ export class EntityMovementTask extends Task {
 
   public update(dt: number) {
     const t = dt / 1000;
+    for (const id of this.entityAABBMap.keys()) {
+      if (!this.game.entities.get(id))
+        this.entityAABBMap.delete(id);
+    }
+    for (const entity of this.game.entities.withTrait(Collidable)) {
+      let aabb = this.entityAABBMap.get(entity.id);
+      if (!aabb)
+        this.entityAABBMap.set(entity.id, aabb = new EntityAABB(entity));
+      else
+        aabb.update();
+      this.entityAABBs.push(aabb);
+    }
+
+    const objects: ObjectAABB[] = [];
     for (const entity of this.game.entities.withTrait(Spatial)) {
       const { position, sprite, velocity, horizontalAnim } = entity.traits.get(Spatial);
       const stats = entity.traits.get(Stats);
@@ -60,9 +83,10 @@ export class EntityMovementTask extends Task {
       const collidable = entity.traits.get(Collidable);
       let hits: ObjectAABB[];
       if (collidable) {
-        const objects = Array.from(this.getAABBs(position, entity));
-        const shape = new EntityAABB(entity);
+        this.getAABBs(position, entity, objects);
+        const shape = this.entityAABBMap.get(entity.id) || new EntityAABB(entity);
         hits = this.resolve(objects, shape);
+        objects.length = 0;
         vec2.set(position, shape.pos.x, shape.pos.y);
       } else {
         vec2.add(position, position, this.vel);
@@ -97,9 +121,12 @@ export class EntityMovementTask extends Task {
     }
 
     this.collisions.clear();
+    this.entityAABBs.length = 0;
   }
 
-  private * getAABBs(position: vec2, exclude: Entity) {
+  private readonly entityAABBMap = new Map<number, EntityAABB>();
+  private entityAABBs: EntityAABB[] = [];
+  private getAABBs(position: vec2, exclude: Entity, aabbs: ObjectAABB[]) {
     const map = this.game.map;
     const lib = this.game.library;
 
@@ -112,25 +139,24 @@ export class EntityMovementTask extends Task {
       for (let x = left; x <= right; x++) {
         const terrainDef = lib.terrains[map.getTerrain(x, y)];
         if (!terrainDef) {
-          yield new TileAABB(x, y);
+          aabbs.push(new TileAABB(x, y));
         }
 
         const objectDef = lib.objects[map.getObject(x, y)];
         if (objectDef && objectDef.collidable)
-          yield new TileAABB(x, y, objectDef);
+          aabbs.push(new TileAABB(x, y, objectDef));
       }
 
-    for (const entity of this.game.entities.withTrait(Collidable)) {
-      if (entity === exclude) continue;
+    for (const aabb of this.entityAABBs) {
+      if (aabb.entity === exclude) continue;
 
-      const { position } = entity.traits.get(Spatial);
       if (
-        position[0] < left - EntitySizeExtent || position[0] > right + EntitySizeExtent ||
-        position[1] < top - EntitySizeExtent || position[1] > bottom + EntitySizeExtent
+        aabb.pos.x < left - EntitySizeExtent || aabb.pos.x > right + EntitySizeExtent ||
+        aabb.pos.y < top - EntitySizeExtent || aabb.pos.y > bottom + EntitySizeExtent
       )
         continue;
 
-      yield new EntityAABB(entity);
+      aabbs.push(aabb);
     }
   }
 
