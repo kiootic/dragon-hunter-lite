@@ -8,7 +8,7 @@ import { SpawnEnemy } from 'app/game/messages';
 import { Task } from 'app/game/tasks';
 import { EnemyData, Stats } from 'app/game/traits';
 import { random as randomColor } from 'common/color';
-import { EnemyDef, Weapon } from 'common/data';
+import { DropTable, EnemyDef, Item, Weapon } from 'common/data';
 import { begin, nextGeneration, GeneticAlgorithm } from 'common/logic/genetic';
 import { generateName } from 'common/markov';
 import { Animations } from 'data/animations';
@@ -89,6 +89,7 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
   private nextGen(generation: DragonDef[]) {
     this.thisGeneration = generation.map(dragon => {
       dragon.dragonId = this.data.nextId++;
+      this.computeDrops(dragon);
       this.data.dragons[dragon.dragonId] = dragon;
       return dragon;
     });
@@ -192,6 +193,91 @@ export class DragonTask extends Task implements GeneticAlgorithm<DragonDef> {
     target.stats.spd = meanBy(instances, dragon => dragon.stats.spd) * (1 - hpScore / 2);
     console.log('stats scores', ageScore, dpsScore, hpScore);
     console.log('stats', target.stats);
+  }
+
+  computeDrops(dragon: DragonDef) {
+    const drops: DropTable = {
+      numDrops: { type: 'exponential', min: 3, max: 6, rate: 0.5 },
+      items: []
+    };
+    const baseWeight = dragon.stats.maxHp / 2000 - dragon.stats.spd / 200 + Math.random() * 0.1;
+    const baseToughness = dragon.stats.maxHp / 2000 + Math.random() * 0.1;
+    const baseSharpness = dragon.stats.str / 100 + Math.random() * 0.1;
+    const affinity = clamp((dragon.stats.maxHp / 1000 + dragon.stats.spd / 100 + dragon.stats.str / 50) / 3, 0, 1);
+    drops.items.push({
+      prob: 0.3, item: {
+        template: {
+          id: 'skin',
+          name: `Skin of ${dragon.name}`,
+          type: Item.Type.Material,
+          texture: { type: 'single', tex: 'sprites/items/skin', tint: dragon.color },
+          material: {
+            name: dragon.name,
+            color: dragon.color,
+            weight: clamp(baseWeight * 1, 0, 1),
+            toughness: clamp(baseToughness * 1.5, 0, 1),
+            sharpness: clamp(baseSharpness * 0.5, 0, 1),
+            affinity,
+          },
+        },
+        substs: []
+      }
+    }, {
+        prob: 0.3, item: {
+          template: {
+            id: 'bone',
+            name: `Bone of ${dragon.name}`,
+            type: Item.Type.Material,
+            texture: { type: 'single', tex: 'sprites/items/bone', tint: dragon.color },
+            material: {
+              name: dragon.name,
+              color: dragon.color,
+              weight: clamp(baseWeight * 1.5, 0, 1),
+              toughness: clamp(baseToughness * 1.5, 0, 1),
+              sharpness: clamp(baseSharpness * 1, 0, 1),
+              affinity,
+            },
+          },
+          substs: []
+        }
+      }, {
+        prob: 0.2, item: {
+          template: {
+            id: 'fang',
+            name: `Fang of ${dragon.name}`,
+            type: Item.Type.Material,
+            texture: { type: 'single', tex: 'sprites/items/fang', tint: dragon.color },
+            material: {
+              name: dragon.name,
+              color: dragon.color,
+              weight: clamp(baseWeight * 0.5, 0, 1),
+              toughness: clamp(baseToughness * 0.5, 0, 1),
+              sharpness: clamp(baseSharpness * 2, 0, 1),
+              affinity,
+            },
+          },
+          substs: []
+        }
+      }, {
+        prob: 0.2, item: {
+          template: {
+            id: 'scale',
+            name: `Scale of ${dragon.name}`,
+            type: Item.Type.Material,
+            texture: { type: 'single', tex: 'sprites/items/scale', tint: dragon.color },
+            material: {
+              name: dragon.name,
+              color: dragon.color,
+              weight: clamp(baseWeight * 0.5, 0, 1),
+              toughness: clamp(baseToughness * 2, 0, 1),
+              sharpness: clamp(baseSharpness * 1, 0, 1),
+              affinity,
+            },
+          },
+          substs: []
+        }
+      });
+    dragon.drops = drops;
   }
 
   crossover(a: DragonDef, b: DragonDef) {
